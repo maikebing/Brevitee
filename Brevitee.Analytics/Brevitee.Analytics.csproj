@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{67CCA5A4-9B97-444C-9F4B-F464B2E04D6B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Brevitee.Analytics</RootNamespace>
+    <AssemblyName>Brevitee.Analytics</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Brevitee.Analytics.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CsQuery">
+      <HintPath>..\Assemblies\CsQuery.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Program Files (x86)\Microsoft ASP.NET\ASP.NET MVC 4\Assemblies\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Crawlers\ActionChangedDelegate.cs" />
+    <Compile Include="Crawlers\ActionChangedEventArgs.cs" />
+    <Compile Include="Classification\Classifier.cs" />
+    <Compile Include="Classification\FisherClassifier.cs" />
+    <Compile Include="Classification\NaiveBayesClassifier.cs" />
+    <Compile Include="Crawlers\BaseCrawler.cs" />
+    <Compile Include="Crawlers\CrawlerState.cs" />
+    <Compile Include="Crawlers\ICrawler.cs" />
+    <Compile Include="Crawlers\ImageCrawler.cs" />
+    <Compile Include="Crawlers\Partials\Domain.cs" />
+    <Compile Include="Crawlers\Partials\ImageCrawler.cs" />
+    <Compile Include="Crawlers\Partials\Path.cs" />
+    <Compile Include="Crawlers\Partials\Port.cs" />
+    <Compile Include="Crawlers\Partials\Protocol.cs" />
+    <Compile Include="Crawlers\Partials\QueryString.cs" />
+    <Compile Include="Crawlers\Partials\Url.cs" />
+    <Compile Include="Crawlers\UrlCrawler.cs" />
+    <Compile Include="Generated\AnalyticsContext.cs" />
+    <Compile Include="Generated\Attribute.cs" />
+    <Compile Include="Generated\AttributeCollection.cs" />
+    <Compile Include="Generated\AttributeColumns.cs" />
+    <Compile Include="Generated\Category.cs" />
+    <Compile Include="Generated\CategoryCollection.cs" />
+    <Compile Include="Generated\CategoryColumns.cs" />
+    <Compile Include="Generated\Content.cs" />
+    <Compile Include="Generated\ContentCollection.cs" />
+    <Compile Include="Generated\ContentColumns.cs" />
+    <Compile Include="Generated\Domain.cs" />
+    <Compile Include="Generated\DomainCollection.cs" />
+    <Compile Include="Generated\DomainColumns.cs" />
+    <Compile Include="Generated\Feature.cs" />
+    <Compile Include="Generated\FeatureCollection.cs" />
+    <Compile Include="Generated\FeatureColumns.cs" />
+    <Compile Include="Generated\HtmlElement.cs" />
+    <Compile Include="Generated\HtmlElementAttribute.cs" />
+    <Compile Include="Generated\HtmlElementAttributeCollection.cs" />
+    <Compile Include="Generated\HtmlElementAttributeColumns.cs" />
+    <Compile Include="Generated\HtmlElementCollection.cs" />
+    <Compile Include="Generated\HtmlElementColumns.cs" />
+    <Compile Include="Generated\HtmlElementStyle.cs" />
+    <Compile Include="Generated\HtmlElementStyleCollection.cs" />
+    <Compile Include="Generated\HtmlElementStyleColumns.cs" />
+    <Compile Include="Generated\Image.cs" />
+    <Compile Include="Generated\ImageCollection.cs" />
+    <Compile Include="Generated\ImageColumns.cs" />
+    <Compile Include="Generated\ImageCrawler.cs" />
+    <Compile Include="Generated\ImageCrawlerCollection.cs" />
+    <Compile Include="Generated\ImageCrawlerColumns.cs" />
+    <Compile Include="Generated\ImageRating.cs" />
+    <Compile Include="Generated\ImageRatingCollection.cs" />
+    <Compile Include="Generated\ImageRatingColumns.cs" />
+    <Compile Include="Generated\ImageTag.cs" />
+    <Compile Include="Generated\ImageTagCollection.cs" />
+    <Compile Include="Generated\ImageTagColumns.cs" />
+    <Compile Include="Generated\Path.cs" />
+    <Compile Include="Generated\PathCollection.cs" />
+    <Compile Include="Generated\PathColumns.cs" />
+    <Compile Include="Generated\Port.cs" />
+    <Compile Include="Generated\PortCollection.cs" />
+    <Compile Include="Generated\PortColumns.cs" />
+    <Compile Include="Generated\Protocol.cs" />
+    <Compile Include="Generated\ProtocolCollection.cs" />
+    <Compile Include="Generated\ProtocolColumns.cs" />
+    <Compile Include="Generated\Qi\Attribute.cs" />
+    <Compile Include="Generated\Qi\Category.cs" />
+    <Compile Include="Generated\Qi\Content.cs" />
+    <Compile Include="Generated\Qi\Domain.cs" />
+    <Compile Include="Generated\Qi\Feature.cs" />
+    <Compile Include="Generated\Qi\HtmlElement.cs" />
+    <Compile Include="Generated\Qi\HtmlElementAttribute.cs" />
+    <Compile Include="Generated\Qi\HtmlElementStyle.cs" />
+    <Compile Include="Generated\Qi\Image.cs" />
+    <Compile Include="Generated\Qi\ImageCrawler.cs" />
+    <Compile Include="Generated\Qi\ImageRating.cs" />
+    <Compile Include="Generated\Qi\ImageTag.cs" />
+    <Compile Include="Generated\Qi\Path.cs" />
+    <Compile Include="Generated\Qi\Port.cs" />
+    <Compile Include="Generated\Qi\Protocol.cs" />
+    <Compile Include="Generated\Qi\QueryString.cs" />
+    <Compile Include="Generated\Qi\Style.cs" />
+    <Compile Include="Generated\Qi\Tag.cs" />
+    <Compile Include="Generated\Qi\Url.cs" />
+    <Compile Include="Generated\Qi\UrlTag.cs" />
+    <Compile Include="Generated\Qi\UserIdentifier.cs" />
+    <Compile Include="Generated\Qi\WriteHistory.cs" />
+    <Compile Include="Generated\QueryString.cs" />
+    <Compile Include="Generated\QueryStringCollection.cs" />
+    <Compile Include="Generated\QueryStringColumns.cs" />
+    <Compile Include="Generated\Style.cs" />
+    <Compile Include="Generated\StyleCollection.cs" />
+    <Compile Include="Generated\StyleColumns.cs" />
+    <Compile Include="Generated\Tag.cs" />
+    <Compile Include="Generated\TagCollection.cs" />
+    <Compile Include="Generated\TagColumns.cs" />
+    <Compile Include="Generated\Url.cs" />
+    <Compile Include="Generated\UrlCollection.cs" />
+    <Compile Include="Generated\UrlColumns.cs" />
+    <Compile Include="Generated\UrlTag.cs" />
+    <Compile Include="Generated\UrlTagCollection.cs" />
+    <Compile Include="Generated\UrlTagColumns.cs" />
+    <Compile Include="Generated\UserIdentifier.cs" />
+    <Compile Include="Generated\UserIdentifierCollection.cs" />
+    <Compile Include="Generated\UserIdentifierColumns.cs" />
+    <Compile Include="Generated\WriteHistory.cs" />
+    <Compile Include="Generated\WriteHistoryCollection.cs" />
+    <Compile Include="Generated\WriteHistoryColumns.cs" />
+    <Compile Include="Partials\Style.cs" />
+    <Compile Include="Partials\Tag.cs" />
+    <Compile Include="Partials\Url.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="analytics.db.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Crawlers\words\american-abbreviations.70" />
+    <None Include="Crawlers\words\american-proper-names.80" />
+    <None Include="Crawlers\words\american-proper-names.95" />
+    <None Include="Crawlers\words\american-upper.35" />
+    <None Include="Crawlers\words\american-upper.50" />
+    <None Include="Crawlers\words\american-upper.60" />
+    <None Include="Crawlers\words\american-upper.70" />
+    <None Include="Crawlers\words\american-upper.80" />
+    <None Include="Crawlers\words\american-upper.95" />
+    <None Include="Crawlers\words\american-words.10" />
+    <None Include="Crawlers\words\american-words.20" />
+    <None Include="Crawlers\words\american-words.35" />
+    <None Include="Crawlers\words\american-words.40" />
+    <None Include="Crawlers\words\american-words.50" />
+    <None Include="Crawlers\words\american-words.55" />
+    <None Include="Crawlers\words\american-words.60" />
+    <None Include="Crawlers\words\american-words.70" />
+    <None Include="Crawlers\words\american-words.80" />
+    <None Include="Crawlers\words\american-words.95" />
+    <None Include="Crawlers\words\british-abbreviations.70" />
+    <None Include="Crawlers\words\british-abbreviations.80" />
+    <None Include="Crawlers\words\british-abbreviations.95" />
+    <None Include="Crawlers\words\british-proper-names.80" />
+    <None Include="Crawlers\words\british-proper-names.95" />
+    <None Include="Crawlers\words\british-upper.50" />
+    <None Include="Crawlers\words\british-upper.60" />
+    <None Include="Crawlers\words\british-upper.70" />
+    <None Include="Crawlers\words\british-upper.80" />
+    <None Include="Crawlers\words\british-upper.95" />
+    <None Include="Crawlers\words\british-words.10" />
+    <None Include="Crawlers\words\british-words.20" />
+    <None Include="Crawlers\words\british-words.35" />
+    <None Include="Crawlers\words\british-words.40" />
+    <None Include="Crawlers\words\british-words.50" />
+    <None Include="Crawlers\words\british-words.55" />
+    <None Include="Crawlers\words\british-words.60" />
+    <None Include="Crawlers\words\british-words.70" />
+    <None Include="Crawlers\words\british-words.80" />
+    <None Include="Crawlers\words\british-words.95" />
+    <None Include="Crawlers\words\british_variant_0-contractions.50" />
+    <None Include="Crawlers\words\british_variant_0-proper-names.35" />
+    <None Include="Crawlers\words\british_variant_0-upper.35" />
+    <None Include="Crawlers\words\british_variant_0-upper.40" />
+    <None Include="Crawlers\words\british_variant_0-upper.50" />
+    <None Include="Crawlers\words\british_variant_0-upper.60" />
+    <None Include="Crawlers\words\british_variant_0-upper.70" />
+    <None Include="Crawlers\words\british_variant_0-upper.80" />
+    <None Include="Crawlers\words\british_variant_0-upper.95" />
+    <None Include="Crawlers\words\british_variant_0-words.10" />
+    <None Include="Crawlers\words\british_variant_0-words.20" />
+    <None Include="Crawlers\words\british_variant_0-words.35" />
+    <None Include="Crawlers\words\british_variant_0-words.40" />
+    <None Include="Crawlers\words\british_variant_0-words.50" />
+    <None Include="Crawlers\words\british_variant_0-words.55" />
+    <None Include="Crawlers\words\british_variant_0-words.60" />
+    <None Include="Crawlers\words\british_variant_0-words.70" />
+    <None Include="Crawlers\words\british_variant_0-words.80" />
+    <None Include="Crawlers\words\british_variant_0-words.95" />
+    <None Include="Crawlers\words\british_variant_1-abbreviations.70" />
+    <None Include="Crawlers\words\british_variant_1-contractions.50" />
+    <None Include="Crawlers\words\british_variant_1-contractions.60" />
+    <None Include="Crawlers\words\british_variant_1-contractions.70" />
+    <None Include="Crawlers\words\british_variant_1-upper.35" />
+    <None Include="Crawlers\words\british_variant_1-upper.40" />
+    <None Include="Crawlers\words\british_variant_1-upper.50" />
+    <None Include="Crawlers\words\british_variant_1-upper.60" />
+    <None Include="Crawlers\words\british_variant_1-upper.70" />
+    <None Include="Crawlers\words\british_variant_1-upper.80" />
+    <None Include="Crawlers\words\british_variant_1-upper.95" />
+    <None Include="Crawlers\words\british_variant_1-words.10" />
+    <None Include="Crawlers\words\british_variant_1-words.20" />
+    <None Include="Crawlers\words\british_variant_1-words.35" />
+    <None Include="Crawlers\words\british_variant_1-words.40" />
+    <None Include="Crawlers\words\british_variant_1-words.50" />
+    <None Include="Crawlers\words\british_variant_1-words.55" />
+    <None Include="Crawlers\words\british_variant_1-words.60" />
+    <None Include="Crawlers\words\british_variant_1-words.70" />
+    <None Include="Crawlers\words\british_variant_1-words.80" />
+    <None Include="Crawlers\words\british_variant_1-words.95" />
+    <None Include="Crawlers\words\british_z-abbreviations.70" />
+    <None Include="Crawlers\words\british_z-abbreviations.80" />
+    <None Include="Crawlers\words\british_z-abbreviations.95" />
+    <None Include="Crawlers\words\british_z-proper-names.80" />
+    <None Include="Crawlers\words\british_z-proper-names.95" />
+    <None Include="Crawlers\words\british_z-upper.50" />
+    <None Include="Crawlers\words\british_z-upper.60" />
+    <None Include="Crawlers\words\british_z-upper.70" />
+    <None Include="Crawlers\words\british_z-upper.80" />
+    <None Include="Crawlers\words\british_z-upper.95" />
+    <None Include="Crawlers\words\british_z-words.10" />
+    <None Include="Crawlers\words\british_z-words.20" />
+    <None Include="Crawlers\words\british_z-words.35" />
+    <None Include="Crawlers\words\british_z-words.40" />
+    <None Include="Crawlers\words\british_z-words.50" />
+    <None Include="Crawlers\words\british_z-words.55" />
+    <None Include="Crawlers\words\british_z-words.60" />
+    <None Include="Crawlers\words\british_z-words.70" />
+    <None Include="Crawlers\words\british_z-words.80" />
+    <None Include="Crawlers\words\british_z-words.95" />
+    <None Include="Crawlers\words\canadian-abbreviations.70" />
+    <None Include="Crawlers\words\canadian-abbreviations.80" />
+    <None Include="Crawlers\words\canadian-abbreviations.95" />
+    <None Include="Crawlers\words\canadian-proper-names.80" />
+    <None Include="Crawlers\words\canadian-proper-names.95" />
+    <None Include="Crawlers\words\canadian-upper.50" />
+    <None Include="Crawlers\words\canadian-upper.60" />
+    <None Include="Crawlers\words\canadian-upper.70" />
+    <None Include="Crawlers\words\canadian-upper.80" />
+    <None Include="Crawlers\words\canadian-upper.95" />
+    <None Include="Crawlers\words\canadian-words.10" />
+    <None Include="Crawlers\words\canadian-words.20" />
+    <None Include="Crawlers\words\canadian-words.35" />
+    <None Include="Crawlers\words\canadian-words.40" />
+    <None Include="Crawlers\words\canadian-words.50" />
+    <None Include="Crawlers\words\canadian-words.55" />
+    <None Include="Crawlers\words\canadian-words.60" />
+    <None Include="Crawlers\words\canadian-words.70" />
+    <None Include="Crawlers\words\canadian-words.80" />
+    <None Include="Crawlers\words\canadian-words.95" />
+    <None Include="Crawlers\words\canadian_variant_0-contractions.50" />
+    <None Include="Crawlers\words\canadian_variant_0-proper-names.35" />
+    <None Include="Crawlers\words\canadian_variant_0-upper.35" />
+    <None Include="Crawlers\words\canadian_variant_0-upper.40" />
+    <None Include="Crawlers\words\canadian_variant_0-upper.50" />
+    <None Include="Crawlers\words\canadian_variant_0-upper.60" />
+    <None Include="Crawlers\words\canadian_variant_0-upper.70" />
+    <None Include="Crawlers\words\canadian_variant_0-upper.80" />
+    <None Include="Crawlers\words\canadian_variant_0-upper.95" />
+    <None Include="Crawlers\words\canadian_variant_0-words.10" />
+    <None Include="Crawlers\words\canadian_variant_0-words.20" />
+    <None Include="Crawlers\words\canadian_variant_0-words.35" />
+    <None Include="Crawlers\words\canadian_variant_0-words.40" />
+    <None Include="Crawlers\words\canadian_variant_0-words.50" />
+    <None Include="Crawlers\words\canadian_variant_0-words.55" />
+    <None Include="Crawlers\words\canadian_variant_0-words.60" />
+    <None Include="Crawlers\words\canadian_variant_0-words.70" />
+    <None Include="Crawlers\words\canadian_variant_0-words.80" />
+    <None Include="Crawlers\words\canadian_variant_0-words.95" />
+    <None Include="Crawlers\words\canadian_variant_1-abbreviations.70" />
+    <None Include="Crawlers\words\canadian_variant_1-contractions.50" />
+    <None Include="Crawlers\words\canadian_variant_1-contractions.60" />
+    <None Include="Crawlers\words\canadian_variant_1-contractions.70" />
+    <None Include="Crawlers\words\canadian_variant_1-upper.35" />
+    <None Include="Crawlers\words\canadian_variant_1-upper.40" />
+    <None Include="Crawlers\words\canadian_variant_1-upper.50" />
+    <None Include="Crawlers\words\canadian_variant_1-upper.60" />
+    <None Include="Crawlers\words\canadian_variant_1-upper.70" />
+    <None Include="Crawlers\words\canadian_variant_1-upper.80" />
+    <None Include="Crawlers\words\canadian_variant_1-upper.95" />
+    <None Include="Crawlers\words\canadian_variant_1-words.10" />
+    <None Include="Crawlers\words\canadian_variant_1-words.20" />
+    <None Include="Crawlers\words\canadian_variant_1-words.35" />
+    <None Include="Crawlers\words\canadian_variant_1-words.40" />
+    <None Include="Crawlers\words\canadian_variant_1-words.50" />
+    <None Include="Crawlers\words\canadian_variant_1-words.55" />
+    <None Include="Crawlers\words\canadian_variant_1-words.60" />
+    <None Include="Crawlers\words\canadian_variant_1-words.70" />
+    <None Include="Crawlers\words\canadian_variant_1-words.80" />
+    <None Include="Crawlers\words\canadian_variant_1-words.95" />
+    <None Include="Crawlers\words\english-abbreviations.10" />
+    <None Include="Crawlers\words\english-abbreviations.20" />
+    <None Include="Crawlers\words\english-abbreviations.35" />
+    <None Include="Crawlers\words\english-abbreviations.40" />
+    <None Include="Crawlers\words\english-abbreviations.50" />
+    <None Include="Crawlers\words\english-abbreviations.55" />
+    <None Include="Crawlers\words\english-abbreviations.60" />
+    <None Include="Crawlers\words\english-abbreviations.70" />
+    <None Include="Crawlers\words\english-abbreviations.80" />
+    <None Include="Crawlers\words\english-abbreviations.95" />
+    <None Include="Crawlers\words\english-contractions.10" />
+    <None Include="Crawlers\words\english-contractions.35" />
+    <None Include="Crawlers\words\english-contractions.40" />
+    <None Include="Crawlers\words\english-contractions.50" />
+    <None Include="Crawlers\words\english-contractions.60" />
+    <None Include="Crawlers\words\english-contractions.70" />
+    <None Include="Crawlers\words\english-contractions.80" />
+    <None Include="Crawlers\words\english-contractions.95" />
+    <None Include="Crawlers\words\english-proper-names.35" />
+    <None Include="Crawlers\words\english-proper-names.40" />
+    <None Include="Crawlers\words\english-proper-names.50" />
+    <None Include="Crawlers\words\english-proper-names.60" />
+    <None Include="Crawlers\words\english-proper-names.70" />
+    <None Include="Crawlers\words\english-proper-names.80" />
+    <None Include="Crawlers\words\english-proper-names.95" />
+    <None Include="Crawlers\words\english-upper.10" />
+    <None Include="Crawlers\words\english-upper.35" />
+    <None Include="Crawlers\words\english-upper.40" />
+    <None Include="Crawlers\words\english-upper.50" />
+    <None Include="Crawlers\words\english-upper.60" />
+    <None Include="Crawlers\words\english-upper.70" />
+    <None Include="Crawlers\words\english-upper.80" />
+    <None Include="Crawlers\words\english-upper.95" />
+    <None Include="Crawlers\words\english-words.10" />
+    <None Include="Crawlers\words\english-words.20" />
+    <None Include="Crawlers\words\english-words.35" />
+    <None Include="Crawlers\words\english-words.40" />
+    <None Include="Crawlers\words\english-words.50" />
+    <None Include="Crawlers\words\english-words.55" />
+    <None Include="Crawlers\words\english-words.60" />
+    <None Include="Crawlers\words\english-words.70" />
+    <None Include="Crawlers\words\english-words.80" />
+    <None Include="Crawlers\words\english-words.95" />
+    <None Include="Crawlers\words\special-hacker.50" />
+    <None Include="Crawlers\words\special-roman-numerals.35" />
+    <None Include="Crawlers\words\variant_0-contractions.50" />
+    <None Include="Crawlers\words\variant_0-proper-names.35" />
+    <None Include="Crawlers\words\variant_0-upper.35" />
+    <None Include="Crawlers\words\variant_0-upper.40" />
+    <None Include="Crawlers\words\variant_0-upper.50" />
+    <None Include="Crawlers\words\variant_0-upper.60" />
+    <None Include="Crawlers\words\variant_0-upper.70" />
+    <None Include="Crawlers\words\variant_0-upper.80" />
+    <None Include="Crawlers\words\variant_0-upper.95" />
+    <None Include="Crawlers\words\variant_0-words.10" />
+    <None Include="Crawlers\words\variant_0-words.20" />
+    <None Include="Crawlers\words\variant_0-words.35" />
+    <None Include="Crawlers\words\variant_0-words.40" />
+    <None Include="Crawlers\words\variant_0-words.50" />
+    <None Include="Crawlers\words\variant_0-words.55" />
+    <None Include="Crawlers\words\variant_0-words.60" />
+    <None Include="Crawlers\words\variant_0-words.70" />
+    <None Include="Crawlers\words\variant_0-words.80" />
+    <None Include="Crawlers\words\variant_0-words.95" />
+    <None Include="Crawlers\words\variant_1-abbreviations.70" />
+    <None Include="Crawlers\words\variant_1-contractions.50" />
+    <None Include="Crawlers\words\variant_1-contractions.60" />
+    <None Include="Crawlers\words\variant_1-contractions.70" />
+    <None Include="Crawlers\words\variant_1-upper.35" />
+    <None Include="Crawlers\words\variant_1-upper.40" />
+    <None Include="Crawlers\words\variant_1-upper.50" />
+    <None Include="Crawlers\words\variant_1-upper.60" />
+    <None Include="Crawlers\words\variant_1-upper.70" />
+    <None Include="Crawlers\words\variant_1-upper.80" />
+    <None Include="Crawlers\words\variant_1-upper.95" />
+    <None Include="Crawlers\words\variant_1-words.10" />
+    <None Include="Crawlers\words\variant_1-words.20" />
+    <None Include="Crawlers\words\variant_1-words.35" />
+    <None Include="Crawlers\words\variant_1-words.40" />
+    <None Include="Crawlers\words\variant_1-words.50" />
+    <None Include="Crawlers\words\variant_1-words.55" />
+    <None Include="Crawlers\words\variant_1-words.60" />
+    <None Include="Crawlers\words\variant_1-words.70" />
+    <None Include="Crawlers\words\variant_1-words.80" />
+    <None Include="Crawlers\words\variant_1-words.95" />
+    <None Include="Crawlers\words\variant_2-upper.40" />
+    <None Include="Crawlers\words\variant_2-upper.95" />
+    <None Include="Crawlers\words\variant_2-words.10" />
+    <None Include="Crawlers\words\variant_2-words.20" />
+    <None Include="Crawlers\words\variant_2-words.35" />
+    <None Include="Crawlers\words\variant_2-words.40" />
+    <None Include="Crawlers\words\variant_2-words.50" />
+    <None Include="Crawlers\words\variant_2-words.55" />
+    <None Include="Crawlers\words\variant_2-words.60" />
+    <None Include="Crawlers\words\variant_2-words.70" />
+    <None Include="Crawlers\words\variant_2-words.80" />
+    <None Include="Crawlers\words\variant_2-words.95" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Brevitee.Data\Brevitee.Data.csproj">
+      <Project>{3b52b739-58fd-4b49-b815-6b317e701520}</Project>
+      <Name>Brevitee.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Brevitee\Brevitee.csproj">
+      <Project>{8794c09d-d72c-420c-812f-bfda251b64c9}</Project>
+      <Name>Brevitee</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

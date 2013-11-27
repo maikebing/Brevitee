@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>KLGates.Core.CommandLine</name>
+    </assembly>
+    <members>
+        <member name="M:KLGates.Core.CommandLine.CommandLineInterface.Confirm">
+            <summary>
+            Prompts the user for [y]es or [n]o returning true for [y] and false for [n].
+            </summary>
+            <returns>boolean</returns>
+        </member>
+        <member name="M:KLGates.Core.CommandLine.CommandLineInterface.Confirm(System.String)">
+            <summary>
+            Prompts the user for [y]es or [n]o returning true for [y] and false for [n].
+            </summary>
+            <param name="message">Optional message for the user.</param>
+            <returns></returns>
+        </member>
+        <member name="M:KLGates.Core.CommandLine.CommandLineInterface.Confirm(System.String,KLGates.Core.CommandLine.ConsoleTextColor,System.Boolean)">
+            <summary>
+            Prompts the user for [y]es or [n]o returning true for [y] and false for [n].
+            </summary>
+            <param name="message">Optional message for the user.</param>
+            <param name="allowQuit">If true provides an additional [q]uit option which if selected
+            will call Environment.Exit(0).</param>
+            <returns>boolean</returns>
+        </member>
+        <member name="M:KLGates.Core.CommandLine.CommandLineInterface.Prompt(System.String,KLGates.Core.CommandLine.ConsoleTextColor)">
+            <summary>
+            Prompts the user for input.
+            </summary>
+            <param name="message">The message.</param>
+            <returns>string</returns>
+        </member>
+        <member name="M:KLGates.Core.CommandLine.CommandLineInterface.AddValidArgument(System.String,System.String)">
+            <summary>
+            Makes the specified name a valid command line argument.  Command line
+            arguments are assumed to be in the format /&lt;name&gt;:&lt;value&gt;.
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="M:KLGates.Core.CommandLine.CommandLineInterface.AddSwitches(System.Type)">
+            <summary>
+            Calls AddValidArgument for every ConsoleAction that has a 
+            CommandLineSwitch defined
+            </summary>
+            <param name="type"></param>
+        </member>
+        <member name="M:KLGates.Core.CommandLine.CommandLineInterface.AddValidArgument(System.String,System.Boolean,System.String,System.String)">
+            <summary>
+            Makes the specified name a valid command line argument.  Command line
+            arguments are assumed to be in the format /&lt;name&gt;:&lt;value&gt;.
+            </summary>
+            <param name="name">The name of the command line argument.</param>
+            <param name="allowNull">If true no value for the specified name is necessary.</param>
+        </member>
+        <member name="P:KLGates.Core.CommandLine.CommandLineInterface.Arguments">
+            <summary>
+            Represents arguments after parsing with a call to ParseArgs.  Arguments should be 
+            passed in on the command line in the format /&lt;name&gt;:&lt;value&gt;.
+            </summary>
+        </member>
+        <member name="E:KLGates.Core.CommandLine.CommandLineInterface.ArgsParsed">
+            <summary>
+            Event fired after command line arguments are parsed by a call to ParseArgs.
+            </summary>
+        </member>
+        <member name="E:KLGates.Core.CommandLine.CommandLineInterface.ArgsParsedError">
+            <summary>
+            Event fired after command line arguments are parsed by a call to ParseArgs
+            and there was an error.
+            </summary>
+        </member>
+        <member name="P:KLGates.Core.CommandLine.ConsoleAction.ValueExample">
+            <summary>
+            A string representing an example of a valid value, for example [filename]
+            </summary>
+        </member>
+        <member name="P:KLGates.Core.CommandLine.ConsoleInvokeableMethod.SwitchValue">
+            <summary>
+            Used to help build usage examples for /? 
+            </summary>
+        </member>
+        <member name="M:KLGates.Core.CommandLine.Extensions.Run(System.String)">
+            <summary>
+            Executes the current string on the command line
+            and returns the output.
+            </summary>
+            <param name="command">a valid command line</param>
+            <returns>ProcessOutput</returns>
+        </member>
+        <member name="T:KLGates.Core.CommandLine.ParsedArguments">
+            <summary>
+            Class used to parse command line arguments.  All arguments are 
+            assumed to be in the format /&lt;name&gt;:&lt;value&gt; or an ArgumentException will be thrown 
+            during parsing.
+            </summary>
+        </member>
+    </members>
+</doc>

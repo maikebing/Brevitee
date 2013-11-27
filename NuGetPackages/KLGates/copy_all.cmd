@@ -1,0 +1,11 @@
+@echo off
+call copy_KLGates.Core.Full.cmd 
+call copy_KLGates.Core.cmd 
+call copy_KLGates.Core.CommandLine.cmd 
+call copy_KLGates.Core.Data.cmd
+call copy_KLGates.Core.Incubation.cmd 
+call copy_KLGates.Core.Logging.cmd 
+call copy_KLGates.Core.Security.cmd 
+call copy_KLGates.Core.ServiceProxy.cmd 
+call copy_KLGates.Core.Testing.cmd 
+call copy_KLGates.Platform.Clients.cmd 

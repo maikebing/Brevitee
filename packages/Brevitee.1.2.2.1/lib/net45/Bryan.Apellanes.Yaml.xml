@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Bryan.Apellanes.Yaml</name>
+    </assembly>
+    <members>
+        <member name="M:Bryan.Apellanes.Yaml.ServiceProxySystemYaml.Register">
+            <summary>
+            Registers the rss file extension and the delegate used
+            to handle it.
+            </summary>
+        </member>
+    </members>
+</doc>

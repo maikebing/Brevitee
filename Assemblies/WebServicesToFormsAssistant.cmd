@@ -1,0 +1,1 @@
+copy c:\Assemblies\KLGates.WebServices\* "C:\T\fa\KL Gates Forms Assistant\Dev\KLGates.FormsAssistant.Test\EdwAssemblies\"

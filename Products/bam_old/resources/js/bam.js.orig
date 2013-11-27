@@ -1,0 +1,156 @@
+﻿/*
+
+* Copyright 2011, Bryan Apellanes
+* Available via the MIT or new BSD license.
+
+*/
+
+var bam = {};
+
+(function (b, $, dst) {
+    var appName = "";
+    b.setAppName = function (n) {
+        var m = n.match("/$");
+        if ((m === null || m === undefined) && !(n === null || n === undefined)) {
+            n = n + "/";
+        }
+        appName = n;
+    };
+
+    b.randomLetter = function(){
+        var chars = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+        return chars[Math.floor(Math.random() * 26)];
+    }
+
+    b.randomNumber = function(){
+        var nums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
+        return nums[Math.floor(Math.random() * 10)];
+    }
+
+    b.randomBool = function(){
+        return Math.random() > .5;
+    }
+
+    b.randomString = function(l){
+        var val = "";
+        for(var i = 0; i < l;i++){
+            if(b.randomBool()){
+                val += b.randomLetter();
+            }else{
+                val += b.randomLetter().toUpperCase();
+            }
+        }
+        return val;
+    }
+
+    b.toDate = function(s) {
+        return new Date(parseInt(s.substr(6)));
+    }
+
+    b.toLocal = function(s) {
+        return new Date(b.toDate(s).toLocaleString() + " UTC");
+    }
+
+    b.getAppRoot = function () {
+        return window.location.protocol + "//" + window.location.host + "/" + appName;
+    }  
+    
+    b.invoke = function (className, method, args, format, options) {
+        if (!$.isArray(args)) {
+            var a = [];
+            a.push(args);
+            args = a;
+        }
+        var strings = [],
+            orig = function () { }; // the original complete function if provided
+
+        for (var i = 0; i < args.length; i++) {
+            strings.push(JSON.stringify(args[i]));
+        }
+        var config = {
+                url: b.getAppRoot() + className + "/" + method + "." + format + "?wrapped=yes",
+                dataType: format,
+                data: JSON.stringify(strings),
+                global: false,
+                success: function () { },
+                error: function () { },
+                type: "POST",
+                contentType: "application/json; charset=utf-8"
+            };
+
+        $.extend(config, options);
+        if (typeof config.view === "string") {
+            var m = config.url.match("&$"),
+                a = (m !== null && m.toString() !== config.url) ? "&" : "";
+            config.url += a + "view=" + config.view;
+        }
+
+        function complete() {
+            if ($.isFunction(orig)) {
+                orig();
+            }
+        }
+
+        if ($.isFunction(config.complete)) {
+            orig = config.complete;
+        }
+        
+        config.complete = complete;
+        
+        return $.ajax(config);
+    }
+
+<<<<<<< HEAD
+    b.render = function (viewName, data) {
+
+    }
+
+    b.action = function (ctrlr, actn, data, options) {
+        // <summary>
+        // Posts the specified data as json to the 
+        // specified mvc action on the specified controller.
+        // </summary>
+        var config = {
+            url: b.getAppRoot() + ctrlr + "/" + actn,
+            dataType: "json",
+            data: JSON.stringify(data),
+            global: false,
+            success: function () { },
+            error: function () { },
+            type: "POST",
+            contentType: "application/json; charset=utf-8"
+        };
+
+        if ($.isFunction(options)) {
+            config.success = options;
+        } else {
+            $.extend(config, options);
+        }
+        if (config.update !== null && config.update !== undefined && config.update != "") {
+            var succ = config.success;
+            config.success = function (r) {
+                succ(r);
+                $(config.update).html(r);
+            };
+        }
+        $.ajax(config);
+=======
+    b.partial = function(viewName, data, selector){
+        dst.render("partial_" + viewName, data, function(e, r){
+            if(e){
+                throw e;
+            }else{
+                $(selector).html(r);
+            }
+        })
+>>>>>>> 620bd78ffb2e80a07ce0280aa59976c47c5fbb28
+    }
+
+    b.render = b.partial;
+
+    $(function(){
+        if(_ !== undefined && _.mixin !== undefined){
+            _.mixin(b);
+        }
+    })
+})(bam, jQuery, dust)

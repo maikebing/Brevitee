@@ -1,0 +1,20 @@
+﻿
+		// Xref       
+        public XrefDaoCollection<@Model.XrefTableName, @Model.ListTableName> @Model.ListTableName.Pluralize()
+        {
+            get
+            {
+				if(!this.ChildCollections.ContainsKey("@(Model.ParentTableName)_@(Model.XrefTableName)_@(Model.ListTableName)"))
+				{
+					SetChildren();
+				}
+
+				var xref = (XrefDaoCollection<@(Model.XrefTableName), @(Model.ListTableName)>)this.ChildCollections["@(Model.ParentTableName)_@(Model.XrefTableName)_@(Model.ListTableName)"];
+				if(!xref.Loaded)
+				{
+					xref.Load();
+				}
+
+				return xref;
+            }
+        }

@@ -1,0 +1,582 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Reflection;
+using System.Data;
+using System.Data.Common;
+using System.Data.Sql;
+using System.Data.SqlClient;
+using System.IO;
+using System.CodeDom.Compiler;
+
+using Bryan.Apellanes.CommandLine;
+using Bryan.Apellanes;
+using Bryan.Apellanes.Testing;
+using Bryan.Apellanes.Data;
+using Bryan.Apellanes.Data.Schema;
+using Bryan.Apellanes.Encryption;
+using Bryan.Apellanes.Yaml;
+using Bryan.Apellanes.Javascript;
+using Bryan.Apellanes.Configuration;
+
+using EcmaScript.NET;
+using EcmaScript.NET.Types.Cli;
+using EcmaScript.NET.Types;
+<<<<<<< HEAD
+using Bryan.Apellanes.Configuration;
+using Bryan.Apellanes.Data.Schema;
+=======
+>>>>>>> 552f82522a8f4b128b0465bb510acbaff1f04420
+
+//namespace bam
+//{   
+    [Serializable]
+    partial class bam : CommandLineTestInterface
+    {
+        static Dictionary<string, ConsoleInvokeableMethod> _actions;
+
+        static void Main(string[] args)
+        {
+            PreInit();            
+            Initialize(args);
+        }
+
+        public static void PreInit()
+        {
+            #region expand for PreInit help
+            // To accept custom command line arguments you may use            
+            /*
+             * AddValidArgument(string argumentName, bool allowNull)
+            */
+
+            // All arguments are assumed to be name value pairs in the format
+            // /name:value unless allowNull is true then only the name is necessary.
+
+            // to access arguments and values you may use the protected member
+            // arguments. Example:
+
+            /*
+             * arguments.Contains(argName); // returns true if the specified argument name was passed in on the command line
+             * arguments[argName]; // returns the specified value associated with the named argument
+             */
+
+            // the arguments protected member is not available in PreInit() (this method)
+            #endregion
+
+            AddValidArgument("root", "the root of the install, default is the current directory");
+           
+            string actionDescription = "specify one of: init, list, run, gen, pack, start or deploy";
+            AddValidArgument("a", actionDescription);
+            AddValidArgument("action", actionDescription);
+
+            string targetDesc = "specify the path to the target that will be acted on";
+            AddValidArgument("t", targetDesc);
+            AddValidArgument("target", targetDesc);
+
+            string nsDesc = "specify the namespace to compile models into";
+            AddValidArgument("ns", nsDesc);
+            AddValidArgument("namespace", nsDesc);
+
+            DefaultMethod = typeof(bam).GetMethod("RouteArguments");
+        }
+
+        public static void RouteArguments()
+        {
+            ReadActions();
+            string action = Arguments["a"];
+            action = action ?? Arguments["action"];
+            if (!string.IsNullOrEmpty(action) && _actions.ContainsKey(action))
+            {
+                _actions[action].Invoke();
+            }
+            else
+            {
+                RunAllTests(typeof(bam).Assembly);
+            }
+        }
+
+        protected static void ReadActions()
+        {
+            _actions = new Dictionary<string, ConsoleInvokeableMethod>();
+            bam provider = new bam();
+            provider.SetInputArgs(Arguments);
+            provider.SetRoot();
+
+            MethodInfo[] methods = typeof(bam).GetMethods();
+            foreach(MethodInfo method in methods)
+            {
+                ConsoleAction action = null;
+                if (method.HasCustomAttributeOfType<ConsoleAction>(out action))
+                {
+                    string info = action.Information;
+                    if (!string.IsNullOrEmpty(info))
+                    {
+                        string actionArg = info.DelimitSplit("/", ":")[0];
+                        if (!string.IsNullOrEmpty(actionArg))
+                        {
+                            _actions.Add(actionArg, new ConsoleInvokeableMethod(method, action, provider));
+                        }
+                    }
+                }
+            }
+        }
+
+        ParsedArguments _args;
+        private void SetInputArgs(ParsedArguments args)
+        {
+            _args = args;
+        }
+
+        private void SetRoot()
+        {
+            string root = DefaultConfiguration.GetAppSetting("Root", ".");
+            Root = Arguments.Contains("root") ? Arguments["root"] : root;
+            if (!Root.EndsWith("/"))
+            {
+                Root = string.Format("{0}/", Root);
+            }
+        }
+
+        string _root;
+        Fs _fs;
+        private Fs Fs
+        {
+            get
+            {
+                return _fs;
+            }
+        }
+
+        protected string Root
+        {
+            get
+            {
+                return _root;
+            }
+            set
+            {
+                _fs = new Fs(value);
+                _fs.DirectoryCreated += (p) =>
+                {
+                    OutFormat("Created directory {0}", ConsoleTextColor.Green, p);
+                };
+                _fs.DirectoryExists += (p) =>
+                {
+                    OutFormat("Directory already exists {0}", ConsoleTextColor.Yellow, p);
+                };
+
+                _root = value;
+            }
+        }
+
+        [ConsoleAction("/init:\t\t- Create default fs structures")]
+        public void Initialize()
+        {
+            /*
+             * ~/bin
+             * ~/content
+             * ~/controllers
+             * ~/scripts
+             * ~/models
+             *      /./db
+             * ~/views
+             */
+            CreateDirectory("~/bin");
+            CreateDirectory("~/content");
+            CreateDirectory("~/controllers");
+            CreateDirectory("~/scripts");
+            CreateDirectory("~/models");
+            CreateDirectory("~/models/yaml");
+            CreateDirectory("~/models/dao");
+            CreateDirectory("~/models/dao/dll");
+            CreateDirectory("~/views");
+
+            WriteSampleModel();            
+        }
+
+        private void WriteSampleModel()
+        {
+            Tbl personTable = new Tbl("Person");
+            personTable.Pk = new Col { Name = "id", Type = DataTypes.Long };
+            personTable.AddColumn("first");
+            personTable.AddColumn("last");
+
+            Tbl petTable = new Tbl("Pet");
+            petTable.Pk = new Col { Name = "id", Type = DataTypes.Long };
+            petTable.AddFk("Person", "personID");
+            petTable.AddColumn("name");
+
+            WriteFile("~/models/yaml/Person.yaml", personTable.ToYaml());
+            WriteFile("~/models/yaml/Pet.yaml", petTable.ToYaml());
+        }
+
+        [ConsoleAction("/list:<target:dirPath>\t\t- List the contents of a folder")]
+        public void ListFiles()
+        {
+            string dir = Arguments["t"];
+            if (string.IsNullOrEmpty(dir))
+            {
+                dir = Arguments["target"];
+            }
+
+            if (string.IsNullOrEmpty(dir))
+            {
+                Out("Target not specified, use /t:<path> or /target:<path>", ConsoleTextColor.Red);
+                Exit(1);
+            }
+
+            dir = GetAbsolutePath(dir);
+            DirectoryInfo dirInfo = new DirectoryInfo(dir);
+            foreach (DirectoryInfo info in dirInfo.GetDirectories())
+            {
+                Out(info.FullName, ConsoleTextColor.Blue);
+            }
+
+            foreach (FileInfo file in dirInfo.GetFiles())
+            {
+                Out(file.FullName, ConsoleTextColor.Cyan);
+            }
+        }
+
+        [ConsoleAction("/run:<target:scriptPath>\t\t- Run javascript")]
+        public void RunScript()
+        {
+            string path = GetTarget("Script file not specified");
+
+            path = GetAbsolutePath(path);
+            JsContext js = path.RunJavascriptFile(new CliProvider("fs", this.Fs));            
+        }
+
+        [ConsoleAction("/gen:<target:[m(odel) | v(iew) | v(iew)m(odel) | all]>\t\t- Generate files")]
+        public void Generate()
+        {
+            string target = GetTarget("Target not specified, use m(odel) | v(iew) | v(iew)m(odel) | all");
+            switch (target)
+            {
+                case "m":
+                    GenerateModels();
+                    break;
+                case "model":
+                    GenerateModels();
+                    break;
+                case "v":
+                    GenerateViews();
+                    break;
+                case "view":
+                    GenerateViews();
+                    break;
+                case "vm":
+                    GenerateViewModel();
+                    break;
+                case "viewmodel":
+                    GenerateViewModel();
+                    break;
+                case "all":
+                    GenerateModels();
+                    GenerateViews();
+                    GenerateViewModel();
+                    break;
+                default:
+                    GenerateModels();
+                    GenerateViews();
+                    GenerateViewModel();
+                    break;
+            }
+        }
+
+        private void GenerateModels()
+        {
+            // read the files in the ~/models/yaml folder
+            //      create SchemaDefinition 
+            SchemaDefinition schema = BuildSchemaFromYaml();
+
+            string nspace = GetArgVal("namespace", string.Format("_{0}.Models", typeof(bam).Name));
+
+            //      generate dao objects
+<<<<<<< HEAD
+            //      compile
+            //      copy dlls to ~/models/dao and ~/bin
+            DirectoryInfo modelDir = new DirectoryInfo(Fs.GetAbsolutePath("~/models/yaml"));
+            FileInfo schemaFile = new FileInfo(Fs.GetAbsolutePath("~/models/schema.json"));
+            SchemaDefinition schema = SchemaDefinition.Load(schemaFile.FullName);
+            
+            // use schemamanager here
+
+            FileInfo[] yamlFiles = modelDir.GetFiles("*.yaml");
+            int l = yamlFiles.Length;
+            for (int i = 0; i < l; i++)
+            {
+                FileInfo file = yamlFiles[i];
+                string yaml = "";
+                using (TextReader r = new StreamReader(file.FullName))
+=======
+            RazorBaseTemplate.DefaultInspector = (s) => { }; // turn off output to console
+            DaoGenerator generator = new DaoGenerator(nspace);            
+            generator.BeforeClassParse += (ns, t) =>
+            {
+                Out(string.Format("Generating code for {0}.{1}", ns, t.Name));
+            };
+
+            generator.GenerateComplete += (g, s) =>
+            {
+                DirectoryInfo dir = new DirectoryInfo(GetAbsolutePath("~/models/dao"));
+                string dllFile = string.Format("{0}.dll", nspace);
+                //      compile                
+                CompilerResults results = generator.Compile(dir, dllFile);
+                if (results.Errors.Count > 0)
+                {
+                    OutputCompilerErrors(results);
+                }
+                else
+                {
+                    OutFormat("Model assembly {0}", ConsoleTextColor.Green, results.CompiledAssembly.CodeBase);
+                    string assembly = results.CompiledAssembly.CodeBase.Replace("file:///", "");
+                    //      copy dlls to ~/models/dao and ~/bin
+                    File.Copy(assembly, GetAbsolutePath(string.Format("~/models/dao/dll/{0}", dllFile)), true);
+                    File.Move(assembly, GetAbsolutePath(string.Format("~/bin/{0}", dllFile)));
+                }
+            };
+
+            generator.Generate(schema, GetAbsolutePath("~/models/dao/gen/"));
+        }
+
+        private static void OutputCompilerErrors(CompilerResults results)
+        {
+            foreach (CompilerError error in results.Errors)
+            {
+                OutFormat("File=>{0}", ConsoleTextColor.Yellow, error.FileName);
+                OutFormat("Line {0}, Column {1}::{2}", error.Line, error.Column, error.ErrorText);
+                Out();
+            }
+        }
+
+        private SchemaDefinition BuildSchemaFromYaml()
+        {
+            DirectoryInfo yamlDir = new DirectoryInfo(GetAbsolutePath("~/models/yaml"));
+            SchemaDefinition schema = SchemaDefinition.Load(GetAbsolutePath("~/models/dao/schema.json"));
+            Providers.SetSessionProvider<SchemaDefinition>(schema);
+            SchemaManager dbm = new SchemaManager();
+
+            FileInfo[] yamlFiles = yamlDir.GetFiles("*.yaml");
+            int length = yamlFiles.Length;
+            Table[] tables = new Table[length];
+            Dictionary<Tbl, Table> keyDic = new Dictionary<Tbl, Table>();
+            for (int i = 0; i < length; i++)
+            {
+                string yaml = "";
+                FileInfo file = yamlFiles[i];
+                using (StreamReader r = new StreamReader(file.OpenRead()))
+>>>>>>> 552f82522a8f4b128b0465bb510acbaff1f04420
+                {
+                    yaml = r.ReadToEnd();
+                }
+
+<<<<<<< HEAD
+                //Table table = yaml.FromYaml<Table>();
+                //schema.AddTable(table.Name);
+            }
+            throw new NotImplementedException("This is not complete");
+=======
+                Tbl tbl = yaml.FromYaml<Tbl>();               
+                tables[i] = Convert(tbl, keyDic);
+            }
+            schema.Tables = tables;
+            foreach (Tbl tbl in keyDic.Keys)
+            {
+                foreach (Fk fk in tbl.Fks)
+                {
+                    dbm.AddColumn(tbl.Name, new Column { Name = fk.Name, AllowNull = fk.Empty, Type = DataTypes.Long });
+                    dbm.SetForeignKey(fk.Ref, tbl.Name, fk.Name);
+                }
+            }
+
+            return dbm.GetCurrentSchema();
+>>>>>>> 552f82522a8f4b128b0465bb510acbaff1f04420
+        }
+
+        private void GenerateViews()
+        {
+            // analyze dlls for dao classes
+            // use Fs.InputFor to generate default views   
+            DirectoryInfo daoFolder = new DirectoryInfo(GetAbsolutePath("~/models/dao/dll"));
+            FileInfo[] files = daoFolder.GetFiles("*.dll");
+            int ol = files.Length;
+            for (int i = 0; i < ol; i++)
+            {
+                FileInfo file = files[i];
+            
+                Assembly daoAssembly = Assembly.LoadFrom(file.FullName);
+                Type[] daoTypes = (from type in daoAssembly.GetTypes() 
+                                   where type.HasCustomAttributeOfType<Bryan.Apellanes.Data.TableAttribute>() 
+                                   select type).ToArray();
+
+                int il = daoTypes.Length;
+                for (int ii = 0; ii < il; ii++)
+                {
+                    Type daoType = daoTypes[ii];
+                    Type safeType =  daoType.CreateDynamicType<Bryan.Apellanes.Data.ColumnAttribute>();
+                    object instance = ConstructAndSetTemplateProperties(safeType);
+                    string htm = Fs.InputFor(safeType, instance);
+                    htm.SafeWriteToFile(GetAbsolutePath(string.Format("~/views/{0}.htm", daoType.Name)));
+                }
+            }            
+        }
+
+        private object ConstructAndSetTemplateProperties(Type type)
+        {
+            object o = type.Construct();
+            PropertyInfo[] properties = type.GetProperties();
+            foreach (PropertyInfo prop in properties)
+            {
+                if(prop.PropertyType == typeof(string))
+                {
+                    prop.SetValue(o, "{" + prop.Name + "}", null);
+                }                
+            }
+
+            return o;
+        }
+
+        private void GenerateViewModel()
+        {
+            throw new NotImplementedException("This is not complete");
+        }
+
+        [ConsoleAction("/pack:<zipPath> \t\t- Package the current bam app")]
+        public void Package()
+        {
+            throw new NotImplementedException("Package");
+        }
+
+        [ConsoleAction("/start:<portNumber> \t\t- Start the bam server on the specified port")]
+        public void StartServer()
+        {
+            throw new NotImplementedException("StartServer");
+        }
+
+        [ConsoleAction("/deploy:<hostname> \t\t- Deploy to the specified host")]
+        public void Deploy()
+        {
+            throw new NotImplementedException("Deploy");
+        }
+
+        #region helpers
+
+        private Table Convert(Tbl tbl, Dictionary<Tbl, Table> keyDic)
+        {
+            Table result = new Table(tbl.Name, tbl.Conx);
+            foreach (Col c in tbl.Cols)
+            {
+                result.AddColumn(c.Name, c.Type, c.Empty);
+            }
+
+            if (tbl.Pk != null)
+            {
+                Col pk = tbl.Pk;
+                result.AddColumn(pk.Name, pk.Type, pk.Empty);
+                result.SetKeyColumn(pk.Name);
+                keyDic.Add(tbl, result);
+            }
+
+            return result;
+        }
+
+        //private void SetForeignKeys(Dictionary<Tbl, Table> keyDic)
+        //{
+        //    foreach (Tbl tbl in keyDic.Keys)
+        //    {
+        //        ForeignKeyColumn[] fks = new ForeignKeyColumn[tbl.Fks.Length];
+        //        int length = fks.Length;
+        //        for (int i = 0; i < length; i++)
+        //        {
+        //            Fk fk = tbl.Fks[i];
+        //            fks[i] = Convert(tbl.Name, fk, keyDic[tbl].Key.Name);
+        //        }
+                
+        //        keyDic[tbl].ForeignKeys = fks;
+        //    }
+        //}
+
+        //private ForeignKeyColumn Convert(string tableName, Fk fk, string referencedKey)
+        //{
+        //    ForeignKeyColumn result = new ForeignKeyColumn(fk.Name, tableName, fk.Ref);
+        //    result.ReferencedKey = referencedKey;
+        //    return result;
+        //}
+
+        private void CreateDirectory(string directory)
+        {
+            Fs.CreateDirectory(directory);
+        }
+
+        private void WriteFile(string relativeFilePath, string text)
+        {
+            Fs.WriteFile(relativeFilePath, text);
+        }
+
+        private void AppendToFile(string relativeFilePath, string text)
+        {
+            Fs.AppendToFile(relativeFilePath, text);
+        }
+
+        private string GetAbsolutePath(string relativePath)
+        {
+            return Fs.GetAbsolutePath(relativePath);
+        }
+
+        private static string GetArgVal(string argName, string defaultVal = "", bool dieIfNotSpecified = false)
+        {
+            if (string.IsNullOrEmpty(argName))
+            {
+                throw new ArgumentNullException("argName");
+            }
+
+            string val = string.Empty;
+            string shortName = argName[0].ToString();
+            if (Arguments.Contains(argName))
+            {
+                val = Arguments[argName];
+            }
+            else if (Arguments.Contains(shortName))
+            {
+                val = Arguments[shortName];
+            }
+            else if (dieIfNotSpecified)
+            {
+                OutFormat("{0} wasn't specified", ConsoleTextColor.Red, argName);
+                Exit(1);
+            }
+
+            if (string.IsNullOrEmpty(val))
+            {
+                val = defaultVal;
+            }
+
+            return val;
+        }
+
+        private static string GetTarget(string missingMsg = "")
+        {
+            if (string.IsNullOrEmpty(missingMsg))
+            {
+                missingMsg = "target not specified";
+            }
+
+            if (!Arguments.Contains("/t") && Arguments.Contains("/target"))
+            {
+                Out(missingMsg, ConsoleTextColor.Red);
+                Exit(1);
+            }
+
+            string targ = Arguments["t"];
+            if (string.IsNullOrEmpty(targ))
+            {
+                targ = Arguments["target"];
+            }
+            return targ;
+        }
+        #endregion
+    }
+
+//}

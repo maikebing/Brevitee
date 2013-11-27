@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Brevitee.Full</id>
+    <version>3.0.0</version>
+    <title>Brevitee.Full</title>
+    <authors>KL Gates</authors>
+    <owners>KL Gates</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>KL Gates Apellanes Providers and Productivity Tools</description>
+    <releaseNotes />
+    <copyright>Copyright 2013</copyright>
+    <dependencies>
+      <dependency id="Argotic.Common" version="2008.0.2.0" />
+      <dependency id="Argotic.Apellanes" version="2008.0.2.0" />
+      <dependency id="Argotic.Extensions" version="2008.0.2.0" />
+      <dependency id="BoneSoft.CSS" version="1.0.0" />
+      <dependency id="System.Data.SQLite" version="1.0.84.0" />
+      <dependency id="CsQuery" version="1.3.4" />
+      <dependency id="dotless" version="1.3.1.0" />
+      <dependency id="DotNetZip" version="1.9.1.8" />
+      <dependency id="Microsoft.AspNet.Mvc" version="4.0.0.0" />
+      <dependency id="EcmaScript.Net" version="1.0.1.0" />
+      <dependency id="Newtonsoft.Json" version="4.5.11" />
+      <dependency id="YUICompressor.NET" version="2.2.0.0" />
+      <dependency id="YamlSerializer" version="1.0" />
+      <dependency id="WebActivatorEx" version="2.0.3" />
+      <dependency id="Brevitee" version="2.0.0.0" />
+      <dependency id="Brevitee.CommandLine" version="2.0.0.0" />
+      <dependency id="Brevitee.Data" version="2.0.0.0" />
+      <dependency id="Brevitee.Incubation" version="2.0.0.0" />
+      <dependency id="Brevitee.Logging" version="2.0.0.0" />
+      <dependency id="Brevitee.Security" version="2.0.0.0" />
+      <dependency id="Brevitee.ServiceProxy" version="2.0.0.0" />
+      <dependency id="Brevitee.Testing" version="2.0.0.0" />
+      <dependency id="Brevitee.Platform.Clients" version="2.0.0.0" />
+    </dependencies>
+  </metadata>
+</package>

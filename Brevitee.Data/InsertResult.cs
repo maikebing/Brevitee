@@ -1,0 +1,31 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Data;
+
+namespace Brevitee.Data
+{
+    public class InsertResult: QueryResult
+    {
+        public InsertResult(object instance)
+            : this(instance, "ID")
+        {
+        }
+
+        public InsertResult(object instance, string idAs)
+        {
+            this.Value = instance;
+            this.ColumnName = idAs;
+        }
+        
+        public object Value { get; set; }
+        public string ColumnName { get; private set; }
+
+        public override void SetDataTable(DataTable table)
+        {
+            DataTable = table;            
+            ((Dao)Value).IdValue = Convert.ToInt64(DataTable.Rows[0][0]);
+        }
+    }
+}

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6CD8FFB4-35CA-44AC-803D-CB9D4CB524A0}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Brevitee.Server</RootNamespace>
+    <AssemblyName>Brevitee.Server</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CsQuery">
+      <HintPath>..\packages\CsQuery.1.3.4\lib\net40\CsQuery.dll</HintPath>
+    </Reference>
+    <Reference Include="dotless.Core">
+      <HintPath>..\packages\dotless.1.3.1.0\lib\dotless.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.0.0\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Yahoo.Yui.Compressor">
+      <HintPath>..\packages\YUICompressor.NET.2.3.0.0\lib\NET20\Yahoo.Yui.Compressor.dll</HintPath>
+    </Reference>
+    <Reference Include="YamlSerializer">
+      <HintPath>..\packages\YamlSerializer.1.0\lib\Net35\YamlSerializer.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AppServer.cs" />
+    <Compile Include="ColorScheme.cs" />
+    <Compile Include="Conf.cs" />
+    <Compile Include="Content.cs" />
+    <Compile Include="Context.cs" />
+    <Compile Include="Css.cs" />
+    <Compile Include="Design.cs" />
+    <Compile Include="Execution.cs" />
+    <Compile Include="ExecutionRequest.cs" />
+    <Compile Include="ExecutionResult.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="Fs.cs" />
+    <Compile Include="FsEvent.cs" />
+    <Compile Include="HttpServer.cs" />
+    <Compile Include="IContext.cs" />
+    <Compile Include="Images.cs" />
+    <Compile Include="IRequest.cs" />
+    <Compile Include="IRequestHandler.cs" />
+    <Compile Include="IRequestRenderer.cs" />
+    <Compile Include="IResponder.cs" />
+    <Compile Include="IResponse.cs" />
+    <Compile Include="LinkModel.cs" />
+    <Compile Include="PageModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QueryStringArgs.cs" />
+    <Compile Include="RequestHandler.cs" />
+    <Compile Include="RequestWrapper.cs" />
+    <Compile Include="ResponderBase.cs" />
+    <Compile Include="ResponderEventHandler.cs" />
+    <Compile Include="ResponderList.cs" />
+    <Compile Include="ResponseWrapper.cs" />
+    <Compile Include="ResultBase.cs" />
+    <Compile Include="RoleRequired.cs" />
+    <Compile Include="Scripts.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Brevitee.Data.SQLite\Brevitee.Data.SQLite.csproj">
+      <Project>{42339dbf-9389-42f8-9d28-4c523caa7b01}</Project>
+      <Name>Brevitee.Data.SQLite</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Brevitee.Data\Brevitee.Data.csproj">
+      <Project>{3b52b739-58fd-4b49-b815-6b317e701520}</Project>
+      <Name>Brevitee.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Brevitee.Drawing\Brevitee.Drawing.csproj">
+      <Project>{1db5bac4-f6fd-48d7-a89a-228f41036b78}</Project>
+      <Name>Brevitee.Drawing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Brevitee.Dust\Brevitee.Dust.csproj">
+      <Project>{2a4347ab-3e15-4698-9020-722320307754}</Project>
+      <Name>Brevitee.Dust</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Brevitee.Html\Brevitee.Html.csproj">
+      <Project>{795d5552-94d6-4373-b4f1-551b1d5bdafb}</Project>
+      <Name>Brevitee.Html</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Brevitee.Incubation\Brevitee.Incubation.csproj">
+      <Project>{aa186331-a0d0-4f77-bea2-e7b7650d3ff5}</Project>
+      <Name>Brevitee.Incubation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Brevitee.Javascript\Brevitee.Javascript.csproj">
+      <Project>{34c5016d-5265-4394-a9ba-cb2f70d8e93b}</Project>
+      <Name>Brevitee.Javascript</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Brevitee.Logging\Brevitee.Logging.csproj">
+      <Project>{15e91407-00d6-4edf-b75c-bc817a75c8ad}</Project>
+      <Name>Brevitee.Logging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Brevitee.Yaml\Brevitee.Yaml.csproj">
+      <Project>{1c5258ec-7579-4032-94ec-b016bdc1b876}</Project>
+      <Name>Brevitee.Yaml</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Brevitee\Brevitee.csproj">
+      <Project>{8794c09d-d72c-420c-812f-bfda251b64c9}</Project>
+      <Name>Brevitee</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

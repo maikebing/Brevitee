@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{24F060EA-10C9-4E46-8B75-22A602461DC7}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Brevitee.Data.SQLite.Tests</RootNamespace>
+    <AssemblyName>Brevitee.Data.SQLite.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\Brevitee.Data.SQLite.Tests.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\Brevitee.Data.SQLite.Tests.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.SQLite, Version=1.0.84.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Assemblies\System.Data.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Data\Generated\AccessRequest.cs" />
+    <Compile Include="Data\Generated\AccessRequestCollection.cs" />
+    <Compile Include="Data\Generated\AccessRequestColumns.cs" />
+    <Compile Include="Data\Generated\Activity.cs" />
+    <Compile Include="Data\Generated\ActivityCollection.cs" />
+    <Compile Include="Data\Generated\ActivityColumns.cs" />
+    <Compile Include="Data\Generated\ActivityComment.cs" />
+    <Compile Include="Data\Generated\ActivityCommentCollection.cs" />
+    <Compile Include="Data\Generated\ActivityCommentColumns.cs" />
+    <Compile Include="Data\Generated\ActivitySystemComment.cs" />
+    <Compile Include="Data\Generated\ActivitySystemCommentCollection.cs" />
+    <Compile Include="Data\Generated\ActivitySystemCommentColumns.cs" />
+    <Compile Include="Data\Generated\Address.cs" />
+    <Compile Include="Data\Generated\AddressCollection.cs" />
+    <Compile Include="Data\Generated\AddressColumns.cs" />
+    <Compile Include="Data\Generated\AddressRequest.cs" />
+    <Compile Include="Data\Generated\AddressRequestCollection.cs" />
+    <Compile Include="Data\Generated\AddressRequestColumns.cs" />
+    <Compile Include="Data\Generated\AddressRequestComment.cs" />
+    <Compile Include="Data\Generated\AddressRequestCommentCollection.cs" />
+    <Compile Include="Data\Generated\AddressRequestCommentColumns.cs" />
+    <Compile Include="Data\Generated\Category.cs" />
+    <Compile Include="Data\Generated\CategoryCollection.cs" />
+    <Compile Include="Data\Generated\CategoryColumns.cs" />
+    <Compile Include="Data\Generated\CategoryTag.cs" />
+    <Compile Include="Data\Generated\CategoryTagCollection.cs" />
+    <Compile Include="Data\Generated\CategoryTagColumns.cs" />
+    <Compile Include="Data\Generated\Comment.cs" />
+    <Compile Include="Data\Generated\CommentCollection.cs" />
+    <Compile Include="Data\Generated\CommentColumns.cs" />
+    <Compile Include="Data\Generated\Give.cs" />
+    <Compile Include="Data\Generated\GiveCollection.cs" />
+    <Compile Include="Data\Generated\GiveColumns.cs" />
+    <Compile Include="Data\Generated\GiveStatus.cs" />
+    <Compile Include="Data\Generated\GiveStatusCollection.cs" />
+    <Compile Include="Data\Generated\GiveStatusColumns.cs" />
+    <Compile Include="Data\Generated\Have.cs" />
+    <Compile Include="Data\Generated\HaveCollection.cs" />
+    <Compile Include="Data\Generated\HaveColumns.cs" />
+    <Compile Include="Data\Generated\HaveDescription.cs" />
+    <Compile Include="Data\Generated\HaveDescriptionCollection.cs" />
+    <Compile Include="Data\Generated\HaveDescriptionColumns.cs" />
+    <Compile Include="Data\Generated\HaveStatus.cs" />
+    <Compile Include="Data\Generated\HaveStatusCollection.cs" />
+    <Compile Include="Data\Generated\HaveStatusColumns.cs" />
+    <Compile Include="Data\Generated\Invitation.cs" />
+    <Compile Include="Data\Generated\InvitationCollection.cs" />
+    <Compile Include="Data\Generated\InvitationColumns.cs" />
+    <Compile Include="Data\Generated\Item.cs" />
+    <Compile Include="Data\Generated\ItemCollection.cs" />
+    <Compile Include="Data\Generated\ItemColumns.cs" />
+    <Compile Include="Data\Generated\ItemData.cs" />
+    <Compile Include="Data\Generated\ItemDataCollection.cs" />
+    <Compile Include="Data\Generated\ItemDataColumns.cs" />
+    <Compile Include="Data\Generated\ItemProperty.cs" />
+    <Compile Include="Data\Generated\ItemPropertyCollection.cs" />
+    <Compile Include="Data\Generated\ItemPropertyColumns.cs" />
+    <Compile Include="Data\Generated\ItemReview.cs" />
+    <Compile Include="Data\Generated\ItemReviewCollection.cs" />
+    <Compile Include="Data\Generated\ItemReviewColumns.cs" />
+    <Compile Include="Data\Generated\ItemTag.cs" />
+    <Compile Include="Data\Generated\ItemTagCollection.cs" />
+    <Compile Include="Data\Generated\ItemTagColumns.cs" />
+    <Compile Include="Data\Generated\LastLogin.cs" />
+    <Compile Include="Data\Generated\LastLoginCollection.cs" />
+    <Compile Include="Data\Generated\LastLoginColumns.cs" />
+    <Compile Include="Data\Generated\Message.cs" />
+    <Compile Include="Data\Generated\MessageCollection.cs" />
+    <Compile Include="Data\Generated\MessageColumns.cs" />
+    <Compile Include="Data\Generated\Need.cs" />
+    <Compile Include="Data\Generated\NeedCollection.cs" />
+    <Compile Include="Data\Generated\NeedColumns.cs" />
+    <Compile Include="Data\Generated\NeedStatus.cs" />
+    <Compile Include="Data\Generated\NeedStatusCollection.cs" />
+    <Compile Include="Data\Generated\NeedStatusColumns.cs" />
+    <Compile Include="Data\Generated\Password.cs" />
+    <Compile Include="Data\Generated\PasswordCollection.cs" />
+    <Compile Include="Data\Generated\PasswordColumns.cs" />
+    <Compile Include="Data\Generated\PinboardPosting.cs" />
+    <Compile Include="Data\Generated\PinboardPostingCollection.cs" />
+    <Compile Include="Data\Generated\PinboardPostingColumns.cs" />
+    <Compile Include="Data\Generated\Qi\AccessRequest.cs" />
+    <Compile Include="Data\Generated\Qi\Activity.cs" />
+    <Compile Include="Data\Generated\Qi\ActivityComment.cs" />
+    <Compile Include="Data\Generated\Qi\ActivitySystemComment.cs" />
+    <Compile Include="Data\Generated\Qi\Address.cs" />
+    <Compile Include="Data\Generated\Qi\AddressRequest.cs" />
+    <Compile Include="Data\Generated\Qi\AddressRequestComment.cs" />
+    <Compile Include="Data\Generated\Qi\Category.cs" />
+    <Compile Include="Data\Generated\Qi\CategoryTag.cs" />
+    <Compile Include="Data\Generated\Qi\Comment.cs" />
+    <Compile Include="Data\Generated\Qi\Give.cs" />
+    <Compile Include="Data\Generated\Qi\GiveStatus.cs" />
+    <Compile Include="Data\Generated\Qi\Have.cs" />
+    <Compile Include="Data\Generated\Qi\HaveDescription.cs" />
+    <Compile Include="Data\Generated\Qi\HaveStatus.cs" />
+    <Compile Include="Data\Generated\Qi\Invitation.cs" />
+    <Compile Include="Data\Generated\Qi\Item.cs" />
+    <Compile Include="Data\Generated\Qi\ItemData.cs" />
+    <Compile Include="Data\Generated\Qi\ItemProperty.cs" />
+    <Compile Include="Data\Generated\Qi\ItemReview.cs" />
+    <Compile Include="Data\Generated\Qi\ItemTag.cs" />
+    <Compile Include="Data\Generated\Qi\LastLogin.cs" />
+    <Compile Include="Data\Generated\Qi\Message.cs" />
+    <Compile Include="Data\Generated\Qi\Need.cs" />
+    <Compile Include="Data\Generated\Qi\NeedStatus.cs" />
+    <Compile Include="Data\Generated\Qi\Password.cs" />
+    <Compile Include="Data\Generated\Qi\PinboardPosting.cs" />
+    <Compile Include="Data\Generated\Qi\Review.cs" />
+    <Compile Include="Data\Generated\Qi\ReviewComment.cs" />
+    <Compile Include="Data\Generated\Qi\RockPaperScissors.cs" />
+    <Compile Include="Data\Generated\Qi\Role.cs" />
+    <Compile Include="Data\Generated\Qi\Setting.cs" />
+    <Compile Include="Data\Generated\Qi\Tag.cs" />
+    <Compile Include="Data\Generated\Qi\User.cs" />
+    <Compile Include="Data\Generated\Qi\UserAddress.cs" />
+    <Compile Include="Data\Generated\Qi\UserData.cs" />
+    <Compile Include="Data\Generated\Qi\UserItemReview.cs" />
+    <Compile Include="Data\Generated\Qi\UserProperty.cs" />
+    <Compile Include="Data\Generated\Qi\UserReview.cs" />
+    <Compile Include="Data\Generated\Qi\UserRole.cs" />
+    <Compile Include="Data\Generated\Qi\UserSetting.cs" />
+    <Compile Include="Data\Generated\Qi\UserTag.cs" />
+    <Compile Include="Data\Generated\Qi\Want.cs" />
+    <Compile Include="Data\Generated\Qi\WantStatus.cs" />
+    <Compile Include="Data\Generated\Qi\WantWishList.cs" />
+    <Compile Include="Data\Generated\Qi\WishList.cs" />
+    <Compile Include="Data\Generated\Review.cs" />
+    <Compile Include="Data\Generated\ReviewCollection.cs" />
+    <Compile Include="Data\Generated\ReviewColumns.cs" />
+    <Compile Include="Data\Generated\ReviewComment.cs" />
+    <Compile Include="Data\Generated\ReviewCommentCollection.cs" />
+    <Compile Include="Data\Generated\ReviewCommentColumns.cs" />
+    <Compile Include="Data\Generated\RockPaperScissors.cs" />
+    <Compile Include="Data\Generated\RockPaperScissorsCollection.cs" />
+    <Compile Include="Data\Generated\RockPaperScissorsColumns.cs" />
+    <Compile Include="Data\Generated\Role.cs" />
+    <Compile Include="Data\Generated\RoleCollection.cs" />
+    <Compile Include="Data\Generated\RoleColumns.cs" />
+    <Compile Include="Data\Generated\Setting.cs" />
+    <Compile Include="Data\Generated\SettingCollection.cs" />
+    <Compile Include="Data\Generated\SettingColumns.cs" />
+    <Compile Include="Data\Generated\Tag.cs" />
+    <Compile Include="Data\Generated\TagCollection.cs" />
+    <Compile Include="Data\Generated\TagColumns.cs" />
+    <Compile Include="Data\Generated\User.cs" />
+    <Compile Include="Data\Generated\UserAddress.cs" />
+    <Compile Include="Data\Generated\UserAddressCollection.cs" />
+    <Compile Include="Data\Generated\UserAddressColumns.cs" />
+    <Compile Include="Data\Generated\UserCollection.cs" />
+    <Compile Include="Data\Generated\UserColumns.cs" />
+    <Compile Include="Data\Generated\UserData.cs" />
+    <Compile Include="Data\Generated\UserDataCollection.cs" />
+    <Compile Include="Data\Generated\UserDataColumns.cs" />
+    <Compile Include="Data\Generated\UserItemReview.cs" />
+    <Compile Include="Data\Generated\UserItemReviewCollection.cs" />
+    <Compile Include="Data\Generated\UserItemReviewColumns.cs" />
+    <Compile Include="Data\Generated\UserProperty.cs" />
+    <Compile Include="Data\Generated\UserPropertyCollection.cs" />
+    <Compile Include="Data\Generated\UserPropertyColumns.cs" />
+    <Compile Include="Data\Generated\UserReview.cs" />
+    <Compile Include="Data\Generated\UserReviewCollection.cs" />
+    <Compile Include="Data\Generated\UserReviewColumns.cs" />
+    <Compile Include="Data\Generated\UserRole.cs" />
+    <Compile Include="Data\Generated\UserRoleCollection.cs" />
+    <Compile Include="Data\Generated\UserRoleColumns.cs" />
+    <Compile Include="Data\Generated\UserSetting.cs" />
+    <Compile Include="Data\Generated\UserSettingCollection.cs" />
+    <Compile Include="Data\Generated\UserSettingColumns.cs" />
+    <Compile Include="Data\Generated\UserTag.cs" />
+    <Compile Include="Data\Generated\UserTagCollection.cs" />
+    <Compile Include="Data\Generated\UserTagColumns.cs" />
+    <Compile Include="Data\Generated\Want.cs" />
+    <Compile Include="Data\Generated\WantCollection.cs" />
+    <Compile Include="Data\Generated\WantColumns.cs" />
+    <Compile Include="Data\Generated\WantStatus.cs" />
+    <Compile Include="Data\Generated\WantStatusCollection.cs" />
+    <Compile Include="Data\Generated\WantStatusColumns.cs" />
+    <Compile Include="Data\Generated\WantWishList.cs" />
+    <Compile Include="Data\Generated\WantWishListCollection.cs" />
+    <Compile Include="Data\Generated\WantWishListColumns.cs" />
+    <Compile Include="Data\Generated\WishList.cs" />
+    <Compile Include="Data\Generated\WishListCollection.cs" />
+    <Compile Include="Data\Generated\WishListColumns.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestProgram.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Brevitee.Data.MSSql\Brevitee.Data.MsSql.csproj">
+      <Project>{F373EAF9-B69C-4322-9659-A53A8FB7D43F}</Project>
+      <Name>Brevitee.Data.MsSql</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Brevitee.Data.Schema\Brevitee.Data.Schema.csproj">
+      <Project>{D2C2B1C0-1047-4211-92FC-37F332861161}</Project>
+      <Name>Brevitee.Data.Schema</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Brevitee.Data.SQLite\Brevitee.Data.SQLite.csproj">
+      <Project>{42339DBF-9389-42F8-9D28-4C523CAA7B01}</Project>
+      <Name>Brevitee.Data.SQLite</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Brevitee.Data\Brevitee.Data.csproj">
+      <Project>{3B52B739-58FD-4B49-B815-6B317E701520}</Project>
+      <Name>Brevitee.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Brevitee.Incubation\Brevitee.Incubation.csproj">
+      <Project>{AA186331-A0D0-4F77-BEA2-E7B7650D3FF5}</Project>
+      <Name>Brevitee.Incubation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Brevitee.ServiceProxy\Brevitee.ServiceProxy.csproj">
+      <Project>{8987d8c8-033b-4993-99f0-8dd5a4d6dd0d}</Project>
+      <Name>Brevitee.ServiceProxy</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Brevitee.Testing\Brevitee.Testing.csproj">
+      <Project>{85212881-C676-4B40-B311-37C2D1706042}</Project>
+      <Name>Brevitee.Testing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Brevitee\Brevitee.csproj">
+      <Project>{8794C09D-D72C-420C-812F-BFDA251B64C9}</Project>
+      <Name>Brevitee</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Brevitee.CommandLine\Brevitee.CommandLine.csproj">
+      <Project>{EA9863A9-8E0B-4497-B7FD-ABF450A3E468}</Project>
+      <Name>Brevitee.CommandLine</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

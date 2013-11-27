@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>KLGates.Platform.Clients</id>
+    <version>2.0.0.0</version>
+    <title>KLGates.Platform.Clients</title>
+    <authors>KL Gates</authors>
+    <owners>KL Gates</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>KL Gates platform clients</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright 2013</copyright>
+    <dependencies>
+      <dependency id="KLGates.Core" version="2.0.0.0" />
+      <dependency id="KLGates.Core.Security" version="2.0.0.0" />
+      <dependency id="KLGates.Core.ServiceProxy" version="2.0.0.0" />
+    </dependencies>
+  </metadata>
+</package>

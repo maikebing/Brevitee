@@ -1,0 +1,38 @@
+<configuration>
+	<appSettings>
+		<add key="ProxySearchPattern" value="*Servers.dll" />		
+		<add key="ApplicationName" value="SetAppNameInConfig" />
+		<add key="Roles" value="Admin, Users" />
+		<add key="EdwardServerUrl" value="http://devplatform.klgates.com" />
+		<add key="EdwServerUrl" value="http://devplatform.klgates.com" />
+	</appSettings>
+	<system.web>		
+		<httpModules>
+			<add name="EdwardRoleProvider" type="Bryan.Platform.EdwardRoleProvider, Bryan.Platform.Clients, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+		</httpModules>
+		<roleManager enabled="true" defaultProvider="EdwardRoleProvider">
+		  <providers>
+			<clear/>
+			<add name="EdwardRoleProvider" type="Bryan.Platform.EdwardRoleProvider, Bryan.Platform.Clients, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+		  </providers>
+		</roleManager>
+		<pages>
+			<namespaces>
+				<add namespace="Bryan.Apellanes" />
+				<add namespace="Bryan.Apellanes.Configuration" />
+				<add namespace="Bryan.Apellanes.Data" />
+				<add namespace="Bryan.Apellanes.Data.MsSql" />
+				<add namespace="Bryan.Apellanes.Dust" />
+				<add namespace="Bryan.Apellanes.ServiceProxy" />
+				<add namespace="Bryan.Apellanes.Html" />
+				<add namespace="Bryan.Apellanes.Incubation" />
+				<add namespace="Bryan.Apellanes.Logging" />
+			</namespaces>
+		</pages>
+	</system.web>
+	<system.webServer>
+		<modules runAllManagedModulesForAllRequests="true">
+		  <add name="EdwardRoleProvider" type="Bryan.Platform.EdwardRoleProvider, Bryan.Platform.Clients, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+		</modules>
+	</system.webServer>
+</configuration>

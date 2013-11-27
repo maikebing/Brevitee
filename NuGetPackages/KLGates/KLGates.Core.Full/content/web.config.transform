@@ -1,0 +1,38 @@
+<configuration>
+	<appSettings>
+		<add key="ProxySearchPattern" value="*Servers.dll" />		
+		<add key="ApplicationName" value="SetAppNameInConfig" />
+		<add key="Roles" value="Admin, Users" />
+		<add key="EdwardServerUrl" value="http://devplatform.klgates.com" />
+		<add key="EdwServerUrl" value="http://devplatform.klgates.com" />
+	</appSettings>
+	<system.web>		
+		<httpModules>
+			<add name="EdwardRoleProvider" type="KLGates.Platform.EdwardRoleProvider, KLGates.Platform.Clients, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+		</httpModules>
+		<roleManager enabled="true" defaultProvider="EdwardRoleProvider">
+		  <providers>
+			<clear/>
+			<add name="EdwardRoleProvider" type="KLGates.Platform.EdwardRoleProvider, KLGates.Platform.Clients, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+		  </providers>
+		</roleManager>
+		<pages>
+			<namespaces>
+				<add namespace="KLGates.Core" />
+				<add namespace="KLGates.Core.Configuration" />
+				<add namespace="KLGates.Core.Data" />
+				<add namespace="KLGates.Core.Data.MsSql" />
+				<add namespace="KLGates.Core.Dust" />
+				<add namespace="KLGates.Core.ServiceProxy" />
+				<add namespace="KLGates.Core.Html" />
+				<add namespace="KLGates.Core.Incubation" />
+				<add namespace="KLGates.Core.Logging" />
+			</namespaces>
+		</pages>
+	</system.web>
+	<system.webServer>
+		<modules runAllManagedModulesForAllRequests="true">
+		  <add name="EdwardRoleProvider" type="KLGates.Platform.EdwardRoleProvider, KLGates.Platform.Clients, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+		</modules>
+	</system.webServer>
+</configuration>

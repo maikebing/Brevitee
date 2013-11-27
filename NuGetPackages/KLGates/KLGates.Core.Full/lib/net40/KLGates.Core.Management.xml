@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>KLGates.Core.Management</name>
+    </assembly>
+    <members>
+        <member name="M:KLGates.Core.Management.Klg.Scripts(System.Web.Mvc.WebViewPage,System.String)">
+            <summary>
+            Gets script tags for all scripts pertaining to the specified appName.
+            </summary>
+            <param name="page"></param>
+            <param name="appName"></param>
+            <param name="reloadConfigScripts"></param>
+            <returns></returns>
+        </member>
+        <member name="M:KLGates.Core.Management.Klg.CommonConfigScripts(System.Web.Mvc.WebViewPage,System.Object)">
+            <summary>
+            Get script tags that reference the scripts listed in the /klg/apps/config.js file
+            </summary>
+            <param name="page"></param>
+            <param name="namedFormatValues"></param>
+            <returns></returns>
+        </member>
+        <member name="M:KLGates.Core.Management.Klg.AppConfigScripts(System.Web.Mvc.WebViewPage,System.Object)">
+            <summary>
+            Get script tags that reference the scripts listed in 
+            the /klg/apps/{appName}/config.js file.
+            </summary>
+            <param name="page"></param>
+            <param name="namedFormatValues"></param>
+            <returns></returns>
+        </member>
+        <member name="M:KLGates.Core.Management.Klg.AppScripts(System.Web.Mvc.WebViewPage,System.Object)">
+            <summary>
+            Get script tags that reference scripts in the pages folder
+            </summary>
+            <param name="page"></param>
+            <param name="namedFormatValues"></param>
+            <returns></returns>
+        </member>
+        <member name="M:KLGates.Core.Management.Klg.AppInitScript(System.Web.Mvc.WebViewPage,System.Object)">
+            <summary>
+            Get a script tag that references the /klg/apps/{appName}/init.js script
+            </summary>
+            <param name="page"></param>
+            <param name="namedFormatValues"></param>
+            <returns></returns>
+        </member>
+        <member name="M:KLGates.Core.Management.DesignController.LessBootstrapVariables(KLGates.Core.Management.ColorScheme)">
+            <summary>
+            Saves the specified ColorScheme to ~/klg/json/colorscheme.json and returns 
+            the updated contents of variables.less
+            </summary>
+            <param name="scheme"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

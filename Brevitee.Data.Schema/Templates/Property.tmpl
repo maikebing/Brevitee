@@ -1,0 +1,14 @@
+﻿	// property:@Model.PropertyName, columnName:@Model.Name	
+	[Bryan.Apellanes.Data.Column(Name="@Model.Name", ExtractedType="@Model.DbDataType", MaxLength="@Model.MaxLength", AllowNull=@Model.AllowNull.ToString().ToLower())]
+	public @(Model.NativeType) @Model.PropertyName
+	{
+		get
+		{
+			return Get@(Model.Type)Value("@Model.Name");
+		}
+		set
+		{
+			SetValue("@Model.Name", value);
+		}
+	}
+

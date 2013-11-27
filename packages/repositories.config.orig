@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<repositories>
+<<<<<<< HEAD
+  <repository path="..\Alsdobo\packages.config" />
+=======
+  <repository path="..\..\Bryan.Apellanes.MyWebDb\MyWebDb.Info.Tests\packages.config" />
+  <repository path="..\..\Bryan.Apellanes.MyWebDb\MyWebDb.Info\packages.config" />
+>>>>>>> 0632f19a4541f1882b773ae04e2a6936a511e4c2
+</repositories>

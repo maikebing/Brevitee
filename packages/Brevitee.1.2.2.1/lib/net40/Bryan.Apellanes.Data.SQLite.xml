@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Bryan.Apellanes.Data.SQLite</name>
+    </assembly>
+    <members>
+        <member name="T:Bryan.Apellanes.Data.SQLiteConnectionStringResolver">
+            <summary>
+            Resolves connection string requests to a sqlite database in the
+            directory specified by the Directory property.
+            </summary>
+        </member>
+        <member name="M:Bryan.Apellanes.Data.SQLiteConnectionStringResolver.Register">
+            <summary>
+            Register the default SQLiteConnectionStringResolver instance as 
+            a ConnectionStringResolver
+            </summary>
+        </member>
+        <member name="P:Bryan.Apellanes.Data.SQLiteConnectionStringResolver.Directory">
+            <summary>
+            The diretory to create the database in
+            </summary>
+        </member>
+        <member name="M:Bryan.Apellanes.Data.SQLiteRegistrar.Register(System.String)">
+            <summary>
+            Registers SQLite as the handler for the specified connection name.
+            This dao handler will register apropriate DatabaseInitializer and
+            ConnectionStringResolver.  This behavior is different compared to the
+            SqlClientRegistrar's Register method.
+            </summary>
+            <param name="connectionName"></param>
+        </member>
+    </members>
+</doc>

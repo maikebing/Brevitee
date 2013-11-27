@@ -1,0 +1,87 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+//using Brevitee.Data;
+using Brevitee.Incubation;
+using Brevitee;
+using Brevitee.Data;
+using Brevitee.Data;
+
+namespace Brevitee.Data
+{
+    public class SQLiteSqlStringBuilder: SchemaWriter
+    {
+        public SQLiteSqlStringBuilder()
+        {
+            KeyColumnFormat = "{0} PRIMARY KEY AUTOINCREMENT";
+        }
+
+        public static void Register(Incubator incubator)
+        {
+            incubator.Set<SqlStringBuilder>(new SQLiteSqlStringBuilder());
+
+            SQLiteSqlStringBuilder builder = new SQLiteSqlStringBuilder();
+            incubator.Set<SQLiteSqlStringBuilder>(builder);
+        }
+
+        protected override void WriteCreateTable(Type daoType)
+        {
+            ColumnAttribute[] columns = GetColumns(daoType);
+            ForeignKeyAttribute[] fks = GetForeignKeys(daoType);
+
+            Builder.AppendFormat("CREATE TABLE [{0}] ({1}{2}{3})\r\n",
+                daoType.GetCustomAttributeOfType<TableAttribute>().TableName,
+                columns.ToDelimited(c =>
+                {
+                    if (c is KeyColumnAttribute)
+                    {
+                        return string.Format(KeyColumnFormat, string.Format("{0} INTEGER", c.Name)); 
+                        //return string.Format(KeyColumnFormat, c.ToString());
+                    }
+                    else
+                    {
+                        return GetColumnDefinition(c);
+                    }
+                }),
+                fks.Length > 0 ? ",": "",
+                fks.ToDelimited(f =>
+                {
+                    return string.Format("FOREIGN KEY({0}) REFERENCES [{1}]({2})", f.Name, f.ReferencedTable, f.ReferencedKey);
+                }));
+        }
+
+        protected override void WriteForeignKeys(Type daoType)
+        {
+            // empty implementation 
+            // SQLite can't alter a table to add foreign keys
+        }
+
+        protected override void WriteDropForeignKeys(Type daoType)
+        {
+            // empty implementation
+            // SQLite drops Foreign keys implicitly when dropping tables
+        }
+
+        protected override void WriteDropTable(Type daoType)
+        {
+            TableAttribute attr = null;
+            if (daoType.HasCustomAttributeOfType<TableAttribute>(out attr))
+            {
+                Builder.AppendFormat("DROP TABLE IF EXISTS {0}\r\n", attr.TableName);
+                Go();
+            }
+        }
+
+        public override SqlStringBuilder Id(string idAs)
+        {
+            StringBuilder.AppendFormat("{0}SELECT last_insert_rowid() AS {1}", this.GoText, idAs);
+            return this;
+        }
+
+        public override string GetColumnDefinition(ColumnAttribute column)
+        {
+            return string.Format("\"{0}\" {1}{2}", column.Name, column.ExtractedType, column.AllowNull ? "" : " NOT NULL");
+        }
+    }
+}

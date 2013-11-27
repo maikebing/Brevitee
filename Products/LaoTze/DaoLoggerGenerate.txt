@@ -1,0 +1,1 @@
+﻿/f:daologger.jsdb /conn:DaoLogger /gen:E:\Source\GITRepositories\Bryan.Apellanes\Bryan.Apellanes.Logging /ns:Bryan.Apellanes.Logging.Dao

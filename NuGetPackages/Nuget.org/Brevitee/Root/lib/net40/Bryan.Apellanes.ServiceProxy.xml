@@ -1,0 +1,286 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Bryan.Apellanes.ServiceProxy</name>
+    </assembly>
+    <members>
+        <member name="T:Bryan.Apellanes.ServiceProxy.EchoData">
+            <summary>
+            This class exists for testing
+            </summary>
+        </member>
+        <member name="T:Bryan.Apellanes.ServiceProxy.Echo">
+            <summary>
+            Used specifically for testing ServiceProxy calls
+            </summary>
+        </member>
+        <member name="M:Bryan.Apellanes.ServiceProxy.ServiceProxyClient.TranslateParameter(System.Object)">
+            <summary>
+            Convert the specified type into a string or a json string if
+            it is something other than a string or number (int, decimal, long)
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.ServiceProxy.ServiceProxyClient.GetFromJson``1(System.String)">
+            <summary>
+            Make a GET request to the specified path expecting json
+            and deserialize it as the specified generic type T
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="pathAndQuery"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.ServiceProxy.ServiceProxyClient.GetFromXml``1(System.String,System.Text.Encoding)">
+            <summary>
+            Make a GET request to the specified pathAndQuery expecting xml
+            and deserialize it as the specified generic type T
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="pathAndQuery"></param>
+            <param name="encoding"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.ServiceProxy.ServiceProxyClient.PostFromJson``1(System.String,System.String)">
+            <summary>
+            Post the specified postData to the specified pathAndQuery expecting
+            json and deserializing it as the specified generic type T
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="pathAndQuery"></param>
+            <param name="postData"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.ServiceProxy.ServiceProxyClient.PostFromXml``1(System.String,System.String)">
+            <summary>
+            Post the specified postData to the specified pathAndQuery expecting
+            json and deserializing it as the specified generic typ T
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="pathAndQuery"></param>
+            <param name="postData"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Bryan.Apellanes.ServiceProxy.ServiceProxyClient.BaseAddress">
+            <summary>
+            The BaseAddress to send requests to 
+            </summary>
+        </member>
+        <member name="T:Bryan.Apellanes.ServiceProxy.Js.FileExt">
+            <summary>
+            Place holder for resource Js file.
+            </summary>
+        </member>
+        <member name="M:Bryan.Apellanes.ServiceProxy.Js.ResourceScripts.LoadScripts(System.Type)">
+            <summary>
+            Loads all resource scripts in the namespace path of the specified type.
+            </summary>
+            <param name="type"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.ServiceProxy.ServiceProxyController.RegisterServiceProxyRequestDelegate(System.String,Bryan.Apellanes.ServiceProxy.ExecutionResultDelegate,System.Boolean)">
+            <summary>
+            Register the specified handler to handle the specified file extension.
+            </summary>
+            <param name="extension"></param>
+            <param name="handler"></param>
+            <param name="reset"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.ServiceProxy.ServiceProxyController.Register(System.Reflection.Assembly)">
+            <summary>
+            Register all the types found in the specified assembly to 
+            handle FileExt requests.
+            </summary>
+            <param name="assembly"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.ServiceProxy.ServiceProxyController.RegisterRoutes">
+            <summary>
+            Maps the ServiceProxy routes in the default Mvc RouteTable.
+            This should be called from Global before setting the default
+            action route.
+            </summary>
+        </member>
+        <member name="M:Bryan.Apellanes.ServiceProxy.ServiceProxyController.RegisterRoutes(System.Web.Routing.RouteCollection)">
+            <summary>
+            Maps the ServiceProxy routes in the specified RouteCollection.
+            This should be called from Global before setting the default
+            action route.
+            </summary>
+        </member>
+        <member name="M:Bryan.Apellanes.ServiceProxy.ServiceProxyController.JsProxies(System.Boolean)">
+            <summary>
+            The action to be referenced on the client to ensure all proxies
+            are registered on the current client page.
+            </summary>
+            <param name="min"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.ServiceProxy.ServiceProxyController.ServiceProxyJsResource(System.String,System.Boolean)">
+            <summary>
+            Get the resource script with the specified scriptName
+            </summary>
+            <param name="scriptName"></param>
+            <param name="min"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.ServiceProxy.ServiceProxyController.Post(System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            The action that is executed for all FileExt requests.  This method
+            returns an ActionResult based on the specified file extension.
+            </summary>
+            <param name="className"></param>
+            <param name="methodName"></param>
+            <param name="ext"></param>
+            <param name="jsonParams"></param>
+            <param name="view"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Bryan.Apellanes.ServiceProxy.ServiceProxyHelper">
+            <summary>
+            An empty extension entry point to extend ServiceProxyHelper
+            functionality
+            </summary>
+        </member>
+        <member name="T:Bryan.Apellanes.ServiceProxy.JsProxyResult">
+            <summary>
+            Used to render all registered javascript proxies to the client.
+            </summary>
+        </member>
+        <member name="M:Bryan.Apellanes.ServiceProxy.ServiceProxySystem.Initialize">
+            <summary>
+            Initialize the underlying FileExtSystem.
+            </summary>
+        </member>
+        <member name="M:Bryan.Apellanes.ServiceProxy.ServiceProxySystem.RegisterBinProviders">
+            <summary>
+            Analyzes all the files in the bin directory of the current app that match the
+            <see cref="P:Bryan.Apellanes.ServiceProxy.ServiceProxySystem.ProxySearchPattern"/> and registers each matching
+            class as services
+            </summary>
+        </member>
+        <member name="M:Bryan.Apellanes.ServiceProxy.ServiceProxySystem.RegisterTypesWithAttributeFrom``1(System.String)">
+            <summary>
+            Searches the specified folder for assemblies that contain types 
+            addorned with the specified attribute and registers each as
+            services
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="folderPath"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.ServiceProxy.ServiceProxySystem.RegisterTypesWithAttributeFrom``1(System.IO.DirectoryInfo)">
+            <summary>
+            Searches the specified folder for assemblies that contain types 
+            addorned with the specified attribute and registers each as
+            services
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="dir"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.ServiceProxy.ServiceProxySystem.RegisterTypesWithAttribute``1(System.Reflection.Assembly)">
+            <summary>
+            Registers the types from the specified assemblyToLoadFrom that are addorned with
+            the specified generic type attribute T
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="assemblyToLoadFrom"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.ServiceProxy.ServiceProxySystem.Register(System.Type)">
+            <summary>
+            Register the specified type as a ServiceProxy responder.
+            </summary>
+            <param name="type"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.ServiceProxy.ServiceProxySystem.Register``1">
+            <summary>
+            Register the speicified generic type T as a ServiceProxy responder.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Bryan.Apellanes.ServiceProxy.ServiceProxySystem.Register``1(``0)">
+            <summary>
+            Register the instance of T.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="instance"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.ServiceProxy.ServiceProxySystem.RegisterServiceProxyRequestDelegate(System.String,Bryan.Apellanes.ServiceProxy.ExecutionResultDelegate,System.Boolean)">
+            <summary>
+            Register the specified handler to handle the specified file extension.
+            </summary>
+            <param name="extension"></param>
+            <param name="handler"></param>
+            <param name="reset"></param>
+        </member>
+        <member name="P:Bryan.Apellanes.ServiceProxy.ServiceProxySystem.Current">
+            <summary>
+            Provides an extension point to add functionality to the ServiceProxySystem
+            </summary>
+        </member>
+        <member name="P:Bryan.Apellanes.ServiceProxy.ServiceProxySystem.ProxySearchPattern">
+            <summary>
+            The search pattern used to find assemblies that host
+            service proxies (classes addorned with the ProxyAttribute custom attribute).
+            This value is retrieved from the config file, the default is "*.dll" if none
+            is provided.
+            </summary>
+        </member>
+        <member name="P:Bryan.Apellanes.ServiceProxy.ServiceProxySystem.Incubator">
+            <summary>
+            Gets or sets the default Incubator instance used by the FileExt(ension) system.
+            </summary>
+        </member>
+        <member name="P:Bryan.Apellanes.ServiceProxy.ExecutionRequest.JsonParams">
+            <summary>
+            An array of strings stringified twice.  Parsing as Json will return an array of strings,
+            each string can be individually parsed into separate objects
+            </summary>
+        </member>
+        <member name="P:Bryan.Apellanes.ServiceProxy.ExecutionRequest.Result">
+            <summary>
+            The result of executing the request
+            </summary>
+        </member>
+        <member name="M:Bryan.Apellanes.ServiceProxy.UrlHelperExtensions.Script(System.Web.Mvc.UrlHelper,System.String,System.Boolean)">
+            <summary>
+            Create a script tag
+            </summary>
+            <param name="helper">The helper being extended</param>
+            <param name="scriptName">The value to be used by the src attribute of the script tag</param>
+            <param name="addMinIfDebugDisabled">If true .min will be inserted before the .js extension only
+            if debugging is disabled</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.ServiceProxy.UrlHelperExtensions.Proxy(System.Web.Mvc.UrlHelper,System.String,System.Boolean)">
+            <summary>
+            Register client side FileExt proxies for the specified className
+            </summary>
+            <param name="helper"></param>
+            <param name="className"></param>
+            <param name="min"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.ServiceProxy.UrlHelperExtensions.Proxies(System.Web.Mvc.UrlHelper,System.Boolean)">
+            <summary>
+            Register all FileExt proxies
+            </summary>
+            <param name="helper"></param>
+            <param name="min"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.ServiceProxy.UrlHelperExtensions.FileExt(System.Web.Mvc.UrlHelper)">
+            <summary>
+            Adds a reference to the FileExt.js script.  And registers all
+            proxies on the page.
+            </summary>
+            <param name="helper"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Bryan.Apellanes.ServiceProxy.ServiceProxyClient`1.ClassName">
+            <summary>
+            The name of the implementing class on the server.  If typeof(T)
+            is an interface as determined by typeof(T).IsInterface then it
+            is assumed that the classname equals typeof(T).Name.Substring(1)
+            which drops the first character of the name.
+            </summary>
+        </member>
+    </members>
+</doc>

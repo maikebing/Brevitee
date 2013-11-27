@@ -1,0 +1,7 @@
+<configuration>
+	<appSettings>		
+		<add key="ApplicationName" value="SetAppNameInConfig" />
+		<add key="EdwardServerUrl" value="http://devplatform.klgates.com" />
+		<add key="EdwServerUrl" value="http://devplatform.klgates.com" />
+	</appSettings>
+</configuration>

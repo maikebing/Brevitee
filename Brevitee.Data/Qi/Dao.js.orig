@@ -1,0 +1,178 @@
+﻿var dao = (function ($, _) {
+    function value(n, v, own) {
+        var listeners = [];
+
+        this.name = n;
+        this.value = v;
+        this.oldvalue = v;
+        this.owner = own;
+
+        this.get = function () {
+            return this.value;
+        }
+
+        this.set = function (v) {
+            this.oldvalue = this.value;
+            this.value = v;
+            if (listeners.length > 0 && this.oldvalue != this.value) {
+                for (var i = 0; i < listeners.length; i++) {
+                    listeners[i](this);
+                }
+            }
+        }
+
+        this.change = function (name, fn) {
+            if (_.isFunction(name) && _.isUndefined(fn)) {
+                fn = name;
+                name = this.name;
+            }
+            if (name == this.name) {
+                if (_.isFunction(fn)) {
+                    listeners.push(fn);
+                }
+            }
+        }
+    }
+
+    function observeArray(a) {
+        var result = [];
+        result.listeners = [];
+        result.toData = function () {
+            var dataArr = [];
+            _.each(this, function (d) {
+                dataArr.push(d.toData());
+            });
+            return dataArr;
+        }
+        result.toJson = function () {
+            return JSON.stringify(this.toData());
+        }
+
+        result.changeAny = function (name, fn) {
+            _.each(this, function (d) {
+                d.change(name, fn);
+            });
+        }
+
+        result.changeAt = function (i, p, fn) {
+            if (_.isUndefined(fn) && _.isFunction(p)) {
+                this[i].change(p);
+            } else {
+                this[i].change(p, fn);
+            }
+        }
+
+        if (!_.isArray(a)) {
+            result.push(observe(a));
+        } else {
+            _.each(a, function (o) {
+                result.push(observe(o));
+            });
+        }
+        return result;
+    }
+
+    function observe(o) {
+        if (_.isArray(o)) {
+            return observeArray(o);
+        }
+        var result = {};
+        result.listeners = [];
+        result.properties = [];
+        result.toData = function () {
+            var l = this.properties.length,
+                the = this,
+                result = {};
+
+            _.each(this.properties, function (prop) {
+                result[prop] = the[prop]();
+            });
+            return result;
+        }
+
+        result.toJson = function () {
+            return JSON.stringify(this.toData());
+        }
+
+        for (var prop in o) {
+            if (!_.isFunction(o[prop])) {
+                var setVal = o[prop];
+                function accessor(pName, val) {
+                    if (!_.isNull(val) && !_.isUndefined(val)) {
+                        this[pName].value.set(val);
+                    }
+                    return this[pName].value;
+                }
+
+                result[prop] = function (val) {
+                    var p = arguments.callee.value.name;
+                    return accessor.apply(result, [p, val]).value;
+                }
+
+                result[prop].value = new value(prop, setVal, result);
+
+                result[prop].toString = function () {
+                    return arguments.callee.value.value;
+                }
+
+                result.properties.push(prop);
+            }
+        }
+        result.change = function (pName, fn) {
+            if (_.isUndefined(fn) && _.isFunction(pName)) {
+                for (var i = 0; i < result.properties.length; i++) {
+                    var p = result.properties[i];
+                    result[p].value.change(p, pName); // pName is a function here
+                }
+            } else {
+                result[pName].value.change(pName, fn);
+            }
+        }
+        return result;
+    }
+
+    var r = {
+        value: value,
+        observe: observe,
+        observeArray: observeArray
+    }
+
+<<<<<<< HEAD:Bryan.Apellanes.Poco/Bryan.Apellanes.Data/Qi/Dao.js
+    if (!_.isUndefined(schema)) {
+=======
+    if (schema) {
+>>>>>>> 19ba5aa8b914a235dbdb759d38890a4b8419c6e8:Bryan.Apellanes.Poco/Bryan.Apellanes.Data/Qi/Dao.js
+        r.sdo = schema;
+    } else {
+        function missing() {
+            alert("schema.org.js is not included");
+        }
+        r.sdo = {
+            item: missing,
+            items: missing
+        };
+    }
+
+    r.getItem = r.sdo.item;
+    r.getItems = r.sdo.items;
+
+<<<<<<< HEAD:Bryan.Apellanes.Poco/Bryan.Apellanes.Data/Qi/Dao.js
+    if (!_isUndefined(qi)) {
+=======
+    if (qi) {
+>>>>>>> 19ba5aa8b914a235dbdb759d38890a4b8419c6e8:Bryan.Apellanes.Poco/Bryan.Apellanes.Data/Qi/Dao.js
+        r.qi = qi;
+    } else {
+        function missing() {
+            alert("qi.js is not loaded");
+        }
+        r.qi = {
+            from: missing,
+            where: missing
+        }
+    }
+
+    _.mixin(r);
+
+    return r;
+})(jQuery, _)

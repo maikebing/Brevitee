@@ -1,0 +1,20 @@
+﻿
+	[Exclude]	
+	public @(Model.ReferencingClass)Collection @(Model.ReferencingClass.Pluralize())By@(Model.Name)
+	{
+		get
+		{
+			if(!this.ChildCollections.ContainsKey("@(Model.TableName)_@(Model.Name)"))
+			{
+				SetChildren();
+			}
+
+			var c = (@(Model.ReferencingClass)Collection)this.ChildCollections["@(Model.TableName)_@(Model.Name)"];
+			if(!c.Loaded)
+			{
+				c.Load();
+			}
+			return c;
+		}
+	}
+	

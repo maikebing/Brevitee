@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Image Stream</title>
+</head>
+<body>
+    <div id="pageContent">
+        <h1 id="questionToUser"></h1>
+        <h2 id="errors" data-state="error"></h2>
+        <div data-state="initial">
+            <div id="imageSlides"
+                 data-plugin="slideshow"
+                 data-opts-next-button="#crawlersNextButton"
+                 data-opts-height="150"
+                 data-opts-loop="b:false"
+                 data-opts-viewable-count="2"
+                    >
+                <div itemscope="0">
+                    <span id="image0Ph">please wait...</span>
+                    <div style="display: table-cell; vertical-align: middle; text-align: center;">
+                        <img id="image0" src="" data-get="getUrl" data-set="setUrl" style="display:none; margin-bottom: 8px;" itemprop="Url" />
+                    
+                        <input type="hidden" itemprop="Id" />
+                        <div class="stars" data-plugin="raty" 
+                            data-opts='{"score": 2, "number": 10, "path": "/content/raty/img", "starOff": "star-off.png", "starOn": "star-on.png"}'>
+                    
+                        </div>
+                    </div>
+                    
+                </div>
+                <div itemscope="1">
+                    <span id="image1Ph">please wait...</span>
+                    <div>
+                        <img id="image1" src="" data-get="getUrl" style="display:none;" itemprop="Url" />
+                    </div>
+                    <input type="hidden" itemprop="Id" />
+                    <div class="stars" data-plugin="raty" 
+                        data-opts='{"score": 2, "number": 10, "path": "/content/raty/img", "starOff": "star-off.png", "starOn": "star-on.png"}'>
+                    
+                    </div>
+                </div>
+                <div itemscope="2">
+                    <span id="image2Ph">please wait...</span>
+                    <div>
+                        <img id="image2" src="" style="display:none;" itemprop="Url" />
+                    </div>
+                    <input type="hidden" itemprop="Id" />      
+                    <div class="stars" data-plugin="raty" 
+                        data-opts='{"score": 2, "number": 10, "path": "/content/raty/img", "starOff": "star-off.png", "starOn": "star-on.png"}'>
+                    
+                    </div>              
+                </div>
+                <div itemscope="3">
+                    <span id="image3Ph">please wait...</span>
+                    <img id="image3" data-get="getUrl" src="" style="display:none;" itemprop="Url" />
+                    <input type="hidden" itemprop="Id" />
+                    <div class="stars" data-plugin="raty" 
+                        data-opts='{"score": 2, "number": 10, "path": "/content/raty/img", "starOff": "star-off.png", "starOn": "star-on.png"}'>
+                    
+                    </div>
+                </div>
+            </div>
+        </div>
+        <span class="btn" id="crawlersNextButton">skip</span>
+        <script src="/bam/main/pages/imageStream.js" type="text/javascript"></script>
+        <style type="text/css">
+            [data-state]{
+                display: none;
+            }
+        </style>
+    </div>
+</body>
+</html>

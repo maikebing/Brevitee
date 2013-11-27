@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="package" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="package" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="metadata">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="id" type="xs:string" minOccurs="0" />
+              <xs:element name="version" type="xs:string" minOccurs="0" />
+              <xs:element name="authors" type="xs:string" minOccurs="0" />
+              <xs:element name="owners" type="xs:string" minOccurs="0" />
+              <xs:element name="licenseUrl" type="xs:string" minOccurs="0" />
+              <xs:element name="projectUrl" type="xs:string" minOccurs="0" />
+              <xs:element name="iconUrl" type="xs:string" minOccurs="0" />
+              <xs:element name="requireLicenseAcceptance" type="xs:string" minOccurs="0" />
+              <xs:element name="description" type="xs:string" minOccurs="0" />
+              <xs:element name="releaseNotes" type="xs:string" minOccurs="0" />
+              <xs:element name="copyright" type="xs:string" minOccurs="0" />
+              <xs:element name="tags" type="xs:string" minOccurs="0" />
+              <xs:element name="dependencies" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="dependency" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:attribute name="id" type="xs:string" />
+                        <xs:attribute name="version" type="xs:string" />
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

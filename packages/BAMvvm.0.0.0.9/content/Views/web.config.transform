@@ -1,0 +1,18 @@
+<configuration>
+	<system.web.webPages.razor>
+		<pages>
+			<namespaces>
+			    <add namespace="Bryan.Apellanes" />
+		        <add namespace="Bryan.Apellanes.Configuration" />
+		        <add namespace="Bryan.Apellanes.Data" />
+		        <add namespace="Bryan.Apellanes.Data.MsSql" />
+		        <add namespace="Bryan.Apellanes.Dust" />
+		        <add namespace="Bryan.Apellanes.ServiceProxy" />
+		        <add namespace="Bryan.Apellanes.Html" />
+		        <add namespace="Bryan.Apellanes.Incubation" />
+		        <add namespace="Bryan.Apellanes.Logging" />
+		        <add namespace="Bryan.Apellanes.Management" />
+			</namespaces>
+		</pages>
+	</system.web.webPages.razor>
+</configuration>

@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{6A28819B-190A-4B45-B5A6-B4DB26B1747A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Bryan.Apellanes.Facebook</RootNamespace>
+    <AssemblyName>Bryan.Apellanes.Facebook</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\Assemblies\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Helpers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.WebPages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="FacebookHelper.cs" />
+    <Compile Include="FbProfilePic.cs" />
+    <Compile Include="FbProfilePicSize.cs" />
+    <Compile Include="Friend.cs" />
+    <Compile Include="FriendsList.cs" />
+    <Compile Include="OgTags.cs" />
+    <Compile Include="Paging.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bryan.Apellanes.Hatagi\Bryan.Apellanes.Hatagi.Data\Bryan.Apellanes.Hatagi.Data.csproj">
+      <Project>{2EC35496-4FAC-48A0-8046-C571E209DE5E}</Project>
+      <Name>Bryan.Apellanes.Hatagi.Data</Name>
+<<<<<<< HEAD
+    </ProjectReference>
+    <ProjectReference Include="..\Bryan.Apellanes.Mvc.Poco\Bryan.Apellanes.Mvc.Poco.Data.Schema\Bryan.Apellanes.Mvc.Poco.Data.Schema.csproj">
+      <Project>{065C7C10-CFBB-45B1-A473-C00E32C4A158}</Project>
+      <Name>Bryan.Apellanes.Mvc.Poco.Data.Schema</Name>
+=======
+>>>>>>> 6faf7a78c8dfb2fbd14a1bcc8697b2c33e17d23c
+    </ProjectReference>
+    <ProjectReference Include="..\Bryan.Apellanes.Poco\Bryan.Apellanes.Data.Schema\Bryan.Apellanes.Data.Schema.csproj">
+      <Project>{D2C2B1C0-1047-4211-92FC-37F332861161}</Project>
+      <Name>Bryan.Apellanes.Data.Schema</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Bryan.Apellanes.Poco\Bryan.Apellanes.Data\Bryan.Apellanes.Data.csproj">
+      <Project>{3B52B739-58FD-4B49-B815-6B317E701520}</Project>
+      <Name>Bryan.Apellanes.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Bryan.Apellanes.Poco\Bryan.Apellanes.Html\Bryan.Apellanes.Html.csproj">
+      <Project>{795D5552-94D6-4373-B4F1-551B1D5BDAFB}</Project>
+      <Name>Bryan.Apellanes.Html</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Bryan.Apellanes.Poco\Bryan.Apellanes.OAuth\Bryan.Apellanes.OAuth.csproj">
+      <Project>{9FFA176A-469F-46A3-A95F-952428D1DB5B}</Project>
+      <Name>Bryan.Apellanes.OAuth</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Bryan.Apellanes.Poco\Bryan.Apellanes.Poco\Bryan.Apellanes.Poco.csproj">
+      <Project>{8987D8C8-033B-4993-99F0-8DD5A4D6DD0D}</Project>
+      <Name>Bryan.Apellanes.Poco</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Bryan.Apellanes\Bryan.Apellanes.csproj">
+      <Project>{8794C09D-D72C-420C-812F-BFDA251B64C9}</Project>
+      <Name>Bryan.Apellanes %28Bryan.Apellanes\Bryan.Apellanes%29</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

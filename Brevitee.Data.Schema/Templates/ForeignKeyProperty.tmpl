@@ -1,0 +1,35 @@
+﻿	// start @Model.PropertyName -> @Model.Name
+	[Bryan.Apellanes.Data.ForeignKey(
+        Table="@(Model.TableName)",
+		Name="@(Model.Name)", 
+		ExtractedType="@(Model.DbDataType)", 
+		MaxLength="@(Model.MaxLength)",
+		AllowNull=@(Model.AllowNull.ToString().ToLower()), 
+		ReferencedKey="@(Model.ReferencedKey)",
+		ReferencedTable="@(Model.ReferencedTable)",
+		Suffix="@(Model.ReferenceNameSuffix)")]
+	public @(Model.NativeType) @Model.PropertyName
+	{
+		get
+		{
+			return Get@(Model.Type)Value("@Model.Name");
+		}
+		set
+		{
+			SetValue("@Model.Name", value);
+		}
+	}
+
+	@(Model.ReferencedClass) _@(Model.ReferencedClass.CamelCase())Of@(Model.PropertyName);
+	public @(Model.ReferencedClass) @(Model.ReferencedClass)Of@(Model.PropertyName)
+	{
+		get
+		{
+			if(_@(Model.ReferencedClass.CamelCase())Of@(Model.PropertyName) == null)
+			{
+				_@(Model.ReferencedClass.CamelCase())Of@(Model.PropertyName) = @(Namespace).@(Model.ReferencedClass).OneWhere(f => f.@(Model.ReferencedKey) == this.@(Model.PropertyName));
+			}
+			return _@(Model.ReferencedClass.CamelCase())Of@(Model.PropertyName);
+		}
+	}
+	

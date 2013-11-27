@@ -1,0 +1,9 @@
+<fieldset data-type="object" itemscope="itemscope" itemtype="http://schema.org/Thing">
+  <legend>Blkd</legend>
+  <label class="label" for="_name">Name</label>
+  <input data-type="string" id="_name" itemprop="name" name="name" type="text" value="" />
+  <br />
+  <label class="label" for="_gb">Gb</label>
+  <input data-type="number" id="_gb" itemprop="gb" name="gb" type="number" value="" />
+  <br />
+</fieldset>

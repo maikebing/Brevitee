@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>KLGates.Core.Testing</id>
+    <version>2.0.4</version>
+    <title>KLGates.Core.Testing</title>
+    <authors>KL Gates</authors>
+    <owners>KL Gates</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>KL Gates Core Testing Tools</description>
+    <releaseNotes />
+    <copyright>Copyright 2013</copyright>
+    <dependencies>
+      <dependency id="KLGates.Core" version="2.0.0.0" />
+      <dependency id="KLGates.Core.CommandLine" version="2.0.0.0" />
+      <dependency id="KLGates.Core.Incubation" version="2.0.0.0" />
+    </dependencies>
+  </metadata>
+</package>

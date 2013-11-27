@@ -1,0 +1,1424 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Bryan.Apellanes</name>
+    </assembly>
+    <members>
+        <member name="M:Bryan.Apellanes.Configuration.DefaultConfiguration.SetAppSettings(System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Sets the NameValueCollection that configuration settings are retrieved from when 
+            using the DefaultConfiguration static class.  The default is ConfigurationManager.AppSettings;
+            </summary>
+            <param name="appSettings"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.Configuration.DefaultConfiguration.SetAppSettings(System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Sets the NameValueCollection that configuration settings are retrieved from when 
+            using the DefaultConfiguration static class.  The default is ConfigurationManager.AppSettings;
+            </summary>
+            <param name="appSettings"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.Configuration.DefaultConfiguration.SetAppSettings">
+            <summary>
+            Reset the inner appSettings to those provided by ConfigurationManager.AppSettings
+            </summary>
+        </member>
+        <member name="M:Bryan.Apellanes.Configuration.DefaultConfiguration.SetConnectionStrings(System.Configuration.ConnectionStringSettingsCollection)">
+            <summary>
+            Sets the ConnectionStringSettingsCollection that connection strings are retrieved from when 
+            using the DefaultConfiguration static class. The default is ConfigurationManager.ConnectionStrings.
+            </summary>
+            <param name="connectionStrings"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.Configuration.DefaultConfiguration.GetAppSetting(System.Type,System.String)">
+            <summary>
+            Get the property value for the specified type. If the value is not found 
+            an empty string will be returned.
+            </summary>
+            <param name="type">The Type to retrieve the property for</param>
+            <param name="property">The property to retrieve a value for</param>
+        </member>
+        <member name="M:Bryan.Apellanes.Configuration.DefaultConfiguration.GetAppSetting(System.String)">
+            <summary>
+            Get the value of the specified key. If the value is not found an empty string will be returned.
+            </summary>
+            <param name="key">The key name to return the value for.</param>
+        </member>
+        <member name="M:Bryan.Apellanes.Configuration.DefaultConfiguration.GetAppSetting(System.String,System.String)">
+            <summary>
+            Get the value of the specified key. If the value is not found 
+            the specified default value will be returned.
+            </summary>
+            <param name="key">The key name to return the value for.</param>
+            <param name="defaultValue">The value that will be returned if the 
+            specified key is not found.</param>
+        </member>
+        <member name="M:Bryan.Apellanes.Configuration.DefaultConfiguration.GetConnectionString(System.String)">
+            <summary>
+            Return the specified connection string from the default configuration file.
+            If the value is not found a blank entry with the specified name will 
+            be added to the configuration file and an empty string will be returned.
+            </summary>
+            <param name="name">The name of the connection string to retrieve</param>
+            <returns>string</returns>
+        </member>
+        <member name="M:Bryan.Apellanes.Configuration.DefaultConfiguration.GetConnectionString(System.String,System.String)">
+            <summary>
+            Return the specified connection string from the default configuration file.
+            If the value is not found the specified default value will be added to the
+            configuration file and that value will be returned.
+            </summary>
+            <param name="name">The name of the connection string to retrieve</param>
+            <param name="defaultValue">The value to return if the connection string
+            is not found in the configuration file.  This value will also be added to 
+            the configuration file.</param>
+            <returns>string</returns>
+        </member>
+        <member name="M:Bryan.Apellanes.Configuration.DefaultConfiguration.GetConnectionString(System.String,System.String,System.Boolean)">
+            <summary>
+            Return the specified connection string from the default confiruation file.
+            If the value is not found the specified default value will be added to the
+            configuration file and that value will be returned.
+            </summary>
+            <param name="name">The name of the connection string to retrieve</param>
+            <param name="defaultValue">The value to return if the connection string
+            is not found in the configuration file.  This value will also be added to 
+            the configuration file.</param>
+            <param name="add">If true and the specified name is not found the specified default
+            value will be added to the configuration file.</param>
+            <returns>string</returns>
+        </member>
+        <member name="M:Bryan.Apellanes.Configuration.DefaultConfiguration.SetProperties(System.Object)">
+            <summary>
+            Set properties from the default config file.  The config file should contain keys in the form <i>TypeName.PropertyName</i>, 
+            where <i>TypeName</i> is the name of the class and <i>PropertyName</i> is the name of the property to set
+            </summary>
+            <param name="target"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.Configuration.DefaultConfiguration.SetProperties(System.Object,System.Boolean)">
+            <summary>
+            Set properties from the default config file.  The config file should contain keys in the form <i>TypeName.PropertyName</i>, 
+            where <i>TypeName</i> is the name of the class and <i>PropertyName</i> is the name of the property to set
+            </summary>
+            <param name="target"></param>
+            <param name="throwIfMissingRequiredProperties">If required property isn't found in the default config
+            throw an exception.</param>
+        </member>
+        <member name="M:Bryan.Apellanes.Configuration.DefaultConfiguration.CopyConfig(System.String)">
+            <summary>
+            Copies the currently executing assembly's config file to the specified
+            path.
+            </summary>
+            <param name="filePath"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.Configuration.DefaultConfiguration.SetPropertiesByProxyInstance(System.Object,System.Object)">
+            <summary>
+            Sets the properties of the target instance that match the property names of the specified proxy
+            from the specified proxy instance.  
+            </summary>
+            <param name="target">The instance to set the properties for.</param>
+            <param name="proxy">An instance of the proxy class to use.</param>
+        </member>
+        <member name="M:Bryan.Apellanes.Configuration.DefaultConfiguration.SetPropertiesByProxy(System.Object,System.Object)">
+            <summary>
+            Sets the properties of the current instance that match the property names of the specified proxy
+            from the default config file.  The config file should contain keys in the form <i>TypeName.PropertyName</i>, 
+            where <i>TypeName</i> is the name of the proxy class and <i>PropertyName</i> is the name of the property to set
+            on the current instance.
+            </summary>
+            <param name="target">The instance to set the properties for.</param>
+            <param name="proxy">An instance of the proxy class to use.</param>
+        </member>
+        <member name="M:Bryan.Apellanes.Configuration.DefaultConfiguration.SetPropertiesByProxy(System.Object,System.Object,System.Boolean)">
+            <summary>
+            Sets the properties of the current instance that match the property names of the specified proxy
+            from the default config file.  The config file should contain keys in the form <i>TypeName.PropertyName</i>, 
+            where <i>TypeName</i> is the name of the proxy class and <i>PropertyName</i> is the name of the property to set
+            on the current instance.
+            </summary>
+            <param name="target">The instance to set the properties for.</param>
+            <param name="proxy">An instance of the proxy class to use.</param>
+            <param name="throwIfMissingRequiredProperties">Throws an exception if target implements IHasRequiredProperties
+            and not all required properties have been set.  The overrided default is false.</param>
+        </member>
+        <member name="M:Bryan.Apellanes.Configuration.DefaultConfiguration.SetPropertiesByProxy(System.Object,System.Type)">
+            <summary>
+            Sets the properties of the specified target that match the property names of the specified proxy
+            from the default config file.  The config file should contain keys in the form <i>TypeName.PropertyName</i>, 
+            where <i>TypeName</i> is the name of the proxy class and <i>PropertyName</i> is the name of the property to set
+            on the target.
+            </summary>
+            <param name="target">The instance to set the properties for.</param>
+            <param name="proxyType">The type of the proxy to use.</param>
+        </member>
+        <member name="M:Bryan.Apellanes.Configuration.DefaultConfiguration.SetPropertiesByProxy(System.Object,System.Type,System.Boolean)">
+            <summary>
+            Sets the properties of the specified target that match the property names of the specified proxy
+            from the default config file.  The config file should contain keys in the form <i>TypeName.PropertyName</i>, 
+            where <i>TypeName</i> is the name of the proxy class and <i>PropertyName</i> is the name of the property to set
+            on the target.
+            </summary>
+            <param name="target">The instance to set the properties for.</param>
+            <param name="proxyType">The type of the proxy to use.</param>
+            <param name="throwIfMissingRequiredProperties">Throws an exception if target implements IHasRequiredProperties
+            and not all required properties have been set.  The overrided default is false.</param>
+        </member>
+        <member name="M:Bryan.Apellanes.Configuration.DefaultConfiguration.CopyProperties(System.Object,System.Object)">
+            <summary>
+            Copies properties that match in name and type from source
+            to destination.
+            </summary>
+            <param name="source"></param>
+            <param name="destination"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.Configuration.DefaultConfiguration.CheckRequiredProperties(Bryan.Apellanes.Configuration.IHasRequiredProperties)">
+            <summary>
+            Checks the properties named in the RequiredProperties property of the specified
+            IHasRequiredProperties object ensuring that each has been set. This method will 
+            throw an error if any required property is null or an empty string.
+            </summary>
+            <param name="target">The IHasRequiredProperties implementation to check.</param>
+        </member>
+        <member name="M:Bryan.Apellanes.Configuration.DefaultConfiguration.CheckRequiredProperties(Bryan.Apellanes.Configuration.IHasRequiredProperties,System.Type)">
+            <summary>
+            Checks the properties named in the RequiredProperties property of the specified
+            IHasRequiredProperties object ensuring that each has been set. This method will 
+            throw an error if required properties have not been set.
+            </summary>
+            <param name="target">The IHasRequiredProperties implementation to check.</param>
+        </member>
+        <member name="M:Bryan.Apellanes.Configuration.DefaultConfiguration.InvokeConfigMethods(System.Object)">
+            <summary>
+            Invokes methods declared in the appSettings section of the default configuration file.  
+            </summary>
+            <param name="target">The object instance to invoke methods on</param>
+            <remarks>
+            The keys 
+            should be in the format &lt;Type.Name&gt;.InvokeMethod.&lt;MethodName&gt;.&lt;Order as int&gt;.  For
+            example: PatternsDatabaseSetupPermissionsInfo.InvokeMethod.AddStandardDbOwnerGroup.0.  The trailing number
+            determines the order of invocation relative to all other method invocations from configuration.
+            The values should be a comma separated list of string parameters to be passed to the method upon invocation.
+            Any additional spaces in the comma separated list of values will not be trimmed so the invoked methods
+            should handle that possibility accordingly.
+            </remarks>
+        </member>
+        <member name="M:Bryan.Apellanes.Configuration.DefaultConfiguration.InvokeConfigMethods(System.Object,System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Invokes methods declared in the specified appSettingDictionary.  
+            </summary>
+            <param name="target">The object instance to invoke methods on</param>
+            <param name="appSettingDictionary">A dictionary of methods to invoke along with the parameter values.</param>
+            <remarks>
+            The dictionary keys 
+            should be in the format &lt;Type.Name&gt;.InvokeMethod.&lt;MethodName&gt;.&lt;Order as int&gt;.  For
+            example: PatternsDatabaseSetupPermissionsInfo.InvokeMethod.AddStandardDbOwnerGroup.0.  The trailing number
+            determines the order of invocation relative to all other method invocations from configuration.
+            The values should be a comma separated list of string parameters to be passed to the method upon invocation.
+            Any additional spaces in the comma separated list of values will not be trimmed so the invoked methods
+            should handle that possibility accordingly.
+            </remarks>
+        </member>
+        <member name="T:Bryan.Apellanes.Configuration.IHasRequiredProperties">
+            <summary>
+            This interface is intended to be implemented by classes
+            who wish to use the DefaultConfiguration class and 
+            CascadeConfiguration class to set its properties.
+            </summary>
+        </member>
+        <member name="P:Bryan.Apellanes.Configuration.IHasRequiredProperties.RequiredProperties">
+            <summary>
+            When implemented in a derived class should
+            return an array of strings containing the 
+            name of each property of the object which 
+            is required to be set prior to execution.
+            </summary>
+        </member>
+        <member name="T:Bryan.Apellanes.doc">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.doc.assembly">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.doc.members">
+            <remarks/>
+        </member>
+        <member name="T:Bryan.Apellanes.assembly">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.assembly.name">
+            <remarks/>
+        </member>
+        <member name="T:Bryan.Apellanes.PermissionSet">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.PermissionSet.IPermission">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.PermissionSet.type">
+            <remarks/>
+        </member>
+        <member name="T:Bryan.Apellanes.PermissionSetIPermission">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.PermissionSetIPermission.Any">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.PermissionSetIPermission.class">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.PermissionSetIPermission.version">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.PermissionSetIPermission.Flags">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.PermissionSetIPermission.Unrestricted">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.PermissionSetIPermission.AnyAttr">
+            <remarks/>
+        </member>
+        <member name="T:Bryan.Apellanes.completionlist">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.completionlist.cref">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.completionlist.Text">
+            <remarks/>
+        </member>
+        <member name="T:Bryan.Apellanes.seealso">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.seealso.cref">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.seealso.Text">
+            <remarks/>
+        </member>
+        <member name="T:Bryan.Apellanes.permission">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.permission.cref">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.permission.Text">
+            <remarks/>
+        </member>
+        <member name="T:Bryan.Apellanes.include">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.include.file">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.include.path">
+            <remarks/>
+        </member>
+        <member name="T:Bryan.Apellanes.typeparamref">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.typeparamref.name">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.typeparamref.Text">
+            <remarks/>
+        </member>
+        <member name="T:Bryan.Apellanes.paramref">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.paramref.name">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.paramref.Text">
+            <remarks/>
+        </member>
+        <member name="T:Bryan.Apellanes.list">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.list.listheader">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.list.item">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.list.type">
+            <remarks/>
+        </member>
+        <member name="T:Bryan.Apellanes.listListheader">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.listListheader.term">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.listListheader.description">
+            <remarks/>
+        </member>
+        <member name="T:Bryan.Apellanes.listItem">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.listItem.term">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.listItem.description">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.listItem.Text">
+            <remarks/>
+        </member>
+        <member name="T:Bryan.Apellanes.see">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.see.cref">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.see.Text">
+            <remarks/>
+        </member>
+        <member name="T:Bryan.Apellanes.code">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.code.language">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.code.Text">
+            <remarks/>
+        </member>
+        <member name="T:Bryan.Apellanes.c">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.c.Text">
+            <remarks/>
+        </member>
+        <member name="T:Bryan.Apellanes.content">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.content.Items">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.content.Text">
+            <remarks/>
+        </member>
+        <member name="T:Bryan.Apellanes.typeparam">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.typeparam.name">
+            <remarks/>
+        </member>
+        <member name="T:Bryan.Apellanes.param">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.param.name">
+            <remarks/>
+        </member>
+        <member name="T:Bryan.Apellanes.exception">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.exception.cref">
+            <remarks/>
+        </member>
+        <member name="T:Bryan.Apellanes.example">
+            <remarks/>
+        </member>
+        <member name="T:Bryan.Apellanes.value">
+            <remarks/>
+        </member>
+        <member name="T:Bryan.Apellanes.returns">
+            <remarks/>
+        </member>
+        <member name="T:Bryan.Apellanes.remarks">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.remarks.Items1">
+            <remarks/>
+        </member>
+        <member name="T:Bryan.Apellanes.para">
+            <remarks/>
+        </member>
+        <member name="T:Bryan.Apellanes.summary">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.summary.Items1">
+            <remarks/>
+        </member>
+        <member name="T:Bryan.Apellanes.member">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.member.Items">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.member.name">
+            <remarks/>
+        </member>
+        <member name="T:Bryan.Apellanes.members">
+            <remarks/>
+        </member>
+        <member name="P:Bryan.Apellanes.members.Items">
+            <remarks/>
+        </member>
+        <member name="T:Bryan.Apellanes.Logging.TextFileLogger">
+            <summary>
+            A logger used to log events to a text file
+            </summary>
+        </member>
+        <member name="M:Bryan.Apellanes.Logging.Logger.BlockUntilEventQueueIsEmpty">
+            <summary>
+            Blocks the current thread until the event queue is empty.  Keep
+            in mind that other calls to AddEntry by other threads will 
+            increment the number of events in the queue.
+            </summary>
+        </member>
+        <member name="M:Bryan.Apellanes.Logging.Logger.CommitLogEvent(Bryan.Apellanes.Logging.LogEvent)">
+            <summary>
+            When overridden in a derived class will commit the specified logEvent
+            to the underlying storage for the current Logger implementation.
+            </summary>
+            <param name="logEvent"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.Logging.Logger.GetEventId(System.String,System.String)">
+            <summary>
+            Returns an id for the specified applicationName and messageSignature.
+            </summary>
+            <param name="applicationName"></param>
+            <param name="messageSignature"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Bryan.Apellanes.Logging.Logger.Verbosity">
+            <summary>
+            A number indicating what level of verbosity to log.  The default is 4.
+            </summary>
+        </member>
+        <member name="M:Bryan.Apellanes.Logging.TextFileLogger.CommitLogEvent(Bryan.Apellanes.Logging.LogEvent)">
+            <summary>
+            Writes the specified logEvent to the file referenced by the File property
+            of the current TextFileLogger.
+            </summary>
+            <param name="logEvent"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.Logging.TextFileLogger.SetNextFileInfo">
+            <summary>
+            Increments the file number if the current file number already exists.
+            </summary>
+        </member>
+        <member name="M:Bryan.Apellanes.Logging.TextFileLogger.GetAppDataFolder">
+            <summary>
+            Gets the path to the current user's AppData folder. If
+            this is run in a Web app (HttpContext.Current isn't null)
+            then the full path to ~/AppData/ is returned. 
+            </summary>
+        </member>
+        <member name="P:Bryan.Apellanes.Logging.TextFileLogger.MaxBytes">
+            <summary>
+            Gets or sets the maximum size of any single log file created by this logger.
+            No effect if XmlLogger, use MaxEntries instead.
+            </summary>
+        </member>
+        <member name="P:Bryan.Apellanes.Logging.TextFileLogger.Folder">
+            <summary>
+            Gets or sets the directory where logs are written
+            </summary>
+        </member>
+        <member name="P:Bryan.Apellanes.Logging.TextFileLogger.File">
+            <summary>
+            Gets the FileInfo representing the current log.  This will change as the file reaches 
+            the max size or entries per file for XmlLogger.
+            </summary>
+        </member>
+        <member name="M:Bryan.Apellanes.SerializationExtensions.XmlSerialize(System.Object,System.String)">
+            <summary>
+            Serialize the object to the specified filePath.  The same as
+            ToXmlFile().
+            </summary>
+            <param name="target"></param>
+            <param name="filePath"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.SerializationExtensions.ToXmlFile(System.Object,System.String)">
+            <summary>
+            Serialize the object to the specified filePath.  The same as XmlSerialzie()
+            </summary>
+            <param name="target"></param>
+            <param name="filePath"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.SerializationExtensions.FromXml``1(System.String,System.Text.Encoding)">
+            <summary>
+            Deserialize the specified xml as the specified generic type using the specified encoding.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="xmlString"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.CustomAttributeExtension.GetFirstMethodWithAttributeOfType``1(System.Type)">
+            <summary>
+            Gets the MethodInfo for the first method found in the specified typeToAnalyze
+            that has a custom attribute of the specified type T.  Returns null if none
+            are found.
+            </summary>
+            <typeparam name="T">the type of the custom attribute to look for</typeparam>
+            <param name="typeToAnalyze">the type to analyze</param>
+            <returns>MethodInfo or null</returns>
+        </member>
+        <member name="M:Bryan.Apellanes.CustomAttributeExtension.GetFirstProperyWithAttributeOfType``1(System.Type)">
+            <summary>
+            Gets the first PropertyInfo with a custom attribute of the specified generic type T
+            </summary>
+            <typeparam name="T">The generic type of the attribute to search for</typeparam>
+            <param name="typeToAnalyze"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.CustomAttributeExtension.GetFirstProperyWithAttributeOfType``1(System.Type,``0@)">
+            <summary>
+            Gets the first PropertyInfo with a custom attribute of the specified generic type T
+            </summary>
+            <typeparam name="T">The generic type of the attribute to search for</typeparam>
+            <param name="typeToAnalyze">The type to analyze</param>
+            <param name="attribute">The first attribute found of the specified generic type.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.CustomAttributeExtension.GetPropertiesWithAttributeOfType``1(System.Type)">
+            <summary>
+            Get all the PropertyInfos that have the specified Attribute T addorning them.
+            </summary>
+            <typeparam name="T">The type of the attribute to that must be addorning the property</typeparam>
+            <param name="typeToAnalyze">The type to search for properties on</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.CustomAttributeExtension.GetPropertiesWithAttributeOfType``1(System.Type,System.Type)">
+            <summary>
+            Get all the PropertyInfos that have the specified Attribute T addorning them.
+            </summary>
+            <typeparam name="T">The type of the attribute to that must be addorning the property</typeparam>
+            <param name="typeToAnalyze">The type to search for properties on</param>
+            <param name="limitToType">The type that the property must be of for it to be returned</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.CustomAttributeExtension.GetPropertiesWithAttributeOfType``1(System.Type,System.Boolean)">
+            <summary>
+            Get all the PropertyInfos that have the specified Attribute T addorning them.
+            </summary>
+            <typeparam name="T">The type of the attribute to that must be addorning the property</typeparam>
+            <param name="typeToAnalyze">The type to search for properties on</param>
+            <param name="limitToType">The of that the property must be of for it to be returned</param>
+            <param name="inherit">Specifies whether to search the inheritance chain.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.CustomAttributeExtension.GetPropertiesWithAttributeOfType``1(System.Type,System.Type,System.Boolean)">
+            <summary>
+            Get all the PropertyInfos that have the specified Attribute T addorning them.
+            </summary>
+            <typeparam name="T">The type of the attribute to that must be addorning the property</typeparam>
+            <param name="typeToAnalyze">The type to search for properties on</param>
+            <param name="limitToType">The of that the property must be of for it to be returned</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.CustomAttributeExtension.HasCustomAttributeOfType``1(System.Reflection.MemberInfo,System.Boolean,``0@,System.Boolean)">
+            <summary>
+            Determine if the MemberInfo is addorned with the specified generic attribute type T
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="memberInfo"></param>
+            <param name="inherit"></param>
+            <param name="attribute"></param>
+            <param name="concreteAttribute"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.Encryption.Aes.Encrypt(System.String)">
+            <summary>
+            Gets a Base64 encoded value representing the cypher of the specified
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.Encryption.Aes.Encrypt(System.String,Bryan.Apellanes.Encryption.AesKeyVectorPair)">
+            <summary>
+            Gets a Base64 encoded value representing the cypher of the specified
+            value using the specified key.
+            </summary>
+            <param name="value"></param>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.Encryption.Aes.ToBase64EncodedEncryptedXml(System.Object,Bryan.Apellanes.Encryption.AesKeyVectorPair@)">
+            <summary>
+            Get a base64 encoded encrypted xml serialization string representing the specified target object
+            </summary>
+            <param name="target">The object to serialize</param>
+            <param name="key">The key used to encrypt and decrypt the resulting string</param>
+            <returns>string</returns>
+        </member>
+        <member name="M:Bryan.Apellanes.Encryption.AesKeyVectorPair.Encrypt(System.String)">
+            <summary>
+            Gets a Base64 encoded value representing the cypher of the specified
+            value using the specified key.
+            </summary>
+        </member>
+        <member name="T:Bryan.Apellanes.Expect">
+            <summary>
+            A utility for making assertions
+            </summary>
+        </member>
+        <member name="M:Bryan.Apellanes.Expect.Throws(System.Action,System.String)">
+            <summary>
+            Executes the specified actionThatThrowsException action passing the exception to the specified 
+            catchDelegate and throws an ExpectFailedException if the actionThatThrowException doesn't
+            throw an Exception
+            </summary>
+            <param name="actionThatThrowsException"></param>
+            <param name="catchDelegate"></param>
+            <param name="message"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.Expect.Throws(System.Action,System.Action{System.Exception},System.String)">
+            <summary>
+            Executes the specified actionThatThrowsException action passing the exception to the specified 
+            catchDelegate and throws an ExpectFailedException if the actionThatThrowException doesn't
+            throw an Exception
+            </summary>
+            <param name="actionThatThrowsException"></param>
+            <param name="catchDelegate"></param>
+            <param name="message"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.Expect.IsGreaterThan(System.Int32,System.Int32)">
+            <summary>
+            Checks if the specified "left" value is greater than the specified "right" value.
+            </summary>
+            <param name="left">int on the left of &gt;</param>
+            <param name="right">int on the right of &gt;</param>
+        </member>
+        <member name="M:Bryan.Apellanes.Expect.IsGreaterThan(System.Int64,System.Int64)">
+            <summary>
+            Checks if the specified "left" value is greater than the specified "right" value.
+            </summary>
+            <param name="left">int on the left of &gt;</param>
+            <param name="right">int on the right of &gt;</param>
+        </member>
+        <member name="M:Bryan.Apellanes.Expect.IsGreaterThan(System.Int64,System.Int64,System.String)">
+            <summary>
+            Checks if the specified "left" value is greater than the specified "right" value.
+            </summary>
+            <param name="left">int on the left of &gt;</param>
+            <param name="right">int on the right of &gt;</param>
+        </member>
+        <member name="M:Bryan.Apellanes.Expect.IsGreaterThanOrEqualTo(System.Int32,System.Int32,System.String)">
+            <summary>
+            Checks if the specified "left" value is greater than or equal to the specified "right" value. 
+            </summary>
+            <param name="left">int on the left of &gt;=</param>
+            <param name="right">int on the right of &gt;=</param>
+        </member>
+        <member name="M:Bryan.Apellanes.Expect.AreSame(System.Object,System.Object)">
+            <summary>
+            Checks if the specified objects are the same using == (!=).
+            </summary>
+            <param name="expected"></param>
+            <param name="actual"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.Expect.AreSame(System.Object,System.Object,System.String)">
+            <summary>
+            Checks if the specified objects are the same using == (!=).
+            </summary>
+            <param name="expected"></param>
+            <param name="actual"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.Expect.AreEqual(System.Object,System.Object,System.String)">
+            <summary>
+            Checks if the specified objects are equal using the Equals() method.
+            </summary>
+            <param name="expected"></param>
+            <param name="actual"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.Expect.IsObjectOfType``1(System.Object)">
+            <summary>
+            Asserts that the current instance is of the specified generic type.
+            Throws an excpetion if the assertion fails.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="objectToCheck"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.Expect.IsObjectOfType``1(System.Object,System.String)">
+            <summary>
+            Checks if the specified object is of type T using GetType().
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="objectToCheck"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.Expect.IsNullOrEmpty(System.String)">
+            <summary>
+            Asserts that the specified string is null or empty.  Throws
+            an exception if the assertion fails.
+            </summary>
+            <param name="stringToCheck"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.Expect.IsNullOrEmpty(System.String,System.String)">
+            <summary>
+            Asserts that the specified string is null or empty.  Throws
+            an exception if the assertion fails.
+            </summary>
+            <param name="stringToCheck"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.Expect.IsExtenderOfType``1(System.Object)">
+            <summary>
+            Checks if the specified object extends type T using the "is" operator.  The same as Extends&lt;T&gt;
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="objectToCheck"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.Expect.Extends``1(System.Object)">
+            <summary>
+            Checks if the specified object extends type T using the "is" operator.
+            </summary>
+            <typeparam name="T">The type to be extended.</typeparam>
+            <param name="objectToCheck">The object to check if it extends the specified type T.</param>
+        </member>
+        <member name="M:Bryan.Apellanes.Expect.IsNull(System.Object,System.String)">
+            <summary>
+            Throws an exception if the specified objectToCheck is null.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="objectToCheck"></param>
+            <param name="message"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.ExtensionsClass.Each``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0})">
+            <summary>
+            Iterate over the current IEnumerable passing
+            each element to the specified action
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="arr"></param>
+            <param name="action"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.ExtensionsClass.Each``1(``0[],System.Action{``0})">
+            <summary>
+            Iterate over the current array passing
+            each element to the specified action
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="arr"></param>
+            <param name="action"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.ExtensionsClass.Each``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0,System.Int32})">
+            <summary>
+            Iterate over the current IEnumerable passing
+            each element to the specified action
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="arr"></param>
+            <param name="action"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.ExtensionsClass.Each``1(``0[],System.Action{``0,System.Int32})">
+            <summary>
+            Iterate over the current array passing
+            each element to the specified action
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="arr"></param>
+            <param name="action"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.ExtensionsClass.Rest``1(System.Collections.Generic.IEnumerable{``0},System.Int32,System.Action{``0,System.Int32})">
+            <summary>
+            Iterate over the current IEnumerable 
+            from the specified index passing
+            each element to the specified action
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="arr"></param>
+            <param name="action"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.ExtensionsClass.Rest``1(``0[],System.Int32,System.Action{``0,System.Int32})">
+            <summary>
+            Iterate over the current array from the 
+            specified index passing
+            each element to the specified action
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="arr"></param>
+            <param name="action"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.ExtensionsClass.Rest``1(System.Collections.Generic.IEnumerable{``0},System.Int32,System.Action{``0})">
+            <summary>
+            Iterate over the current IEnumerable starting from the specified index
+            passing each element to the specified action
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="arr"></param>
+            <param name="action"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.ExtensionsClass.Rest``1(``0[],System.Int32,System.Action{``0})">
+            <summary>
+            Iterate over the current array passing
+            each element to the specified action
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="arr"></param>
+            <param name="action"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.ExtensionsClass.Each``1(System.Object[],System.Func{System.Object,``0})">
+            <summary>
+            Iterate over the current array passing 
+            each element to the specified function.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="arr"></param>
+            <param name="func"></param>
+            <returns>The result of each call to the specified function</returns>
+        </member>
+        <member name="M:Bryan.Apellanes.ExtensionsClass.DoubleCheckLock``1(System.Object,``0@,System.Func{``0})">
+            <summary>
+            Double null check the specified toInit locking on the current
+            object using the specified ifNull function to instantiate if 
+            toInit is null
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="sync"></param>
+            <param name="toInit"></param>
+            <param name="ifNull"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.ExtensionsClass.FromJsonFile``1(System.IO.FileInfo)">
+            <summary>
+            Reads the file and deserializes the contents as the specified
+            generic type T
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="file"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.ExtensionsClass.RandomChar">
+            <summary>
+            Returns a random lower-case character a-z or 0-9
+            </summary>
+            <returns>String</returns>
+        </member>
+        <member name="M:Bryan.Apellanes.ExtensionsClass.RandomLetters(System.String,System.Int32)">
+            <summary>
+            Append the specified number of characters
+            to the end of the string
+            </summary>
+            <param name="val"></param>
+            <param name="count"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.ExtensionsClass.RandomLetter">
+            <summary>
+            Returns a random lowercase letter from a-z."
+            </summary>
+            <returns>String</returns>
+        </member>
+        <member name="M:Bryan.Apellanes.ExtensionsClass.RandomNumber">
+            <summary>
+            Returns a pseudo-random number from 0 to 9.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.ExtensionsClass.First(System.String,System.Int32)">
+            <summary>
+            Return the first specified number of characters
+            </summary>
+            <param name="stringToTrim"></param>
+            <param name="count"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.ExtensionsClass.SafeReadFile(System.String)">
+            <summary>
+            Returns the content of the file refferred to by the current
+            string instance.
+            </summary>
+            <param name="filePath"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.ExtensionsClass.SafeWriteFile(System.String,System.String,System.Boolean,System.Action{System.Object})">
+            <summary>
+            Write the specified text to the specified file in a thread safe way.
+            </summary>
+            <param name="filePath">The path to the file to write.</param>
+            <param name="textToWrite">The text to write.</param>
+            <param name="overwrite">True to overwrite.  If false and the file exists an InvalidOperationException will be thrown.</param>
+        </member>
+        <member name="M:Bryan.Apellanes.ExtensionsClass.SafeAppendToFile(System.String,System.String)">
+            <summary>
+            Appends the specified text to the specified file in a thread safe way.
+            If the file doesn't exist it will be created.
+            </summary>
+            <param name="filePath"></param>
+            <param name="textToAppend"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.ExtensionsClass.ClearWriteLocks(System.Object)">
+            <summary>
+            Clears the locks createed for writing and appending
+            to files
+            </summary>
+        </member>
+        <member name="M:Bryan.Apellanes.ExtensionsClass.AddMissing``2(System.Collections.Generic.Dictionary{``0,``1},``0,``1)">
+            <summary>
+            Adds the specified value if the specified key has not been added
+            </summary>
+            <typeparam name="TKey"></typeparam>
+            <typeparam name="TValue"></typeparam>
+            <param name="dictionary"></param>
+            <param name="key"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.ExtensionsClass.PascalSplit(System.String,System.String)">
+            <summary>
+            Splits the specified text at capital letters inserting the specified separator.
+            </summary>
+            <param name="stringToPascalSplit"></param>
+            <param name="separator"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.ExtensionsClass.PascalCase(System.String,System.Boolean,System.String[])">
+            <summary>
+            Returns a pascal cased string from the specified string using the specified 
+            separators.  For example, the input "The quick brown fox jumps over the lazy
+            dog" with the separators of "new string[]{" "}" should return the string 
+            "TheQuickBrownFoxJumpsOverTheLazyDog".
+            </summary>
+            <param name="stringToPascalize"></param>
+            <param name="preserveInnerUppers">If true uppercase letters that appear in 
+            the middle of a word remain uppercase if false they are converted to lowercase.</param>
+            <param name="separators"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.ExtensionsClass.ToDelimited``1(``0[],Bryan.Apellanes.ToDelimitedDelegate{``0})">
+            <summary>
+            Intended to delimit the specified array of T using the
+            specified ToDelimitedDelegate.  Each item will be represented
+            by the return value of the specified ToDelimitedDelegate.
+            </summary>
+            <typeparam name="T">The type of objects in the specified array</typeparam>
+            <param name="objectsToStringify">The objects</param>
+            <param name="toDelimiteder">The ToDelimitedDelegate used to represent each object</param>
+            <returns>string</returns>
+        </member>
+        <member name="M:Bryan.Apellanes.ExtensionsClass.ToDelimited``1(``0[],Bryan.Apellanes.ToDelimitedDelegate{``0},System.String)">
+            <summary>
+            Intended to delimit the specified array of T using the
+            specified ToDelimitedDelegate.  Each item will be represented
+            by the return value of the specified ToDelimitedDelegate.
+            </summary>
+            <typeparam name="T">The type of objects in the specified array</typeparam>
+            <param name="objectsToStringify">The objects</param>
+            <param name="toDelimiteder">The ToDelimitedDelegate used to represent each object</param>
+            <returns>string</returns>
+        </member>
+        <member name="M:Bryan.Apellanes.ExtensionsClass.IsProperty(System.Reflection.MethodInfo)">
+            <summary>
+            Determines if the method is a special property method
+            </summary>
+            <param name="method"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.ExtensionsClass.CreateDynamicType``1(System.Object)">
+            <summary>
+            Creates an in memory clone of the specified objectToClone.  The 
+            clone will only have the properties of objectToClone that are
+            addorned with the specified PropertyAttributeFilter generic type.
+            </summary>
+            <typeparam name="PropertyAttributeFilter">The attribute to look for when copying properties</typeparam>
+            <param name="objectToClone">The object to clone</param>
+            <returns>An in memory type that is not persisted to disk.</returns>
+        </member>
+        <member name="M:Bryan.Apellanes.ExtensionsClass.CreateDynamicType``1(System.Object,System.Boolean)">
+            <summary>
+            Creates an in memory clone of the specified objectToClone.  The 
+            clone will only have the properties of objectToClone that are
+            addorned with the specified PropertyAttributeFilter generic type.
+            </summary>
+            <typeparam name="PropertyAttributeFilter">The attribute to look for when copying properties</typeparam>
+            <param name="objectToClone">The object to clone</param>
+            <param name="concreteAttribute">If true the attributes must be of the specified type and not extenders of the type.</param>
+            <returns>An in memory type that is not persisted to disk.</returns>
+        </member>
+        <member name="M:Bryan.Apellanes.ExtensionsClass.CreateDynamicType``1(System.Object,System.Reflection.Emit.AssemblyBuilder@)">
+            <summary>
+            Creates an in memory clone of the specified objectToClone.  The 
+            clone will only have the properties of objectToClone that are
+            addorned with the specified PropertyAttributeFilter generic type.
+            </summary>
+            <typeparam name="PropertyAttributeFilter">The attribute to look for when copying properties</typeparam>
+            <param name="objectToClone">The object to clone</param>
+            <returns>An in memory type that is not persisted to disk.</returns>
+        </member>
+        <member name="M:Bryan.Apellanes.ExtensionsClass.CreateDynamicType``1(System.Object,System.Reflection.Emit.AssemblyBuilder@,System.Boolean)">
+            <summary>
+            Creates an in memory clone of the specified objectToClone.  The 
+            clone will only have the properties of objectToClone that are
+            addorned with the specified PropertyAttributeFilter generic type.
+            </summary>
+            <typeparam name="PropertyAttributeFilter">The attribute to look for when copying properties</typeparam>
+            <param name="objectToClone">The object to clone</param>
+            <param name="concreteAttribute">If true the attributes must be of the specified type and not extenders of the type.</param>
+            <returns>An in memory type that is not persisted to disk.</returns>
+        </member>
+        <member name="M:Bryan.Apellanes.ExtensionsClass.ToDynamicInstance(System.Data.DataRow,System.String)">
+            <summary>
+            Consverts a DataRow to a dynamic object instance.  This implementation
+            is prior to the 'dynamic' keyword
+            </summary>
+            <param name="row"></param>
+            <param name="typeName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.ExtensionsClass.ValuePropertiesToDynamicInstance(System.Object)">
+            <summary>
+            Creates a dynamic object from the specified instance populating only
+            the properties that are of value types
+            </summary>
+            <param name="instance"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.ExtensionsClass.CopyProperties(System.Object,System.Object)">
+            <summary>
+            Copies all properties from source to destination where the name and
+            type match.
+            </summary>
+            <param name="destination"></param>
+            <param name="source"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.Logging.Log.Reset">
+            <summary>
+            Reset Log.Current to null.  Used primarily for testing.
+            </summary>
+        </member>
+        <member name="M:Bryan.Apellanes.Logging.Log.AddEntry(System.String,System.Diagnostics.EventLogEntryType,System.String[])">
+            <summary>
+            Convenience method for passing in System.Diagnostics.EventLogEntryType instead of LogEventType.
+            The specified EventLogEntryType will be converted to an equivalent LogEventType if necessary.
+            </summary>
+            <param name="messageSignature"></param>
+            <param name="type"></param> 
+        </member>
+        <member name="M:Bryan.Apellanes.Logging.Log.BlockUntilEventQueueIsEmpty">
+            <summary>
+            Blocks the current thread until the event queue is empty.  Keep
+            in mind that other calls to AddEntry by other threads will 
+            increment the number of events in the queue.  If the commit 
+            thread is running it will be restarted.
+            </summary>
+        </member>
+        <member name="M:Bryan.Apellanes.Logging.Log.Start">
+            <summary>
+            Starts the background logging commit thread.
+            </summary>
+        </member>
+        <member name="M:Bryan.Apellanes.Logging.Log.Stop">
+            <summary>
+            Stops the background logging commit thread.
+            </summary>
+        </member>
+        <member name="M:Bryan.Apellanes.Logging.Log.AbandonQueue">
+            <summary>
+            Flushes the current LogEvent queue without committing them.
+            May throw an InvalidCastException if the ILogger implementation
+            referenced by Log.Default doesn't extend Logger.
+            </summary>
+        </member>
+        <member name="T:Bryan.Apellanes.Logging.LogEventCollection">
+            <summary>
+            Represents a collection of LogEvents that can be persisted to a file.
+            </summary>
+        </member>
+        <member name="P:Bryan.Apellanes.Logging.LogEventCollection.EventLogEntries">
+            <summary>
+            Gets or sets the LogEvent array that constitute
+            this LogEventCollection
+            </summary>
+        </member>
+        <member name="T:Bryan.Apellanes.Logging.MultiTargetLogger">
+            <summary>
+            The type of logger that Log.Default will be set to if
+            AddLogger is called.  Commit() implementation only 
+            calls Commit on each logger that has been added through
+            the AddLogger method.  This class is not intended to be 
+            used directly.
+            </summary>
+        </member>
+        <member name="M:Bryan.Apellanes.Logging.MultiTargetLogger.AddLogger(Bryan.Apellanes.Logging.ILogger)">
+            <summary>
+            Adds the specified logger if it hasn't already been added.  If
+            the specified logger is the current MultiTargetLogger it will not be added.
+            If the specified logger is a NullLoger it will not be added.
+            </summary>
+            <param name="logger"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.Logging.MultiTargetLogger.CommitLogEvent(Bryan.Apellanes.Logging.LogEvent)">
+            <summary>
+            Passes the specified logEvent to the Commit method
+            of each of the ILoggers in Loggers.
+            </summary>
+            <param name="logEvent"></param>
+        </member>
+        <member name="P:Bryan.Apellanes.Logging.MultiTargetLogger.Loggers">
+            <summary>
+            An array of all the loggers currently added to this 
+            MultiTargetLogger
+            </summary>
+        </member>
+        <member name="T:Bryan.Apellanes.Logging.NamespaceDoc">
+             <summary>
+            The Bryan.Apellanes.Logging namespace contains classes, interfaces and value types used to aide
+             in log management.
+             </summary>
+        </member>
+        <member name="T:Bryan.Apellanes.Logging.WindowsLogger">
+            <summary>
+            An LoggerBase implementation that commits logs to the 
+            Windows event viewer.
+            </summary>
+        </member>
+        <member name="T:Bryan.Apellanes.MethodCase">
+            <summary>
+            Determines whether generated JavaScript methods 
+            will be camel case (camel has his head down; first letter lowercase)
+            or pascal case 
+            </summary>
+        </member>
+        <member name="T:Bryan.Apellanes.Providers">
+            <summary>
+            Type safe way of getting session level singletons.  Safer
+            than using the Session object because it doesn't use
+            magic strings and optionally allows for the object to be 
+            set once only without being overwritten.
+            </summary>
+        </member>
+        <member name="M:Bryan.Apellanes.Providers.SetSessionProviderIfNull``1(System.Object,System.Boolean)">
+            <summary>
+            Set the session provider if it has not been set yet.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="provider"></param>
+            <param name="allowReset"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.Providers.SetSessionProvider``1(System.Object)">
+            <summary>
+            Sets the session provider of Type T to the specified concrete instance provider.
+            The generic argument T "should" be an interface so different implementations
+            can be set and used for testing.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="provider"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.Providers.SetSessionProvider``1(System.Object,System.Boolean)">
+            <summary>
+            Sets the session provider of Type T to the specified concrete instance provider.
+            The generic argument T "should" be an interface so different implementations
+            can be set and used for testing.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="provider"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.Providers.GetSessionProvider``1">
+            <summary>
+            Gets a provider of the specified type T for the current session.
+            </summary>
+            <typeparam name="T">The type implemented by the object to return.  This can be an interface an abstract
+            class or any type in the inheritance hierarchy of the stored object.</typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.Providers.GetSessionProvider``1(System.Object)">
+            <summary>
+            Gets a provider of the specified type T for the current session.  If it hasn't been 
+            set yet it will be set to the instance provided.  Once set it cannot be set again.
+            </summary>
+        </member>
+        <member name="M:Bryan.Apellanes.Providers.GetSessionProvider``1(System.Object,System.Boolean)">
+            <summary>
+            Gets a provider of the specified type T for the current session.  If it hasn't been 
+            set yet it will be set to the instance provided.  Once set it can only be set again
+            if allowOverWrite is true.
+            </summary>
+            <typeparam name="T">The type implemented by the object to return.  This can be an interface an abstract
+            class or any type in the inheritance hierarchy of the stored object.</typeparam>
+            <param name="setToIfNotFound">The instance to set the session provider to if it has not already been set.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.Providers.SetApplicationProvider``1(System.Object)">
+            <summary>
+            Set a singleton instance provider of the generic type T.
+            Can only be called once per type T.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="provider"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.Providers.SetApplicationProvider``1(System.Object,System.Boolean)">
+            <summary>
+            Set a singleton instance provider of the generic type T.
+            Can only be called again if allowOverwrite is true.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="provider"></param>
+            <param name="allowOverwrite"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.Providers.GetApplicationProvider``1">
+            <summary>
+            Get a singleton instance provider of the generic type T.  If not 
+            currently set it will be set to the object provided.  Once set
+            the application provider of the specified type cannot be set to a different
+            instance.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.Providers.GetApplicationProvider``1(System.Object)">
+            <summary>
+            Get a singleton instance provider of the generic type T.  If not 
+            currently set it will be set to the object provided.  Once set
+            the application provider of the specified type cannot be set to a different
+            instance.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="setToIfNotFound"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.Providers.GetApplicationSingleton``1">
+            <summary>
+            Gets a singleton of the specified generic type.  If the singleton
+            hasn't been set a new instance will be created using the default constructor.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.Providers.GetSessionSingleton``1">
+            <summary>
+            Gets a session singleton of the specified type T. 
+            Will be instantiated as necessary.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="sessionId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.Providers.GetSessionSingleton``1(System.String@)">
+            <summary>
+            Gets a session singleton of the specified type T. 
+            Will be instantiated as necessary.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="sessionId"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Bryan.Apellanes.ProxyAttribute">
+            <summary>
+            Used to specify the name of the client proxy instance.
+            </summary>
+        </member>
+        <member name="P:Bryan.Apellanes.ProxyAttribute.VarName">
+            <summary>
+            The name of the client variable
+            </summary>
+        </member>
+        <member name="P:Bryan.Apellanes.ProxyAttribute.MethodCase">
+            <summary>
+            Describes the client side method case
+            </summary>
+        </member>
+        <member name="M:Bryan.Apellanes.Razor.RazorParser`1.#ctor(System.String,System.String,System.Object)">
+            <summary>
+            
+            </summary>
+            <param name="defaultNamespace"></param>
+            <param name="defaultClassName"></param>
+            <param name="options">Applied to the GeneratedClassContext</param>
+        </member>
+        <member name="M:Bryan.Apellanes.Razor.RazorParser`1.Execute(System.IO.TextReader,System.Reflection.Assembly[],System.Object,System.Action{System.String})">
+            <summary>
+            Execute the 
+            </summary>
+            <param name="input"></param>
+            <param name="options"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.ResourceTextFiles.AddExtensionToLoad(System.String)">
+            <summary>
+            Adds an extension to be loaded when resource text 
+            files are loaded
+            </summary>
+            <param name="ext"></param>
+        </member>
+        <member name="M:Bryan.Apellanes.ServiceExe.ProcessCommandLineArgs(System.String[])">
+            <summary>
+            Returns true if there were recognized command line
+            arguments to be processed otherwise false.
+            </summary>
+            <param name="args"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.ServiceExe.CreateLog">
+            <summary>
+            Creates a Windows event log for the extender of ServiceExe.
+            serviceName must be defined.
+            </summary>
+        </member>
+        <member name="M:Bryan.Apellanes.Threads.TakesTooLong``1(System.Func{``0},System.Func{``0,``0},System.Int32)">
+            <summary>
+            Returns true if the specified function takes longer to execute than the specified secondsToWait.
+            </summary>
+            <typeparam name="TResult">The Type returned by the sepcified function, also the return and parameter type of the
+            specified callBack.</typeparam>
+            <param name="function">The function to execute and time</param>
+            <param name="callBack">The callBack to execute when function completes</param>
+            <param name="secondsToWait">The number of seconds to allow the function to execute before returning true</param>
+            <returns>boolean</returns>
+        </member>
+        <member name="M:Bryan.Apellanes.Threads.TakesTooLong``1(System.Func{System.Object,``0},System.Func{``0,``0},System.TimeSpan,System.Object,System.String)">
+            <summary>
+            Executes the specified function in a separate thread waiting the specified timeToWait.  If
+            the function is not done executing in the specified timeToWait 
+            </summary>
+            <typeparam name="TResult">The Type returned by the sepcified function, also the return and parameter type of the
+            specified callBack.</typeparam>
+            <param name="function">The function to execute and time</param>
+            <param name="callBack">The callBack to execute when function completes</param>
+            <param name="timeToWait">The ammount of time to allow the function to execute before returning true</param>
+            <returns>boolean</returns>
+        </member>
+        <member name="M:Bryan.Apellanes.UserUtil.StripDomain(System.String)">
+            <summary>
+            Returns the value at index 1 after splitting the specified name
+            at the backslash character (\).  If there are no backslash characters the 
+            full value is returned.
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.UserUtil.GetCurrentUser">
+            <summary>
+            Returns the current user of the application.  If this 
+            method is called from a web application the current web
+            user is returned, otherwise the name of the owner of the
+            current process is returned.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.UserUtil.GetCurrentUser(System.Boolean)">
+            <summary>
+            Returns the current user of the application.  If this 
+            method is called from a web application the current web
+            user is returned, otherwise the name of the owner of the
+            current process is returned.
+            </summary>
+            <param name="includeDomain"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bryan.Apellanes.UserUtil.GetCurrentWindowsUser(System.Boolean)">
+            <summary>
+            Gets the current Windows user.  This is typically the owner of the currently
+            running process.
+            </summary>
+            <param name="includeDomain">True to return &lt;domain&gt;\&lt;userName&gt;, if false &lt;userName&gt;</param>
+            <returns>User as string</returns>
+        </member>
+        <member name="M:Bryan.Apellanes.UserUtil.GetCurrentWindowsUserDomain">
+            <summary>
+            Gets the domain of the current Windows user.  The current Windows user is 
+            typically the owner of the currently running process.
+            </summary>
+            <returns>The domain of the current Windows user.</returns>
+        </member>
+        <member name="M:Bryan.Apellanes.UserUtil.GetCurrentUserDomain">
+            <summary>
+            Gets the domain of the current user.  If running in a web app the 
+            web user's domain is returned otherwise the domain of the current
+            windows user is returned.
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,332 @@
+<!doctype html>
+<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
+<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on http://github.com/jonrohan -->
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen"/>
+  <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="javascripts/script.js"></script>
+
+  <title>Brevitee</title>
+  <meta name="description" content="Concision Providers and Productivity Tools ">
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+</head>
+
+<body>
+
+  <div class="wrapper">
+    <header>
+      <h1 class="title">Brevitee</h1>
+    </header>
+    <div id="container">
+      <p class="tagline">Concision Providers and Productivity Tools </p>
+      <div id="main" role="main">
+        <div class="download-bar">
+        <div class="inner">
+          <a href="https://github.com/BryanApellanes/Brevitee/tarball/master" class="download-button tar"><span>Download</span></a>
+          <a href="https://github.com/BryanApellanes/Brevitee/zipball/master" class="download-button zip"><span>Download</span></a>
+          <a href="https://github.com/BryanApellanes/Brevitee" class="code">View Brevitee on GitHub</a>
+        </div>
+        <span class="blc"></span><span class="trc"></span>
+        </div>
+        <article class="markdown-body">
+          <h1>
+<a name="brevitee" class="anchor" href="#brevitee"><span class="octicon octicon-link"></span></a>Brevitee</h1>
+
+<p>Brevitee is a framework and set of tools for rapid web application development.<br>
+It offers data access code generation, web service generation, logging and 
+unit testing tools.  Brevitee is built on top of ASP.net MVC and was designed 
+to bridge the gap between JavaScript, C# and SQL with an emphasis on allowing great 
+JavaScript developer's to collaborate, as peers, with .Net developer's while still 
+utilizing a relational database system like SQL Server.</p>
+
+<h2>
+<a name="why-brevitee" class="anchor" href="#why-brevitee"><span class="octicon octicon-link"></span></a>Why Brevitee?</h2>
+
+<p>Brevitee consists of reusable code components that I've written over the years 
+that were used to contribute to numerous projects in a variety of professional 
+roles I've held.  While there is functional overlap between Brevitee and other 
+more popular systems today, at the time of its creation either no equivalent 
+existed or the options did not provide the specific functionality and capabilities 
+that I was looking for.</p>
+
+<h2>
+<a name="no-i-mean-why-is-it-called-brevitee" class="anchor" href="#no-i-mean-why-is-it-called-brevitee"><span class="octicon octicon-link"></span></a>No, I Mean Why Is It Called Brevitee?</h2>
+
+<p>The word brevity is defined as; concise and exact use of words in writing or speech.<br>
+In the same sense Brevitee is intended, in the spirit of jQuery, to allow one to 
+write less and do more through the use of Brevitee's extensive .Net extension method 
+library, jQuery plugins and other productivity enhancing JavaScripts.  At the time I 
+first uploaded the Brevitee Nuget packages the name Brevity had already been taken,
+hence the spelling Brevitee :).</p>
+
+<h2>
+<a name="data-access-objects-dao" class="anchor" href="#data-access-objects-dao"><span class="octicon octicon-link"></span></a>Data Access Objects (Dao)</h2>
+
+<p>The generation of data access objects can be done by extracting objects from an 
+existing SQL Server database or by processing a *.db.js file.  Due to its use 
+primarily as a greenfield technology, code generation from an existing SQL Server 
+database does not account for what I refer to as “silliness in the database” such 
+as tables with no primary keys or tables with compound or composite primary keys.</p>
+
+<h3>
+<a name="dao-from-laotze" class="anchor" href="#dao-from-laotze"><span class="octicon octicon-link"></span></a>Dao From LaoTze</h3>
+
+<p>The generation of data access objects is most easily done by creating a *.db.js 
+file and processing that file with the command line tool LaoTze.exe.  A *.db.js 
+file is a special JavaScript file that contains a single JavaScript literal object 
+named “database” that defines a database schema.  An example database schema object
+is shown below.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="kd">var</span> <span class="nx">database</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">nameSpace</span><span class="o">:</span> <span class="err">“</span><span class="nx">The</span><span class="p">.</span><span class="nx">Namespace</span><span class="p">.</span><span class="nx">That</span><span class="p">.</span><span class="nx">Generated</span><span class="p">.</span><span class="nx">Objects</span><span class="p">.</span><span class="nx">Will</span><span class="p">.</span><span class="nx">Be</span><span class="p">.</span><span class="nx">Placed</span><span class="p">.</span><span class="nx">In</span><span class="err">”</span><span class="p">,</span>
+    <span class="nx">schemaName</span><span class="o">:</span> <span class="err">“</span><span class="nx">UsedAsTheConnectionStringNameInTheConfig</span><span class="err">”</span><span class="p">,</span>
+    <span class="nx">xrefs</span><span class="o">:</span> <span class="p">[</span> <span class="c1">// An array of arrays; </span>
+        <span class="c1">// each entry defines a many to many relationship between the table                     </span>
+        <span class="c1">// names specified</span>
+        <span class="p">[</span><span class="err">“</span><span class="nx">LeftTable</span><span class="err">”</span><span class="p">,</span> <span class="err">“</span><span class="nx">RightTable</span><span class="err">”</span><span class="p">]</span>
+    <span class="p">],</span>
+    <span class="nx">tables</span><span class="o">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="nx">name</span><span class="o">:</span> <span class="err">“</span><span class="nx">TheNameOfTheTable</span><span class="err">”</span><span class="p">,</span>
+            <span class="nx">fks</span><span class="o">:</span> <span class="p">[</span>  <span class="c1">// An array of foreign key definitions where the key is </span>
+                <span class="c1">// the column name and the value is the name of the table </span>
+                <span class="c1">// that the foreign key references</span>
+                <span class="p">{</span> <span class="nx">ColumnName1</span><span class="o">:</span> <span class="err">“</span><span class="nx">ReferencedTable1</span><span class="err">”</span> <span class="p">},</span>
+                <span class="p">{</span> <span class="nx">ColumnName2</span><span class="o">:</span> <span class="err">“</span><span class="nx">ReferencedTable2</span><span class="err">”</span> <span class="p">}</span>
+            <span class="p">],</span>
+            <span class="nx">cols</span><span class="o">:</span> <span class="p">[</span>     <span class="c1">// An array of column definitions</span>
+                <span class="p">{</span> <span class="nx">ColumnName</span><span class="o">:</span> <span class="err">“</span><span class="nx">DataType</span><span class="err">”</span><span class="p">,</span> <span class="nx">Null</span><span class="o">:</span> <span class="kc">false</span> <span class="o">||</span> <span class="kc">true</span> <span class="p">}</span> <span class="c1">// </span>
+            <span class="p">]</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="nx">name</span><span class="o">:</span> <span class="err">“</span><span class="nx">TableOne</span><span class="err">”</span><span class="p">,</span>
+            <span class="nx">cols</span><span class="o">:</span> <span class="p">[</span>     
+                <span class="p">{</span> <span class="nx">Name</span><span class="o">:</span> <span class="err">“</span><span class="nb">String</span><span class="err">”</span><span class="p">,</span> <span class="nx">Null</span><span class="o">:</span> <span class="kc">false</span> <span class="p">},</span>
+                <span class="p">{</span> <span class="nx">Description</span><span class="o">:</span> <span class="s2">"String"</span><span class="p">,</span> <span class="nx">Null</span><span class="o">:</span> <span class="kc">true</span> <span class="p">}</span>
+            <span class="p">]</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="nx">name</span><span class="o">:</span> <span class="s2">"TableTwo"</span><span class="p">,</span>
+            <span class="nx">fks</span><span class="o">:</span> <span class="p">[</span>
+                <span class="p">{</span> <span class="nx">TableOneId</span><span class="o">:</span> <span class="s2">"TableOne"</span> <span class="p">}</span>
+            <span class="p">],</span>
+            <span class="nx">cols</span><span class="o">:</span> <span class="p">[</span>
+                <span class="p">{</span> <span class="nx">Name</span><span class="o">:</span> <span class="s2">"String"</span><span class="p">,</span> <span class="nx">Null</span><span class="o">:</span> <span class="kc">false</span> <span class="p">},</span>
+                <span class="p">{</span> <span class="nx">DescriptionTwo</span><span class="o">:</span> <span class="s2">"String"</span><span class="p">,</span> <span class="nx">Null</span><span class="o">:</span> <span class="kc">true</span> <span class="p">}</span>
+            <span class="p">]</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="nx">name</span><span class="o">:</span> <span class="s2">"LeftTable,</span>
+<span class="s2">            cols: [</span>
+<span class="s2">                { LeftName: "</span><span class="nb">String</span><span class="s2">"}</span>
+<span class="s2">            ]</span>
+<span class="s2">        },</span>
+<span class="s2">        {</span>
+<span class="s2">            name: "</span><span class="nx">RightTable</span><span class="p">,</span>
+            <span class="nx">cols</span><span class="o">:</span> <span class="p">[</span>
+                <span class="p">{</span> <span class="nx">RightName</span><span class="o">:</span> <span class="s2">"String"</span><span class="p">}</span>
+            <span class="p">]</span>
+        <span class="p">}</span>
+        <span class="p">{</span>       
+            <span class="c1">// … another table like above and so on</span>
+        <span class="p">}</span>       
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+
+<h3>
+<a name="dao-from-laotzu" class="anchor" href="#dao-from-laotzu"><span class="octicon octicon-link"></span></a>Dao From LaoTzu</h3>
+
+<p>Another way of generating data access objects is by extracting those objects 
+from an existing SQL Server using LaoTzu.exe.  To reiterate, code generation from 
+an existing SQL Server database does not account for what I refer to as 
+“silliness in the database” such as tables with no primary keys or tables with 
+compound or composite primary keys so your mileage with this technique may vary.</p>
+
+<pre><code>// TODO: show screenshot of LaoTzu
+</code></pre>
+
+<p>LaoTze and LaoTzu both generate .Net (C#) code that can be used to quickly perform all 
+database CRUD (Create, Retrieve, Update, Delete) operations.</p>
+
+<div class="highlight highlight-c#"><pre><span class="c1">// Create</span>
+<span class="n">TableOne</span> <span class="n">one</span> <span class="p">=</span> <span class="k">new</span> <span class="n">TableOne</span><span class="p">();</span>
+<span class="n">one</span><span class="p">.</span><span class="n">Name</span> <span class="p">=</span> <span class="s">"TableOneName"</span><span class="p">;</span>
+<span class="n">one</span><span class="p">.</span><span class="n">Description</span> <span class="p">=</span> <span class="s">"TableOne Description"</span><span class="p">;</span>
+<span class="n">one</span><span class="p">.</span><span class="n">Save</span><span class="p">();</span>
+
+<span class="c1">// Retrieve</span>
+<span class="n">TableOne</span> <span class="n">retrieved</span> <span class="p">=</span> <span class="n">TableOne</span><span class="p">.</span><span class="n">OneWhere</span><span class="p">(</span><span class="n">c</span> <span class="p">=&gt;</span> <span class="n">c</span><span class="p">.</span><span class="n">Name</span> <span class="p">==</span> <span class="s">"TableOneName"</span><span class="p">);</span>
+<span class="c1">// or</span>
+<span class="n">TableOneCollection</span> <span class="n">retrieved</span> <span class="p">=</span> <span class="n">TableOne</span><span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="n">c</span> <span class="p">=&gt;</span> <span class="n">Name</span> <span class="p">==</span> <span class="s">"TableOneName"</span><span class="p">);</span>
+
+<span class="c1">// Update</span>
+<span class="n">retrieved</span><span class="p">.</span><span class="n">Description</span> <span class="p">=</span> <span class="s">"The description updated"</span><span class="p">;</span>
+<span class="n">retrieved</span><span class="p">.</span><span class="n">Save</span><span class="p">();</span>
+
+<span class="c1">// Delete</span>
+<span class="n">retrieved</span><span class="p">.</span><span class="n">Delete</span><span class="p">();</span>
+</pre></div>
+
+<h2>
+<a name="web-services-using-serviceproxysystem" class="anchor" href="#web-services-using-serviceproxysystem"><span class="octicon octicon-link"></span></a>Web Services Using ServiceProxySystem</h2>
+
+<p>Creating and exposing web services with Brevitee is as simple as defining 
+a .Net class and registering that class with the ServiceProxySystem early in the 
+application life-cycle, typically in the global.asax file or a custom AppStart Config
+class.</p>
+
+<h3>
+<a name="web-service-server" class="anchor" href="#web-service-server"><span class="octicon octicon-link"></span></a>Web Service Server</h3>
+
+<div class="highlight highlight-c#"><pre><span class="c1">// Echo.cs</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">Echo</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="nf">Test</span><span class="p">(</span><span class="kt">string</span> <span class="k">value</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="k">value</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// Application_Start in global.asax</span>
+<span class="n">ServiceProxySystem</span><span class="p">.</span><span class="n">Initialize</span><span class="p">();</span>
+<span class="n">ServiceProxySystem</span><span class="p">.</span><span class="n">Register</span><span class="p">&lt;</span><span class="n">Echo</span><span class="p">&gt;();</span>
+</pre></div>
+
+<p>Alternatively if the Echo class were adorned with the Proxy attribute...</p>
+
+<div class="highlight highlight-c#"><pre><span class="na">[Proxy]</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">Echo</span>
+<span class="p">{</span>
+<span class="p">}</span>
+
+<span class="c1">// ...it could then be registered like so;</span>
+<span class="n">ServiceProxySystem</span><span class="p">.</span><span class="n">RegisterBinProviders</span><span class="p">();</span>
+</pre></div>
+
+<p>Keep in mind that using the RegisterBinProviders method will likely 
+incur a performance hit on startup of the application as the 
+ServiceProxySystem will "scour" the bin directory looking for classes 
+with the Proxy attribute.</p>
+
+<h3>
+<a name="web-service-endpoints" class="anchor" href="#web-service-endpoints"><span class="octicon octicon-link"></span></a>Web Service Endpoints</h3>
+
+<p>The web service endpoints or endpoint urls that are defined for each registered 
+class will conform to the following route signature:</p>
+
+<pre><code>/{VERB}/{ClassName}/{MethodName}.{ext}
+</code></pre>
+
+<p>Where VERB is one of GET or POST.</p>
+
+<h3>
+<a name="web-service-clients" class="anchor" href="#web-service-clients"><span class="octicon octicon-link"></span></a>Web Service Clients</h3>
+
+<p>In addition to automatically exposing any class that you choose as a
+web service, the ServiceProxySystem will also automatically generate clients
+on your behalf.</p>
+
+<h4>
+<a name="c-clients" class="anchor" href="#c-clients"><span class="octicon octicon-link"></span></a>C# Clients</h4>
+
+<p>To obtain C# client code simply download the code from a running ServiceProxySystem
+installation using the following path:</p>
+
+<pre><code>/ServiceProxy/CSharpProxies
+</code></pre>
+
+<p>You may also specify an optional namespace that the clients will be defined in</p>
+
+<pre><code>/ServiceProxy/CSharpProxies?namespace=My.Name.Space
+</code></pre>
+
+<h4>
+<a name="javascript-clients" class="anchor" href="#javascript-clients"><span class="octicon octicon-link"></span></a>JavaScript Clients</h4>
+
+<p>The ServiceProxySystem also generates JavaScript clients as well which
+can be downloaded in a similar fashion as the C# clients.  But, the recommended way
+of acquiring JavaScript clients would be to include a script tag in your pages
+with the src attribute set to the JavaScript proxies path:</p>
+
+<div class="highlight highlight-xml"><pre><span class="nt">&lt;script</span> <span class="na">src=</span><span class="s">"/ServiceProxy/JSProxies"</span><span class="nt">&gt;&lt;/script&gt;</span>
+</pre></div>
+
+<h2>
+<a name="logging" class="anchor" href="#logging"><span class="octicon octicon-link"></span></a>Logging</h2>
+
+<p>Logging using Brevitee is done through the static convenience class
+Log and it's various AddEntry methods.</p>
+
+<p>Configuring logging with Brevitee is as simple as adding an entry to the 
+appSettings section of the app.config or web.config file.</p>
+
+<div class="highlight highlight-xml"><pre><span class="nt">&lt;add</span> <span class="na">key=</span><span class="s">"LogType"</span> <span class="na">value=</span><span class="s">"Text"</span> <span class="nt">/&gt;</span>
+</pre></div>
+
+<p>Additionally, you are also encouraged to add an entry identifying the application by name like
+so:</p>
+
+<div class="highlight highlight-xml"><pre><span class="nt">&lt;add</span> <span class="na">key=</span><span class="s">"ApplicationName"</span> <span class="na">value=</span><span class="s">"MyApplicationName"</span> <span class="nt">/&gt;</span>
+</pre></div>
+
+<p>There are a number of Loggers included with Brevitee, they are:</p>
+
+<ul>
+<li>Text</li>
+<li>Csv</li>
+<li>Xml</li>
+<li>Windows</li>
+</ul><p>The logging implementation contained in Brevitee uses a single background commit thread
+to ensure that logging operations do not block the main application thread.  Because of this
+the logging system should be started early in the application life-cycle by calling Log.Start().
+This is typically done in the global.asax file or a custom AppStart Config class.</p>
+
+<h3>
+<a name="defining-a-custom-logger" class="anchor" href="#defining-a-custom-logger"><span class="octicon octicon-link"></span></a>Defining a Custom Logger</h3>
+
+<p>If the included loggers do not meet your needs or you would otherwise like to define a logger of 
+your own that commits events to a custom store or other location you need only to extend the 
+base Logger class and implement the CommitLogEvent method.</p>
+
+<div class="highlight highlight-c#"><pre><span class="k">public</span> <span class="k">class</span> <span class="nc">CustomLogger</span><span class="p">:</span> <span class="n">Logger</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">void</span> <span class="nf">CommitLogEvent</span><span class="p">(</span><span class="n">LogEvent</span> <span class="k">event</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">/// your logic here</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>To configure the application to use a custom logger not included in Brevitee you 
+will need to specify the assembly qualified name in the app.config or web.config file.</p>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class="owner">
+      <p><a href="https://github.com/BryanApellanes" class="avatar"><img src="https://0.gravatar.com/avatar/5d27ed0c9f23db5089a317c71924ca67?d=https%3A%2F%2Fidenticons.github.com%2Fab8005f9f002145d1b39701214423e93.png&amp;r=x&amp;s=60" width="48" height="48"/></a> <a href="https://github.com/BryanApellanes">BryanApellanes</a> maintains <a href="https://github.com/BryanApellanes/Brevitee">Brevitee</a></p>
+
+
+      </div>
+      <div class="creds">
+        <small>This page generated using <a href="http://pages.github.com/">GitHub Pages</a><br/>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
+      </div>
+    </footer>
+  </div>
+  <div class="current-section">
+    <a href="#top">Scroll to top</a>
+    <a href="https://github.com/BryanApellanes/Brevitee/tarball/master" class="tar">tar</a><a href="https://github.com/BryanApellanes/Brevitee/zipball/master" class="zip">zip</a><a href="" class="code">source code</a>
+    <p class="name"></p>
+  </div>
+
+  
+</body>
+</html>

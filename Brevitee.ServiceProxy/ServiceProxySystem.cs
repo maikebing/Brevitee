@@ -21,7 +21,8 @@ namespace Brevitee.ServiceProxy
         static bool initialized;
         static object initLock = new object();
         /// <summary>
-        /// Initialize the underlying ServiceProxySystem.
+        /// Initialize the underlying ServiceProxySystem, including registering the 
+        /// necessary ServiceProxy routes in System.Web.Routing.RouteTable.Routes.
         /// </summary>
         public static void Initialize()
         {
@@ -101,7 +102,8 @@ namespace Brevitee.ServiceProxy
 
         /// <summary>
         /// Analyzes all the files in the bin directory of the current app that match the
-        /// ProxySearchPattern and registers each matching class as services
+        /// ProxySearchPattern and registers as services any class found addorned with the 
+        /// ProxyAttribute
         /// </summary>
         /// <see cref="ServiceProxySystem.ProxySearchPattern" />
         public static void RegisterBinProviders()

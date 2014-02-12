@@ -44,7 +44,7 @@ namespace Brevitee.ServiceProxy
             if (_toValidate.TargetType == null)
             {
                 failures.Add(ValidationFailures.ClassNotRegistered);
-                messages.Add("Class {0} was not registered as a proxied service.  Call ServiceProxySystem.Register first."._Format(_toValidate.ClassName));
+                messages.Add("Class {0} was not registered as a proxied service.  Register the class with the ServiceProvider first."._Format(_toValidate.ClassName));
             }
 
             if (string.IsNullOrWhiteSpace(_toValidate.MethodName))

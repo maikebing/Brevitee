@@ -13,6 +13,7 @@ namespace Brevitee.CommandLine
             : base()
         {
             this.AddDetails = true;
+            this.UseColors = true;
         }
         public bool UseColors { get; set; }
         public bool AddDetails { get; set; }
@@ -25,7 +26,7 @@ namespace Brevitee.CommandLine
             }
             else
             {
-                return new StringBuilder();
+                return new StringBuilder(ev.Message);
             }
         }
 
@@ -41,27 +42,26 @@ namespace Brevitee.CommandLine
                 switch (logEvent.Severity)
                 {
                     case LogEventType.None:
-                        ConsoleExtensions.SetTextColor(ConsoleColor.Cyan);
+                        Console.ForegroundColor = ConsoleColor.Cyan;                        
                         break;
                     case LogEventType.Information:
-                        ConsoleExtensions.SetTextColor(ConsoleColor.Gray);
+                        Console.ForegroundColor = ConsoleColor.Cyan;
                         break;
                     case LogEventType.Warning:
-                        ConsoleExtensions.SetTextColor(ConsoleColor.Yellow);
+                        Console.ForegroundColor = ConsoleColor.Yellow;
                         break;
                     case LogEventType.Error:
-                        ConsoleExtensions.SetTextColor(ConsoleColor.Magenta);
+                        Console.ForegroundColor = ConsoleColor.Magenta;
                         break;
                     case LogEventType.Fatal:
-                        ConsoleExtensions.SetTextColor(ConsoleColor.Red);
-                        break;
-                    default:
+                        Console.ForegroundColor = ConsoleColor.Red;
                         break;
                 }
             }
             
+            
             Console.WriteLine(logEvent.Message);
-            ConsoleExtensions.SetTextColor();
+            Console.ResetColor();
         }
 
         private static void ShowDetails(LogEvent logEvent)

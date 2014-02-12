@@ -21,6 +21,8 @@
     <SccProvider>
     </SccProvider>
     <TargetFrameworkProfile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -43,8 +45,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EcmaScript.NET">
-      <HintPath>..\Assemblies\EcmaScript.NET.dll</HintPath>
+    <Reference Include="EcmaScript.NET, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EcmaScript.Net.1.0.1.0\lib\net20\EcmaScript.NET.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json">
@@ -66,8 +69,9 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Yahoo.Yui.Compressor">
-      <HintPath>..\Assemblies\Yahoo.Yui.Compressor.dll</HintPath>
+    <Reference Include="Yahoo.Yui.Compressor, Version=2.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\YUICompressor.NET.2.3.0.0\lib\NET20\Yahoo.Yui.Compressor.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -81,9 +85,13 @@
     <Compile Include="DocResult.cs" />
     <Compile Include="DocXmlRenderDelegate.cs" />
     <Compile Include="Echo.cs" />
+    <Compile Include="IRequest.cs" />
+    <Compile Include="IResponse.cs" />
     <Compile Include="MemberType.cs" />
     <Compile Include="ParamInfo.cs" />
     <Compile Include="PermissionInfo.cs" />
+    <Compile Include="RequestWrapper.cs" />
+    <Compile Include="ResponseWrapper.cs" />
     <Compile Include="RolesController.cs" />
     <Compile Include="SeeAlsoInfo.cs" />
     <Compile Include="ServiceProxyClient.cs">
@@ -105,7 +113,6 @@
     <Compile Include="TestObject.cs" />
     <Compile Include="TypeParamInfo.cs" />
     <Compile Include="UrlHelperExtensions.cs" />
-    <Compile Include="UserAgents.cs" />
     <Compile Include="ServiceProxyClient[T].cs">
       <SubType>Component</SubType>
     </Compile>
@@ -129,7 +136,11 @@
   <ItemGroup>
     <Content Include="Keymaster\keymaster.db.js" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

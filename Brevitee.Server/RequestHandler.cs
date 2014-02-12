@@ -8,27 +8,28 @@ using System.IO;
 using System.Net;
 using Brevitee.Html;
 using Brevitee.Logging;
+using Brevitee.ServiceProxy;
 
 namespace Brevitee.Server
 {
     public class RequestHandler: IRequestHandler
     {
-        Incubator _incubator;
         List<IResponder> _responders;
-        Content _content;
-        Css _css;
-        Images _images;
-        Scripts _scripts;
-        Execution _execution;
         ILogger _logger;
 
         public event Action<IRequestHandler, IResponder> ResponderAdded;
 
-        public RequestHandler(Incubator serviceProvider, Fs fs, ILogger logger = null, bool initResponders = false)
+        public RequestHandler(BreviteeConf conf, ILogger logger = null, bool setResponders = true)
         {
             this._logger = logger ?? Log.Default;
-            this._incubator = serviceProvider;
-            this.Fs = fs;            
+            this._responders = new List<IResponder>();
+
+            this.BreviteeConf = conf;
+
+            if (setResponders)
+            {
+                this.SetResponders();
+            }
         }
 
         public ILogger Logger
@@ -39,37 +40,67 @@ namespace Brevitee.Server
             }
         }
 
-        public void InitializeResponders()
+        public void SetResponders()
         {
-            SetResponders(this.Fs, this._logger);
+            this.AddResponder(Content);
+            this.AddResponder(Dao);
+            this.AddResponder(ServiceProxy);
+        }
+        
+        ServiceProxyResponder _serviceProxy;
+        public ServiceProxyResponder ServiceProxy
+        {
+            get
+            {
+                if (_serviceProxy == null)
+                {
+                    _serviceProxy = new ServiceProxyResponder(BreviteeConf, Logger, this);
+                }
+
+                return _serviceProxy;
+            }
         }
 
-        private void SetResponders(Fs fs, ILogger logger)
+        DaoResponder _dao;
+        public DaoResponder Dao
         {
-            this._content = new Content(fs, logger);
-            this._images = new Images(fs, logger);
-            this._css = new Css(fs, this._images, logger);            
-            this._scripts = new Scripts(fs, logger);
-            this._execution = new Execution(fs, logger);
-            this._scripts.ServiceProvider = this._execution.ServiceProvider;
-
-            this._responders = new List<IResponder>();
-            this.AddResponder(this._images);
-            this.AddResponder(this._content);
-            this.AddResponder(this._css);
-            this.AddResponder(this._scripts);
-            this.AddResponder(this._execution);
+            get
+            {
+                if (_dao == null)
+                {
+                    _dao = new DaoResponder(BreviteeConf, Logger, this);
+                }
+                return _dao;
+            }
         }
 
-        public Incubator ServiceProvider
+        ContentResponder _content;
+        public ContentResponder Content
         {
-            get { return this._incubator; }
+            get
+            {
+                if (_content == null)
+                {
+                    _content = new ContentResponder(BreviteeConf, Logger, this);
+                }
+
+                return _content;
+            }
         }
 
-        public Fs Fs
+        internal Fs Fs
+        {
+            get { return BreviteeConf.Fs; }
+            private set
+            {
+                BreviteeConf.Fs = value;
+            }
+        }
+
+        public BreviteeConf BreviteeConf
         {
             get;
-            private set;
+            set;
         }
 
         public void AddResponder(IResponder responder)
@@ -99,39 +130,125 @@ namespace Brevitee.Server
 
         public void AddExecutor(object instance)
         {
-            _execution.Add(instance);
+            _serviceProxy.AddCommonExecutor(instance);
         }
 
         public void RemoveExecutor(object instance)
         {
-            _execution.Remove(instance.GetType());
+            _serviceProxy.RemoveCommonExecutor(instance.GetType());
         }
 
+        Action<IRequest, IResponse> _responderNotFoundHandler;
+        object _responderNotFoundHandlerLock = new object();
+        /// <summary>
+        /// Get or set the default handler used when no appropriate
+        /// responder is found for a given request.  This is the 
+        /// Action responsible for responding with a 404 status code
+        /// and supplying any additional information to the client.
+        /// </summary>
+        public Action<IRequest, IResponse> ResponderNotFoundHandler
+        {
+            get
+            {
+                return _responderNotFoundHandlerLock.DoubleCheckLock(ref _responderNotFoundHandler, () => HandleResponderNotFound);
+            }
+            set
+            {
+                _responderNotFoundHandler = value;
+            }
+        }
+
+        Action<IRequest, IResponse, Exception> _exceptionHandler;
+        object _exceptionHandlerLock = new object();
+        /// <summary>
+        /// Get or set the default exception handler.  This is the
+        /// Action responsible for responding with a 500 status code
+        /// and supplying any additional information to the client
+        /// pertaining to exceptions that may occur on the server.
+        /// </summary>
+        public Action<IRequest, IResponse, Exception> ExceptionHandler
+        {
+            get
+            {
+                return _exceptionHandlerLock.DoubleCheckLock(ref _exceptionHandler, () => HandleException);
+            }
+            set
+            {
+                _exceptionHandler = value;
+            }
+        }
+        
         #region IRequestHandler Members
 
         public void HandleRequest(IContext context)
         {            
             IRequest request = context.Request;
             IResponse response = context.Response;
-            IResponder responder = new ResponderList(Fs, _responders);            
-
-            if (!responder.Respond(context))
+            IResponder responder = new ResponderList(BreviteeConf, _responders);
+            try
             {
-                using (StreamWriter sw = new StreamWriter(response.OutputStream))
+                if (!responder.Respond(context))
                 {
-                    response.StatusCode = (int)HttpStatusCode.NotFound;
-                    response.StatusDescription = "handler not found";
-                    sw.WriteLine("<!DOCTYPE html>");
-                    Tag html = new Tag("html");
-                    html.Child(new Tag("body")
-                        .Child(new Tag("h1").Text("handler not found"))
-                        .Child(new Tag("p").Text(string.Format("No handler was found for the path: {0}", request.Url.ToString())))
-                    );
-                    sw.WriteLine(html.ToHtmlString());
-                    sw.Flush();
-                    sw.Close();
+                    HandleResponderNotFound(request, response);
+                }
+                else
+                {
+                    response.OutputStream.Flush();
+                    response.OutputStream.Close();                    
                 }
             }
+            catch (Exception ex)
+            {
+                HandleException(request, response, ex);
+            }
+        }
+
+        private void HandleResponderNotFound(IRequest request, IResponse response)
+        {
+            string path = request.Url.ToString();
+            string messageFormat = "No responder was found for the path: {0}";
+            string description = "Responder not found";
+
+            using (StreamWriter sw = new StreamWriter(response.OutputStream))
+            {
+                response.StatusCode = (int)HttpStatusCode.NotFound;
+                response.StatusDescription = description;
+                sw.WriteLine("<!DOCTYPE html>");
+                Tag html = new Tag("html");
+                html.Child(new Tag("body")
+                    .Child(new Tag("h1").Text(description))
+                    .Child(new Tag("p").Text(string.Format(messageFormat, path)))
+                );
+                sw.WriteLine(html.ToHtmlString());
+                sw.Flush();
+                sw.Close();
+            }
+
+            Logger.AddEntry(messageFormat, LogEventType.Warning, path);
+        }
+
+        private void HandleException(IRequest request, IResponse response, Exception ex)
+        {
+            using (StreamWriter sw = new StreamWriter(response.OutputStream))
+            {
+                string description = "({0})"._Format(ex.Message);
+                response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                response.StatusDescription = description;
+                sw.WriteLine("<!DOCTYPE html>");
+                Tag html = new Tag("html");
+                html.Child(new Tag("body")
+                    .Child(new Tag("h1").Text("Internal Server Exception"))
+                    .Child(new Tag("p").Text(description))
+                );
+                sw.WriteLine(html.ToHtmlString());
+                sw.Flush();
+                sw.Close();
+            }
+
+            Logger.AddEntry("An error occurred handling the request: ({0})\r\n*** Request Details ***\r\n{1}",
+                    ex,
+                    ex.Message,
+                    request.PropertiesToString());
         }
 
         #endregion

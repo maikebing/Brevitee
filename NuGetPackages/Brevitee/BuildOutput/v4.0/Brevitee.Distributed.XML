@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Brevitee.Distributed</name>
+    </assembly>
+    <members>
+        <member name="T:Brevitee.Distributed.IHasInfo">
+            <summary>
+            Implementers of this interface should 
+            have properties addorned with the InfoAttribute
+            attribute.  Each property will be included 
+            as properties on the object returned by 
+            GetInfo as well as the Dictionary returned
+            by GetInfoDictionary
+            </summary>
+        </member>
+        <member name="M:Brevitee.Distributed.Ring.InitializeSlots(System.Int32)">
+            <summary>
+            When implemented by a derived class should 
+            instantiate and initialize the Slots.  This
+            method is called each time the SlotCount
+            is set.
+            </summary>        
+        </member>
+        <member name="P:Brevitee.Distributed.Slot.StartAngle">
+            <summary>
+            Gets the starting angle that this slot is valid for
+            </summary>
+        </member>
+        <member name="P:Brevitee.Distributed.Slot.EndAngle">
+            <summary>
+            Gets the ending angle that this slot is valid for
+            </summary>
+        </member>
+    </members>
+</doc>

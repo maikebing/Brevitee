@@ -37,6 +37,10 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.0.0\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -45,10 +49,44 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DaoLogger.cs" />
-    <Compile Include="Generated\LogEvent.cs" />
-    <Compile Include="Generated\LogEventCollection.cs" />
-    <Compile Include="Generated\LogEventColumns.cs" />
-    <Compile Include="Generated\Qi\LogEvent.cs" />
+    <Compile Include="DaoLogger2.cs" />
+    <Compile Include="Generated1\LogEvent.cs" />
+    <Compile Include="Generated1\LogEventCollection.cs" />
+    <Compile Include="Generated1\LogEventColumns.cs" />
+    <Compile Include="Generated1\Qi\LogEvent.cs" />
+    <Compile Include="Generated2\CategoryName.cs" />
+    <Compile Include="Generated2\CategoryNameCollection.cs" />
+    <Compile Include="Generated2\CategoryNameColumns.cs" />
+    <Compile Include="Generated2\ComputerName.cs" />
+    <Compile Include="Generated2\ComputerNameCollection.cs" />
+    <Compile Include="Generated2\ComputerNameColumns.cs" />
+    <Compile Include="Generated2\DaoLogger2Context.cs" />
+    <Compile Include="Generated2\Event.cs" />
+    <Compile Include="Generated2\EventCollection.cs" />
+    <Compile Include="Generated2\EventColumns.cs" />
+    <Compile Include="Generated2\EventParam.cs" />
+    <Compile Include="Generated2\EventParamCollection.cs" />
+    <Compile Include="Generated2\EventParamColumns.cs" />
+    <Compile Include="Generated2\Param.cs" />
+    <Compile Include="Generated2\ParamCollection.cs" />
+    <Compile Include="Generated2\ParamColumns.cs" />
+    <Compile Include="Generated2\Qi\CategoryName.cs" />
+    <Compile Include="Generated2\Qi\ComputerName.cs" />
+    <Compile Include="Generated2\Qi\Event.cs" />
+    <Compile Include="Generated2\Qi\EventParam.cs" />
+    <Compile Include="Generated2\Qi\Param.cs" />
+    <Compile Include="Generated2\Qi\Signature.cs" />
+    <Compile Include="Generated2\Qi\SourceName.cs" />
+    <Compile Include="Generated2\Qi\UserName.cs" />
+    <Compile Include="Generated2\Signature.cs" />
+    <Compile Include="Generated2\SignatureCollection.cs" />
+    <Compile Include="Generated2\SignatureColumns.cs" />
+    <Compile Include="Generated2\SourceName.cs" />
+    <Compile Include="Generated2\SourceNameCollection.cs" />
+    <Compile Include="Generated2\SourceNameColumns.cs" />
+    <Compile Include="Generated2\UserName.cs" />
+    <Compile Include="Generated2\UserNameCollection.cs" />
+    <Compile Include="Generated2\UserNameColumns.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -65,7 +103,9 @@
       <Name>Brevitee</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="dao.db.js" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 
-namespace KLGates.Images
+namespace Brevitee.Images
 {
     /// <summary>
     /// BE CAREFUL IF/WHEN CHANGING THE NAME OF THIS INTERFACE SINCE THE PIXELSERVER

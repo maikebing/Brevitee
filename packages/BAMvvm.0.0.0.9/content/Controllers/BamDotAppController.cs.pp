@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Bryan.Apellanes.Management;
-using Bryan.Apellanes.ServiceProxy;
+using Brevitee.Management;
+using Brevitee.ServiceProxy;
 using System.Reflection;
 
 namespace $rootnamespace$.Controllers

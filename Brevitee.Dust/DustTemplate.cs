@@ -18,6 +18,10 @@ namespace Brevitee.Dust
     /// </summary>
     public class DustTemplate
     {
+        internal DustTemplate()
+        {
+
+        }
         public DustTemplate(string templateSource, string templateName)
         {
             this.Source = templateSource;
@@ -96,7 +100,7 @@ namespace Brevitee.Dust
             return Render(value, CompiledScript);
         }
 
-        internal string Render(object value, string templateScript)
+        protected internal string Render(object value, string templateScript)
         {
             try
             {

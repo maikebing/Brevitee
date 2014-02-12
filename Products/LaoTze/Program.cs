@@ -18,12 +18,12 @@ namespace LaoTze
     {
         static TargetTableEventDelegate BeforeTableHandler = (ns, t) =>
         {
-            OutFormat("Writing {0}.{1}", ConsoleColor.Yellow, ns, t.ClassName);
+            OutLineFormat("Writing {0}.{1}", ConsoleColor.Yellow, ns, t.ClassName);
         };
 
         static TargetTableEventDelegate AfterTableHandler = (ns, t) =>
         {
-            OutFormat("Done Writing {0}.{1}", ConsoleColor.Green, ns, t.ClassName);
+            OutLineFormat("Done Writing {0}.{1}", ConsoleColor.Green, ns, t.ClassName);
         };
 
         static void Main(string[] args)
@@ -62,7 +62,7 @@ namespace LaoTze
                 DirectoryInfo rootDirectory = new DirectoryInfo(Arguments["root"]);
                 if (!rootDirectory.Exists)
                 {
-                    OutFormat("Specified root directory does not exist: {0}", ConsoleColor.Red, rootDirectory.FullName);
+                    OutLineFormat("Specified root directory does not exist: {0}", ConsoleColor.Red, rootDirectory.FullName);
                     Pause();
                     Environment.Exit(1);
                 }
@@ -72,8 +72,8 @@ namespace LaoTze
                 {
                     if (dbjs.Length > 1)
                     {
-                        Out("Multiple database.js files found", ConsoleColor.Red);
-                        OutFormat("{0}", ConsoleColor.Yellow, dbjs.ToDelimited<FileInfo>(f => f.FullName, "\r\n"));
+                        OutLine("Multiple database.js files found", ConsoleColor.Red);
+                        OutLineFormat("{0}", ConsoleColor.Yellow, dbjs.ToDelimited<FileInfo>(f => f.FullName, "\r\n"));
                         string answer = Prompt("Process each? [y N]", ConsoleColor.Yellow);
                         if (!answer.ToLowerInvariant().Equals("y"))
                         {
@@ -85,7 +85,7 @@ namespace LaoTze
                     {
                         try
                         {
-                            OutFormat("Processing {0}...", ConsoleColor.Yellow, file.FullName);
+                            OutLineFormat("Processing {0}...", ConsoleColor.Yellow, file.FullName);
                             SchemaManager manager = new SchemaManager();
                             manager.RootDir = rootDirectory.FullName;
                             DirectoryInfo fileParent = file.Directory;
@@ -102,28 +102,28 @@ namespace LaoTze
                             {
                                 throw new Exception(result.Message);
                             }
-                            Out(result.Message, ConsoleColor.Green);
+                            OutLine(result.Message, ConsoleColor.Green);
                         }
                         catch (Exception ex)
                         {
-                            OutFormat("{0}\r\n\r\n***\r\n{1}", ConsoleColor.Red, ex.Message, ex.StackTrace ?? "");
-                            Pause("Press enter to exit");
+                            OutLineFormat("{0}\r\n\r\n***\r\n{1}", ConsoleColor.Red, ex.Message, ex.StackTrace ?? "");
+                            Pause("Press enter to exit\r\n");
                             Exit(1);
                         }
                     }
 
-                    Pause("Press enter to exit...");
+                    Pause("Press enter to exit...\r\n");
                 }
                 else
                 {
-                    Out("No *.db.js files were found", ConsoleColor.Yellow);
+                    OutLine("No *.db.js files were found", ConsoleColor.Yellow);
                 }
             }
             else
             {
                 if (string.IsNullOrEmpty(Arguments["conn"]))
                 {
-                    Out("Please specify a connection name from the config or a directory to search", ConsoleColor.Yellow);
+                    OutLine("Please specify a connection name from the config or a directory to search", ConsoleColor.Yellow);
                     Pause();
                 }
                 else
@@ -157,16 +157,16 @@ namespace LaoTze
                 connectionName = Arguments["conn"];
             }
 
-            OutFormat("Extracting schema using the connection ({0})", connectionName);
+            OutLineFormat("Extracting schema using the connection ({0})", connectionName);
             SchemaDefinition schema = ExtractSchema(connectionName, filePath);
-            Out("Extraction complete...");
+            OutLine("Extraction complete...");
 
             if (gen)
             {
                 RazorParser<RazorBaseTemplate>.DefaultRazorInspector = inspector;
-                OutFormat("Generating csharp for ({0})", schema.File);
+                OutLineFormat("Generating csharp for ({0})", schema.File);
                 Generate(schema, inspector, silent);
-                Out("Generation complete...");
+                OutLine("Generation complete...");
                 if (compile)
                 {
                     DirectoryInfo dir = new DirectoryInfo(Arguments["gen"]);
@@ -179,9 +179,9 @@ namespace LaoTze
 
                     FileInfo file = new FileInfo(Arguments["dll"]);
 
-                    OutFormat("Compiling sources in ({0})", dir.FullName);
+                    OutLineFormat("Compiling sources in ({0})", dir.FullName);
                     Compile(dirs.ToArray(), file);
-                    OutFormat("Compilation complete...");
+                    OutLineFormat("Compilation complete...");
                 }
             }
         }
@@ -197,8 +197,8 @@ namespace LaoTze
         {
             foreach (CompilerError error in results.Errors)
             {
-                OutFormat("File=>{0}", ConsoleColor.Yellow, error.FileName);
-                OutFormat("Line {0}, Column {1}::{2}", error.Line, error.Column, error.ErrorText);
+                OutLineFormat("File=>{0}", ConsoleColor.Yellow, error.FileName);
+                OutLineFormat("Line {0}, Column {1}::{2}", error.Line, error.Column, error.ErrorText);
                 Out();
             }
         }

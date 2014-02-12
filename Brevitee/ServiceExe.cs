@@ -75,7 +75,22 @@ namespace Brevitee
 
         /// <summary>
         /// Returns true if there were recognized command line
-        /// arguments to be processed otherwise false.
+        /// arguments to be processed otherwise false.  Not to be confused
+        /// with the command line arguments intended for CommandLineInterface
+        /// implementations.  This method will process service 
+        /// related comand line arguments.  A call to SetInfo should
+        /// be made prior to this call to ensure all ServiceInfo 
+        /// is already set.
+        /// <br />
+        /// <br />
+        /// Valid values are:<br />
+        /// -i [-ck:{credentialKey}]        Install the current ServiceExe implementation as a service. Using the specified appSettings key to look for credentials in the config file.  Expected keys would be key="{credentialKey}" and key="{credentialKey}Password".  Values will be retrieved using DefaultConfiguration<br />
+        /// -i [true]                       Install the current ServiceExe implementation as a service allowing desktop interaction.  Cannot be combined with -ck option.<br />
+        /// -s                              Start the service<br />
+        /// -k                              Kill (stop) the service<br />
+        /// -r                              Restart the service (stop and start)<br />
+        /// -u                              Uninstall the service<br />
+        /// -dl [-f]                        Delete the log.  Specify -f to force deletion without prompting to confirm<br />
         /// </summary>
         /// <param name="args"></param>
         /// <returns></returns>
@@ -129,7 +144,7 @@ namespace Brevitee
                     return true;
                 }
 
-                // handle credentials -ck='credential key'
+                // handle credentials -ck:'credential key'
                 if ((args[0].Equals("-i") || args[0].StartsWith("-ck:")) &&
                     args[1].Equals("-i") || args[1].StartsWith("-ck:"))
                 {
@@ -232,6 +247,11 @@ namespace Brevitee
             }
         }
 
+        /// <summary>
+        /// Set the ServiceName, DisplayName and Description for the current 
+        /// service.
+        /// </summary>
+        /// <param name="info"></param>
         public static void SetInfo(ServiceInfo info)
         {
             serviceName = info.ServiceName;
@@ -259,8 +279,9 @@ namespace Brevitee
             OnStartInstall();
             try
             {
-                string startName = string.IsNullOrEmpty(credentialKey) ? null : DefaultConfiguration.GetAppSetting(credentialKey);//.GetValue(credentialKey);
-                string startPassword = string.IsNullOrEmpty(credentialKey) ? null : DefaultConfiguration.GetAppSetting(credentialKey + "Password");//SupportManager.GetValue(credentialKey + "Password");
+                bool withIssues = false;
+                string startName = string.IsNullOrEmpty(credentialKey) ? null : DefaultConfiguration.GetAppSetting(credentialKey);
+                string startPassword = string.IsNullOrEmpty(credentialKey) ? null : DefaultConfiguration.GetAppSetting(credentialKey + "Password");
                 startName = string.IsNullOrEmpty(startName) ? null : startName;
                 startPassword = string.IsNullOrEmpty(startPassword) ? null : startPassword;
                 Assembly cur = Assembly.GetEntryAssembly();
@@ -280,6 +301,7 @@ namespace Brevitee
                 else
                 {
                     Console.WriteLine("WARN:: Return code was: {0}", ret.ToString());
+                    withIssues = true;
                 }
 
                 if (!string.IsNullOrEmpty(description))
@@ -287,11 +309,24 @@ namespace Brevitee
                     Console.WriteLine("INFO:: Setting description for '{0}' to '{1}'", displayName, description);
 
                     RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\" + serviceName, true);
-
-                    key.SetValue("Description", description, RegistryValueKind.String);
+                    if (key == null)
+                    {
+                        withIssues = true;
+                    }
+                    else
+                    {
+                        key.SetValue("Description", description, RegistryValueKind.String);
+                    }
                 }
 
-                Console.WriteLine("INFO:: Operation complete");
+                if (!withIssues)
+                {
+                    Console.WriteLine("INFO:: Operation complete");
+                }
+                else
+                {
+                    Console.WriteLine("WARN:: Operation completed with some issues");
+                }
             }
             catch (Exception ex)
             {
@@ -406,9 +441,6 @@ namespace Brevitee
 
         public static void DeleteLog(bool force, string logName)
         {
-            //if(Log.Default.GetType() == typeof(WindowsLogger))
-            //{
-            //string logName = serviceName;//windowsLogger.LogName;//Log.Default.LogName;
             if (force)
             {
                 Console.WriteLine("INFO: Deleting log...");
@@ -427,7 +459,6 @@ namespace Brevitee
                 EventLog.Delete(logName);
                 Console.WriteLine("INFO: Operation complete");
             }
-            //}
         }
 
         /// <summary>

@@ -12,18 +12,10 @@ namespace Brevitee.Server
 {
     public class Fs
     {
-        //FileExtHelper _extHelper;
-
         public Fs(string root)
         {
             this.RootDir = new DirectoryInfo(root);
-            //this._extHelper = new FileExtHelper();
         }
-
-        //protected FileExtHelper Ext
-        //{
-        //    get { return _extHelper; }
-        //}
 
         public DirectoryInfo RootDir
         {
@@ -31,6 +23,9 @@ namespace Brevitee.Server
             set;
         }
 
+        /// <summary>
+        /// The full physical path to the root of the current Fs (FileSystem)
+        /// </summary>
         public string Root
         {
             get
@@ -42,6 +37,10 @@ namespace Brevitee.Server
                 }
 
                 return val;
+            }
+            set
+            {
+                this.RootDir = new DirectoryInfo(value);
             }
         }
 
@@ -124,10 +123,20 @@ namespace Brevitee.Server
             OnFileWritten(path);
         }
 
+        public byte[] ReadBytes(params string[] pathSegments)
+        {
+            return ReadBytes(Path.Combine(pathSegments));
+        }
+
         public byte[] ReadBytes(string relativeFilePath)
         {
             string path = GetAbsolutePath(EnsureRelative(relativeFilePath));
             return File.ReadAllBytes(path);
+        }
+
+        public string ReadAllText(params string[] pathSegments)
+        {
+            return ReadAllText(Path.Combine(pathSegments));
         }
 
         public string ReadAllText(string relativeFilePath)
@@ -159,6 +168,19 @@ namespace Brevitee.Server
             AppendToFile(relativeFilePath, text);
         }
 
+        public bool FileExists(params string[] pathSegmentsToCombine)
+        {
+            return FileExists(Path.Combine(pathSegmentsToCombine));
+        }
+
+        /// <summary>
+        /// Determines if the specified relativePath exists
+        /// in the current Fs.  If the specified path is not
+        /// prefixed by a ~ it will be adjusted prior to 
+        /// checking for the existence of the file
+        /// </summary>
+        /// <param name="relativePath"></param>
+        /// <returns></returns>
         public bool FileExists(string relativePath)
         {
             relativePath = EnsureRelative(relativePath);
@@ -180,6 +202,13 @@ namespace Brevitee.Server
             relativePath = EnsureRelative(relativePath);
 
             return Directory.Exists(GetAbsolutePath(relativePath));
+        }
+
+        public DirectoryInfo GetDirectory(string relativePath)
+        {
+            relativePath = EnsureRelative(relativePath);
+
+            return new DirectoryInfo(GetAbsolutePath(relativePath));
         }
 
         public FileInfo[] GetFiles(string relativePath, string searchPattern = "*")

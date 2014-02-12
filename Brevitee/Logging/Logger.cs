@@ -27,7 +27,7 @@ namespace Brevitee.Logging
             this.requiredProperties = new List<string>();
             this.requiredProperties.Add("LogType");
             this.requiredProperties.Add("ApplicationName");
-            this.Verbosity = 4;
+            this.Verbosity = VerbosityLevel.Information;
             this.EventIdProvider = new EventIdProvider();
         }
 
@@ -93,7 +93,7 @@ namespace Brevitee.Logging
                     while (logEventQueue.Count > 0)
                     {
                         LogEvent logEvent = logEventQueue.Dequeue();
-                        if (logEvent != null && (int)logEvent.Severity <= Verbosity)
+                        if (logEvent != null && (int)logEvent.Severity <= (int)Verbosity)
                         {
                             CommitLogEvent(logEvent);
                         }
@@ -106,14 +106,21 @@ namespace Brevitee.Logging
         /// <summary>
         /// Blocks the current thread until the event queue is empty.  Keep
         /// in mind that other calls to AddEntry by other threads will 
-        /// increment the number of events in the queue.
+        /// increment the number of events in the queue.  This will
+        /// abort the logging thread if it's running and call a 3
+        /// second Join (Join(3000)) on the thread to allow it to die.
         /// </summary>
         public void BlockUntilEventQueueIsEmpty()
         {
-            RestartLoggingThread();
-            if (logEventQueue.Count > 0)
+            //RestartLoggingThread();
+            if(loggingThread.ThreadState == System.Threading.ThreadState.Running)
             {
-                waitForQueueToBeEmpty.WaitOne();
+                if (logEventQueue.Count > 0)
+                {
+                    waitForQueueToBeEmpty.WaitOne();
+                }
+                loggingThread.Abort();
+                loggingThread.Join(3000);
             }
         }
 
@@ -149,7 +156,7 @@ namespace Brevitee.Logging
         /// <summary>
         /// A number indicating what level of verbosity to log.  The default is 4.
         /// </summary>
-        public int Verbosity
+        public VerbosityLevel Verbosity
         {
             get;
             set;
@@ -382,17 +389,8 @@ namespace Brevitee.Logging
 
         protected virtual StringBuilder HandleDetails(LogEvent ev)
         {
-            StringBuilder message = new StringBuilder();
-            DateTime utcNow = DateTime.UtcNow;
-            message.AppendFormat("Thread=#{0}({1})~~App={2}~~PID={3}~~Utc={4}::{5}~~{6}",
-                Thread.CurrentThread.GetHashCode(),
-                Thread.CurrentThread.ManagedThreadId,
-                ApplicationName,
-                System.Diagnostics.Process.GetCurrentProcess().Id,
-                utcNow.ToShortDateString(),
-                utcNow.ToShortTimeString(),
-                ev.Message);
-            return message;
+            DiagnosticDetails details = new DiagnosticDetails(ev);
+            return new StringBuilder(details.ToString());
         }
 
         protected virtual void HandleStackTrace(Exception ex, StringBuilder message, StringBuilder stack)
@@ -450,12 +448,32 @@ namespace Brevitee.Logging
             AddEntry(messageSignature, (int)verbosity, ex);
         }
 
-        public void AddEntry(string messageSignature, LogEventType type, params string[] variableMessageValues)
+        public virtual void AddEntry(string messageSignature, LogEventType type, params string[] variableMessageValues)
         {
             AddEntry(messageSignature, (int)type, variableMessageValues);
         }
 
-        public void AddEntry(string messageSignature, LogEventType type, Exception ex, params string[] variableMessageValues)
+        public virtual void AddEntry(string messageSignature, LogEventType type, Exception ex, params string[] variableMessageValues)
+        {
+            AddEntry(messageSignature, (int)type, ex, variableMessageValues);
+        }
+
+        public virtual void AddEntry(string messageSignature, VerbosityLevel verbosity)
+        {
+            AddEntry(messageSignature, (int)verbosity);
+        }
+
+        public virtual void AddEntry(string messageSignature, VerbosityLevel verbosity, Exception ex)
+        {
+            AddEntry(messageSignature, (int)verbosity, ex);
+        }
+
+        public virtual void AddEntry(string messageSignature, VerbosityLevel type, params string[] variableMessageValues)
+        {
+            AddEntry(messageSignature, (int)type, variableMessageValues);
+        }
+
+        public virtual void AddEntry(string messageSignature, VerbosityLevel type, Exception ex, params string[] variableMessageValues)
         {
             AddEntry(messageSignature, (int)type, ex, variableMessageValues);
         }

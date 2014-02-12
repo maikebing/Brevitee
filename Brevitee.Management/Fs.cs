@@ -36,6 +36,11 @@ namespace Brevitee.Management
         {
         }
 
+        public Fs(DirectoryInfo rootDir)
+        {
+            this.RootDir = rootDir;
+        }
+
         public Fs(Controller controller, string appName)
             : this(controller.Server, appName)
         {
@@ -135,16 +140,28 @@ namespace Brevitee.Management
 
         public void Write(string relativeFilePath, string contentToWrite, bool overwrite = true)
         {
+            string path = EnsurePath(relativeFilePath);
+
+            path.SafeWriteFile(contentToWrite, overwrite);
+
+            OnFileWritten(path);
+        }
+
+        private string EnsurePath(string relativeFilePath)
+        {
             string path = GetAbsolutePath(EnsureRelative(relativeFilePath));
             FileInfo file = new FileInfo(path);
             if (!file.Directory.Exists)
             {
                 file.Directory.Create();
             }
+            return path;
+        }
 
-            path.SafeWriteFile(contentToWrite, overwrite);
-
-            OnFileWritten(path);
+        public void Write(string relativeFilePath, byte[] contentToWrite)
+        {
+            string path = EnsurePath(relativeFilePath);
+            File.WriteAllBytes(path, contentToWrite);
         }
 
         public byte[] ReadBytes(string relativeFilePath)

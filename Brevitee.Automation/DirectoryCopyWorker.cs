@@ -9,8 +9,9 @@ using Brevitee.Configuration;
 
 namespace Brevitee.Automation
 {
-    public class DirectoryCopyWorker: Worker, IConfigurable, IHasRequiredProperties
+    public class DirectoryCopyWorker: Worker
     {
+        public DirectoryCopyWorker() : base() { }
         public DirectoryCopyWorker(string name) : base(name) { }
 
         public string Source { get; set; }
@@ -28,8 +29,9 @@ namespace Brevitee.Automation
 
             src.Copy(dst);
 
-            return new WorkState("Directory {0} copied successfully to {1}"._Format(src.FullName, dst.FullName));
+            return new WorkState(this, "Directory {0} copied successfully to {1}"._Format(src.FullName, dst.FullName));
         }
+
 
         private void ThrowIfDirectoryNotFound(string jobName, DirectoryInfo src)
         {
@@ -39,20 +41,13 @@ namespace Brevitee.Automation
             }
         }
 
-        #region IConfigurable Members
 
-        public void Configure(object configuration)
-        {
-            Foreman.Configure(this, configuration);
-        }
-
-        #endregion
 
         #region IHasRequiredProperties Members
 
-        public string[] RequiredProperties
+        public override string[] RequiredProperties
         {
-            get { return new string[] { "Source", "Destination"}; }
+            get { return new string[] { "Name", "Source", "Destination"}; }
         }
 
         #endregion

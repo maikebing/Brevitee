@@ -151,7 +151,7 @@ namespace Brevitee.Encryption
             }
             return Deserialize<T>(text, key);
         }
-
+        
         /// <summary>
         /// Get a base64 encoded encrypted xml serialization string representing the specified target object
         /// </summary>

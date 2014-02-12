@@ -1136,6 +1136,7 @@
 		<row><td>ALLUSERSPROFILE</td><td>TARGETDIR</td><td>.:ALLUSE~1|All Users</td><td/><td>0</td><td/></row>
 		<row><td>AdminToolsFolder</td><td>TARGETDIR</td><td>.:Admint~1|AdminTools</td><td/><td>0</td><td/></row>
 		<row><td>AppDataFolder</td><td>TARGETDIR</td><td>.:APPLIC~1|Application Data</td><td/><td>0</td><td/></row>
+		<row><td>BRYAN_APELLANES</td><td>ProgramFilesFolder</td><td>BRYANA~1|Brevitee</td><td/><td>0</td><td/></row>
 		<row><td>CommonAppDataFolder</td><td>TARGETDIR</td><td>.:Common~1|CommonAppData</td><td/><td>0</td><td/></row>
 		<row><td>CommonFiles64Folder</td><td>TARGETDIR</td><td>.:Common64</td><td/><td>0</td><td/></row>
 		<row><td>CommonFilesFolder</td><td>TARGETDIR</td><td>.:Common</td><td/><td>0</td><td/></row>
@@ -1145,7 +1146,7 @@
 		<row><td>FavoritesFolder</td><td>TARGETDIR</td><td>.:FAVORI~1|Favorites</td><td/><td>0</td><td/></row>
 		<row><td>FontsFolder</td><td>TARGETDIR</td><td>.:Fonts</td><td/><td>0</td><td/></row>
 		<row><td>GlobalAssemblyCache</td><td>TARGETDIR</td><td>.:Global~1|GlobalAssemblyCache</td><td/><td>0</td><td/></row>
-		<row><td>INSTALLDIR</td><td>RENCOPY</td><td>.</td><td/><td>0</td><td/></row>
+		<row><td>INSTALLDIR</td><td>RENCOPY1</td><td>.</td><td/><td>0</td><td/></row>
 		<row><td>ISCommonFilesFolder</td><td>CommonFilesFolder</td><td>Instal~1|InstallShield</td><td/><td>0</td><td/></row>
 		<row><td>ISMyCompanyDir</td><td>ProgramFilesFolder</td><td>MYCOMP~1|My Company Name</td><td/><td>0</td><td/></row>
 		<row><td>ISMyProductDir</td><td>ISMyCompanyDir</td><td>MYPROD~1|My Product Name</td><td/><td>0</td><td/></row>
@@ -1162,6 +1163,7 @@
 		<row><td>ProgramFilesFolder</td><td>TARGETDIR</td><td>.:PROGRA~1|program files</td><td/><td>0</td><td/></row>
 		<row><td>ProgramMenuFolder</td><td>TARGETDIR</td><td>.:Programs</td><td/><td>3</td><td/></row>
 		<row><td>RENCOPY</td><td>K___L_GATES</td><td>rencopy</td><td/><td>0</td><td/></row>
+		<row><td>RENCOPY1</td><td>BRYAN_APELLANES</td><td>rencopy</td><td/><td>0</td><td/></row>
 		<row><td>RENCOPY_FILES</td><td>DOCS</td><td>RENCOP~1|RenCopy_files</td><td/><td>0</td><td/></row>
 		<row><td>RecentFolder</td><td>TARGETDIR</td><td>.:Recent</td><td/><td>0</td><td/></row>
 		<row><td>SendToFolder</td><td>TARGETDIR</td><td>.:SendTo</td><td/><td>3</td><td/></row>
@@ -2669,7 +2671,7 @@
 		<col def="I2">Encoded</col>
 		<col def="S0">Comment</col>
 		<col def="I4">TimeStamp</col>
-		<row><td>COMPANY_NAME</td><td>1033</td><td>K &amp; L Gates</td><td>0</td><td/><td>1554066951</td></row>
+		<row><td>COMPANY_NAME</td><td>1033</td><td>Brevitee</td><td>0</td><td/><td>1310788276</td></row>
 		<row><td>DN_AlwaysInstall</td><td>1033</td><td>Always Install</td><td>0</td><td/><td>1554079207</td></row>
 		<row><td>IDPROP_EXPRESS_LAUNCH_CONDITION_COLOR</td><td>1033</td><td>The color settings of your system are not adequate for running [ProductName].</td><td>0</td><td/><td>1554079207</td></row>
 		<row><td>IDPROP_EXPRESS_LAUNCH_CONDITION_OS</td><td>1033</td><td>The operating system is not adequate for running [ProductName].</td><td>0</td><td/><td>1554079207</td></row>
@@ -3769,8 +3771,8 @@
 		<row><td>IDS__TargetReq_DESC_PROCESSOR</td><td>1033</td><td>The processor is not adequate for running [ProductName].</td><td>0</td><td/><td>1554079207</td></row>
 		<row><td>IDS__TargetReq_DESC_RAM</td><td>1033</td><td>The amount of RAM is not adequate for running [ProductName].</td><td>0</td><td/><td>1554079207</td></row>
 		<row><td>IDS__TargetReq_DESC_RESOLUTION</td><td>1033</td><td>The screen resolution is not adequate for running [ProductName].</td><td>0</td><td/><td>1554079207</td></row>
-		<row><td>ID_STRING1</td><td>1033</td><td>http://www.K&amp;LGates.com</td><td>0</td><td/><td>1554066951</td></row>
-		<row><td>ID_STRING2</td><td>1033</td><td>K &amp; L Gates</td><td>0</td><td/><td>1554066951</td></row>
+		<row><td>ID_STRING1</td><td>1033</td><td>http://www.BreviteeApellanes.com</td><td>0</td><td/><td>1310788276</td></row>
+		<row><td>ID_STRING2</td><td>1033</td><td>Brevitee</td><td>0</td><td/><td>1310788276</td></row>
 		<row><td>ID_STRING3</td><td>1033</td><td>=-PATH</td><td>0</td><td/><td>1554091592</td></row>
 		<row><td>ID_STRING4</td><td>1033</td><td>[~];[INSTALLDIR]</td><td>0</td><td/><td>1554114120</td></row>
 		<row><td>IIDS_UITEXT_FeatureUninstalled</td><td>1033</td><td>This feature will remain uninstalled.</td><td>0</td><td/><td>1554079207</td></row>

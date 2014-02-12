@@ -10,7 +10,6 @@ using Microsoft.CSharp;
 using System.Reflection;
 using System.IO;
 using System.CodeDom.Compiler;
-using Brevitee;
 using Brevitee.ServiceProxy;
 using Brevitee.ServiceProxy.Js;
 

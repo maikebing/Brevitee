@@ -38,3 +38,5 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Brevitee.Data.Tests")]
 [assembly: InternalsVisibleTo("Brevitee.Queries.Tests")]
 [assembly: InternalsVisibleTo("Brevitee.Data.MsSql")]
+[assembly: InternalsVisibleTo("Brevitee.Data.SQLite")]
+[assembly: InternalsVisibleTo("Brevitee.ServiceProxy")]

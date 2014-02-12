@@ -1,0 +1,28 @@
+================= Logging started at 2/7/2014 06:32:34 PM ==================
+Created release folders
+ISEXP : warning -7235: InstallShield could not create the software identification tag because the Tag Creator ID setting in the General Information view is empty.
+AdminExecuteSequence table successfully built
+AdminUISequence table successfully built
+AdvtExecuteSequence table successfully built
+AdvtUISequence table successfully built
+InstallExecuteSequence table successfully built
+InstallUISequence table successfully built
+Directory table successfully built
+Feature table successfully built
+FeatureComponents table successfully built
+Component table successfully built
+Loading File table
+Building File table
+ISEXP : warning -6245: One or more of the project's components contain .NET properties that require the .NET Framework.  It is recommended that the release include the .NET Framework.
+Adding file 'Ionic.Zip.dll' that is a dependency of component 'Brevitee.CommandLine.Primary_output'
+Adding file 'Microsoft.Web.Infrastructure.dll' that is a dependency of component 'Brevitee.CommandLine.Primary_output'
+Adding file 'Newtonsoft.Json.dll' that is a dependency of component 'Brevitee.CommandLine.Primary_output'
+Adding file 'System.Net.FtpClient.dll' that is a dependency of component 'Brevitee.CommandLine.Primary_output'
+Adding file 'System.Web.WebPages.Deployment.dll' that is a dependency of component 'Brevitee.CommandLine.Primary_output'
+Adding file 'System.Web.WebPages.dll' that is a dependency of component 'Brevitee.CommandLine.Primary_output'
+Adding file 'System.Web.WebPages.Razor.dll' that is a dependency of component 'Brevitee.CommandLine.Primary_output'
+ISEXP : error -32000: Build canceled by the user
+Express\SingleImage - 1 error(s), 2 warning(s)
+================= Logging stopped at 2/7/2014 06:33:03 PM ==================
+Log file has been created: <file:C:\src\Brevitee\Brevitee\Products\BreviteeToolkit\BreviteeToolkit\Express\SingleImage\LogFiles\2-7-2014 06-32-34 PM.txt>
+

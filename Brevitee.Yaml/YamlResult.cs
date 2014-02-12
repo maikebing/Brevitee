@@ -26,7 +26,12 @@ namespace Brevitee.Yaml
             WriteYaml(Data, context.HttpContext.Response.OutputStream);
         }
 
-        private void WriteYaml(object data, Stream output)
+        public void WriteYaml(Stream output)
+        {
+            WriteYaml(Data, output);
+        }
+
+        public void WriteYaml(object data, Stream output)
         {
             StreamWriter sw = new System.IO.StreamWriter(output);
             sw.Write(data.ToYaml());

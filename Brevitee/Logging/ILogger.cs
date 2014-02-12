@@ -10,7 +10,7 @@ namespace Brevitee.Logging
         bool IsNull { get; }
 
         string ApplicationName { get; set; }
-        int Verbosity { get; set; }
+        VerbosityLevel Verbosity { get; set; }
 
         event LogEntryAddedListener EntryAdded;
         event LogEntryAddedListener FatalEventOccurred;

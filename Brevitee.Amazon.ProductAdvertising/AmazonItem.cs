@@ -92,6 +92,8 @@ namespace Brevitee.Amazon.ProductAdvertising
             }
         }
 
+
+
         //public BA.Item Save()
         //{
         //    BA.Item item = BA.Item.WhereAsinEquals(ASIN);
@@ -120,10 +122,10 @@ namespace Brevitee.Amazon.ProductAdvertising
 
         //#region IItem Members
 
-        //public string ASIN
-        //{
-        //    get { return this.Item.ASIN; }
-        //}
+        public string ASIN
+        {
+            get { return this.Item.ASIN; }
+        }
 
         //public string Description
         //{
@@ -187,26 +189,26 @@ namespace Brevitee.Amazon.ProductAdvertising
         //    }
         //}
 
-        //public string Name
-        //{
-        //    get
-        //    {
-        //        if (Item != null &&
-        //            Item.ItemAttributes != null)
-        //        {
-        //            return Item.ItemAttributes.Title;
-        //        }
-        //        return string.Empty;
-        //    }
-        //    set
-        //    {
-        //        if (Item != null &&
-        //            Item.ItemAttributes != null)
-        //        {
-        //            Item.ItemAttributes.Title = value;
-        //        }
-        //    }
-        //}
+        public string Name
+        {
+            get
+            {
+                if (Item != null &&
+                    Item.ItemAttributes != null)
+                {
+                    return Item.ItemAttributes.Title;
+                }
+                return string.Empty;
+            }
+            set
+            {
+                if (Item != null &&
+                    Item.ItemAttributes != null)
+                {
+                    Item.ItemAttributes.Title = value;
+                }
+            }
+        }
 
         //public string SmallImageURL
         //{

@@ -41,6 +41,7 @@ namespace Brevitee.Logging
             get { return type; }
             set { type = value; }
         }
+        
         public string Category
         {
             get { return this.category; }

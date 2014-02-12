@@ -8,12 +8,12 @@ namespace Brevitee.Automation
 {
     public class WorkState<T>: WorkState
     {
-        public WorkState() : base() { }
-        public WorkState(T data)
+        public WorkState(IWorker worker, T data)
+            : base(worker)
         {
             this.Data = data;
         }
-        public WorkState(Exception ex) : base(ex) { }
+        public WorkState(IWorker worker, Exception ex) : base(worker, ex) { }
 
         public T Data { get; set; }
 
@@ -28,55 +28,37 @@ namespace Brevitee.Automation
 
     public class WorkState
     {
-        public WorkState()
+        public WorkState(IWorker worker, string message = "")
         {
-            this.Sucess = true;
-        }
+            Args.ThrowIfNull(worker, "worker");
 
-        public WorkState(string message): this()
-        {
-            this.Message = message;
-        }
+            this.WorkName = worker.Name;
+            this.StepNumber = worker.StepNumber;
+            this.WorkTypeName = worker.GetType().AssemblyQualifiedName;
 
-        public WorkState(Worker work, string message)
-            : this(message)
-        {
-            Args.ThrowIfNull(work, "work");
-
-            this.WorkName = work.Name;
-
-            if (work.Job != null)
+            if (worker.Job != null)
             {
-                this.JobName = work.Job.Name;
+                this.JobName = worker.Job.Name;
             }
         }
 
-        public WorkState(Exception ex)
+        public WorkState(IWorker worker, Exception ex)
+            : this(worker)
         {
-            this.Sucess = false;
+            this.Status = Status.Failed;
             this.Message = !string.IsNullOrEmpty(ex.StackTrace) ? string.Format("{0}:\r\n\r\n{1}", ex.Message, ex.StackTrace) : ex.Message;
         }
+
+        public string StepNumber { get; set; }
 
         public string JobName { get; set; }
         public string WorkName { get; set; }
         public string Message { get; set; }
 
-        bool _error;
-        public bool Error
-        {
-            get
-            {
-                return _error;
-            }
-            set
-            {
-                _error = value;
-                _success = !value;
-            }
-        }
+        public string WorkTypeName { get; set; }
 
-        bool _success;
-        public bool Sucess
+        Status _success;
+        public Status Status
         {
             get
             {
@@ -85,14 +67,7 @@ namespace Brevitee.Automation
             set
             {
                 _success = value;
-                _error = !value;
             }
-        }
-
-        public bool Complete
-        {
-            get;
-            internal set;
         }
 
         public virtual bool HasValue { get { return false; } }

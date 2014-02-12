@@ -28,7 +28,12 @@ namespace Brevitee.ServiceProxy
             WriteXml(Data, context.HttpContext.Response.OutputStream);
         }
 
-        private void WriteXml(object data, Stream output)
+        public void WriteXml(Stream output)
+        {
+            WriteXml(Data, output);
+        }
+
+        public void WriteXml(object data, Stream output)
         {
             XmlSerializer ser = new XmlSerializer(data.GetType());
             ser.Serialize(output, data);            

@@ -311,16 +311,66 @@ namespace Brevitee.Data
             return this;
         }
 
+        /// <summary>
+        /// Adds an InComparison only if the specified object array is not empty
+        /// </summary>
+        /// <param name="values"></param>
+        /// <returns></returns>
+        public QueryFilter<C> InIfNotEmpty(object[] values)
+        {
+            if(values != null && values.Length > 0)
+            {
+                return In(values);
+            }
+            else
+            {
+                return this;
+            }
+        }
+
         public QueryFilter<C> In(object[] values)
         {
             this.Add(new InComparison(this.ColumnName, values));
             return this;
         }
 
+        /// <summary>
+        /// Adds an InComparison only if the specified object array is not empty
+        /// </summary>
+        /// <param name="values"></param>
+        /// <returns></returns>
+        public QueryFilter<C> InIfNotEmpty(long[] values)
+        {
+            if (values != null && values.Length > 0)
+            {
+                return In(values);
+            }
+            else
+            {
+                return this;
+            }
+        }
         public QueryFilter<C> In(long[] values)
         {
             this.Add(new InComparison(this.ColumnName, values));
             return this;
+        }
+
+        /// <summary>
+        /// Adds an InComparison only if the specified object array is not empty
+        /// </summary>
+        /// <param name="values"></param>
+        /// <returns></returns>
+        public QueryFilter<C> InIfNotEmpty(string[] values)
+        {
+            if (values != null && values.Length > 0)
+            {
+                return In(values);
+            }
+            else
+            {
+                return this;
+            }
         }
 
         public QueryFilter<C> In(string[] values)

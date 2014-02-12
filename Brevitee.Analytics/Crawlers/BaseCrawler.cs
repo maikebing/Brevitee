@@ -139,7 +139,7 @@ namespace Brevitee.Analytics.Crawlers
 
         public void Crawl(string rootTarget)
         {
-            Threads.Start(ThreadName, () =>
+            Exec.Start(ThreadName, () =>
             {
 
                 Root = rootTarget;

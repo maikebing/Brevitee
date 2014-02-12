@@ -5,9 +5,9 @@ using System.Text;
 using System.Net;
 using System.Drawing;
 using System.Web;
-using KLGates.Configuration;
+using Brevitee.Configuration;
 using System.Reflection;
-using KLGates.Logging;
+using Brevitee.Logging;
 using System.IO;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
@@ -18,10 +18,10 @@ using System.IO;
 using Brevitee.Data;
 using Brevitee;
 using Brevitee.Testing;
-//using KLGates.Javascript.JsonControls;
+//using Brevitee.Javascript.JsonControls;
 using System.Web;
 
-namespace KLGates.Images
+namespace Brevitee.Images
 {
     public class PixelServer : IHttpHandler
     {

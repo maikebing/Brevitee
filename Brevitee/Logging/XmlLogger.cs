@@ -13,7 +13,7 @@ namespace Brevitee.Logging
         public XmlLogger()
         {
             AppDomain.CurrentDomain.DomainUnload += new EventHandler(OnDomainUnload);
-            this.Verbosity = 4;
+            this.Verbosity = VerbosityLevel.Information;
 
             this.FileNumber = 1;
             this.FileExtension = "xml";

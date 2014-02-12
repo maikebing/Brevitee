@@ -64,6 +64,16 @@ namespace Brevitee.CommandLine
             return Confirm(string.Format(format, args));
         }
 
+        public static bool ConfirmFormat(string format, ConsoleColor color, params object[] args)
+        {
+            return Confirm(string.Format(format, args), color);
+        }
+
+        public static bool ConfirmFormat(string format, ConsoleColor color, bool allowQuit, params object[] args)
+        {
+            return Confirm(string.Format(format, args), color, allowQuit);
+        }
+
         /// <summary>
         /// Prompts the user for [y]es or [n]o returning true for [y] and false for [n].
         /// </summary>
@@ -83,6 +93,10 @@ namespace Brevitee.CommandLine
             return Confirm(message, true);
         }
 
+        public static bool Confirm(string message, ConsoleColor color)
+        {
+            return Confirm(message, color, true);
+        }
         public static bool Confirm(string message, bool allowQuit)
         {
             return Confirm(message, ConsoleColor.White, allowQuit);
@@ -98,20 +112,30 @@ namespace Brevitee.CommandLine
         public static bool Confirm(string message, ConsoleColor color, bool allowQuit)
         {
             Out(message, color);
-            if(allowQuit)
+            if (allowQuit)
+            {
                 Console.WriteLine(" [q]");
+            }
             else
+            {
                 Console.WriteLine();
+            }
 
             string answer = Console.ReadLine().Trim().ToLower();
             if (answer.Equals("y"))
+            {
                 return true;
+            }
 
             if (answer.Equals("n"))
+            {
                 return false;
+            }
 
-            if(allowQuit && answer.Equals("q"))
+            if (allowQuit && answer.Equals("q"))
+            {
                 Environment.Exit(0);
+            }
 
             return false;
         }
@@ -141,12 +165,40 @@ namespace Brevitee.CommandLine
 
         public static string Prompt(string message, ConsoleColor textColor, bool allowQuit)
         {
-            Out(message, textColor);
-            Console.Write(" >> ");
+            return Prompt(message, " >> ", textColor, allowQuit);
+        }
+
+        public static string Prompt(string message, string promptTxt, ConsoleColor textColor)
+        {
+            return Prompt(message, promptTxt, textColor, false);
+        }
+
+        public static string Prompt(string message, string promptTxt, ConsoleColor textColor, bool allowQuit)
+        {
+            return Prompt(message, promptTxt, new ConsoleColorCombo(textColor), allowQuit);
+        }
+
+        public static string Prompt(string message, string promptTxt, ConsoleColor textColor, ConsoleColor backgroundColor)
+        {
+            return Prompt(message, promptTxt, new ConsoleColorCombo(textColor, backgroundColor), false);
+        }
+
+        public static string Prompt(string message, string promptTxt, ConsoleColor textColor, ConsoleColor backgroundColor, bool allowQuit)
+        {
+            return Prompt(message, promptTxt, new ConsoleColorCombo(textColor, backgroundColor), allowQuit);
+        }
+
+        public static string Prompt(string message, string promptTxt, ConsoleColorCombo colors, bool allowQuit)
+        {
+            Out(message, colors);
+            Console.Write(promptTxt);
             string answer = Console.ReadLine();
-            //answer = answer.Substring(4, answer.Length - 4);
+            //answer = answer.TruncateFront(message.Length + promptTxt.Length);
+
             if (allowQuit && answer.ToLowerInvariant().Equals("q"))
+            {
                 Environment.Exit(0);
+            }
 
             return answer;
         }
@@ -188,12 +240,12 @@ namespace Brevitee.CommandLine
         public static void Usage(Assembly assembly)
         {
             FileInfo info = new FileInfo(assembly.Location);
-            OutFormat("{0} [arguments]", info.Name);
+            OutLineFormat("{0} [arguments]", info.Name);
 
             foreach (ArgumentInfo argInfo in ValidArgumentInfo)
             {
                 string valEx = string.IsNullOrEmpty(argInfo.ValueExample) ? "" : string.Format(":{0}\r\n", argInfo.ValueExample);
-                OutFormat("/{0}{1}\t\t{2}", argInfo.Name, valEx, argInfo.Description);
+                OutLineFormat("/{0}{1}\t\t{2}", argInfo.Name, valEx, argInfo.Description);
             }
         }
 
@@ -267,7 +319,7 @@ namespace Brevitee.CommandLine
             }
             catch (Exception ex)
             {
-                Out("An error occurred: " + ex.Message, ConsoleColor.Red);
+                OutLine("An error occurred: " + ex.Message, ConsoleColor.Red);
                 if (Arguments.Contains("stacktrace"))
                 {
                     if (ex.InnerException != null)
@@ -279,7 +331,7 @@ namespace Brevitee.CommandLine
                 }
             }
 
-            if (ConfirmFormat("Return to {0}? [y][N]", headerText))
+            if (ConfirmFormat("Return to {0}? [y][N] ", headerText))
             {
                 ShowMenu(otherMenus, headerText, actions);
             }
@@ -324,11 +376,41 @@ namespace Brevitee.CommandLine
             }
         }
 
+        /// <summary>
+        /// Writes a newline character to the console using Console.WriteLine()
+        /// </summary>
         public static void Out()
         {
             Console.WriteLine();
         }
+        public static void OutLineFormat(string message, params object[] formatArgs)
+        {
+            OutLine(string.Format(message, formatArgs));
+        }
 
+        /// <summary>
+        /// Print the specified message in the specified
+        /// color to the console using the specified string.format
+        /// args to format the message.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="color"></param>
+        /// <param name="formatArgs"></param>
+        public static void OutLineFormat(string message, ConsoleColor color, params object[] formatArgs)
+        {
+            OutLine(string.Format(message, formatArgs), color);
+        }
+
+        public static void OutLineFormat(string message, ConsoleColor foreground, ConsoleColor background, params object[] formatArgs)
+        {
+            OutLine(string.Format(message, formatArgs), new ConsoleColorCombo(foreground, background));
+        }
+
+        public static void OutLineFormat(string message, ConsoleColorCombo colors, params object[] formatArgs)
+        {
+            OutLine(string.Format(message, formatArgs), colors);
+        }
+        //
         public static void OutFormat(string message, params object[] formatArgs)
         {
             Out(string.Format(message, formatArgs));
@@ -337,6 +419,11 @@ namespace Brevitee.CommandLine
         public static void OutFormat(string message, ConsoleColor color, params object[] formatArgs)
         {
             Out(string.Format(message, formatArgs), color);
+        }
+
+        public static void OutFormat(string message, ConsoleColor foreground, ConsoleColor background, params object[] formatArgs)
+        {
+            Out(string.Format(message, formatArgs), new ConsoleColorCombo(foreground, background));
         }
 
         public static void OutFormat(string message, ConsoleColorCombo colors, params object[] formatArgs)
@@ -351,17 +438,40 @@ namespace Brevitee.CommandLine
 
         public static void Out(string message, ConsoleColor color)
         {
-            ConsoleExtensions.SetTextColor(color);
-            Console.WriteLine(message);
-            ConsoleExtensions.SetTextColor();
+            Console.ForegroundColor = color;
+            Console.Write(message);
+            Console.ResetColor();         
         }
 
         public static void Out(string message, ConsoleColorCombo colors)
         {
             Console.BackgroundColor = colors.BackgroundColor;
             Console.ForegroundColor = colors.ForegroundColor;
-            Console.WriteLine(message);
+            Console.Write(message);
             Console.ResetColor();
+        }
+
+        public static void OutLine(string message)
+        {
+            OutLine(message, ConsoleColor.Gray);
+        }
+
+        public static void OutLine(string message, ConsoleColor color)
+        {
+            Out(message, color);
+            Out();
+        }
+
+        public static void OutLine(string message, ConsoleColor foreground, ConsoleColor background)
+        {
+            Out(message, new ConsoleColorCombo(foreground, background));
+            Out();
+        }
+
+        public static void OutLine(string message, ConsoleColorCombo colors)
+        {
+            Out(message, colors);
+            Out();
         }
 
         public static void InvokeSelection(List<ConsoleInvokeableMethod> actions, string answer)
@@ -393,7 +503,7 @@ namespace Brevitee.CommandLine
             }
         }
 
-        protected static void InvokeInSeparateAppDomain(MethodInfo method, object instance, object[] ps = null)
+        protected internal static void InvokeInSeparateAppDomain(MethodInfo method, object instance, object[] ps = null)
         {
             AppDomain testDomain = AppDomain.CreateDomain("TestAppDomain");
             _methodToInvoke = method;
@@ -406,51 +516,57 @@ namespace Brevitee.CommandLine
             testDomain.DoCallBack(InvokeMethod);
         }
 
-        protected static void InvokeSelection(List<ConsoleInvokeableMethod> actions, string answer, string header, string footer, out int selectedIndex)
+        protected internal static void InvokeSelection(List<ConsoleInvokeableMethod> actions, string answer, string header, string footer, out int selectedNumber)
         {
-            selectedIndex = -1;
-            if (int.TryParse(answer.ToString(), out selectedIndex) && (selectedIndex - 1) > -1 && (selectedIndex - 1) < actions.Count)
+            selectedNumber = -1;
+            if (int.TryParse(answer.ToString(), out selectedNumber) && (selectedNumber - 1) > -1 && (selectedNumber - 1) < actions.Count)
             {
-                selectedIndex -= 1;
-                ConsoleInvokeableMethod action = actions[selectedIndex];
-                MethodInfo method = action.Method;
-                MethodInfo invoke = typeof(ConsoleInvokeableMethod).GetMethod("Invoke");
-                object[] parameters = GetParameterInput(method);
-                action.Parameters = parameters;
-
-                if (!string.IsNullOrEmpty(header))
-                {
-                    Out(header, ConsoleColor.White);
-                }
-
-                try
-                {
-                    if (!method.IsStatic)                        
-                    {
-                        ConstructorInfo ctor = method.DeclaringType.GetConstructor(Type.EmptyTypes);
-                        if (ctor == null)
-                            ExceptionHelper.Throw<InvalidOperationException>("Specified non-static method is declared on a type that has no parameterless constructor. {0}.{1}", method.DeclaringType.Name, method.Name);
-
-                        action.Provider = ctor.Invoke(null);
-                    }
-
-                    InvokeInSeparateAppDomain(invoke, action);
-                }
-                catch (Exception ex)
-                {
-                    if (ex.InnerException != null)
-                        throw ex.InnerException;
-                    else
-                        throw;
-                }
-                if (!string.IsNullOrEmpty(footer))
-                    Out(footer, ConsoleColor.White);
+                selectedNumber = InvokeSelection(actions, header, footer, selectedNumber);
             }
             else
             {
-                Console.WriteLine("Invalid selection");
+                Console.WriteLine("Invalid entry");
                 Environment.Exit(1);
             }
+        }
+
+        protected internal static int InvokeSelection(List<ConsoleInvokeableMethod> actions, string header, string footer, int selectedNumber)
+        {
+            selectedNumber -= 1;
+            ConsoleInvokeableMethod action = actions[selectedNumber];
+            MethodInfo method = action.Method;
+            MethodInfo invoke = typeof(ConsoleInvokeableMethod).GetMethod("Invoke");
+            object[] parameters = GetParameterInput(method);
+            action.Parameters = parameters;
+
+            if (!string.IsNullOrEmpty(header))
+            {
+                Out(header, ConsoleColor.White);
+            }
+
+            try
+            {
+                if (!method.IsStatic)
+                {
+                    ConstructorInfo ctor = method.DeclaringType.GetConstructor(Type.EmptyTypes);
+                    if (ctor == null)
+                        ExceptionHelper.Throw<InvalidOperationException>("Specified non-static method is declared on a type that has no parameterless constructor. {0}.{1}", method.DeclaringType.Name, method.Name);
+
+                    action.Provider = ctor.Invoke(null);
+                }
+
+                InvokeInSeparateAppDomain(invoke, action);
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null)
+                    throw ex.InnerException;
+                else
+                    throw;
+            }
+            if (!string.IsNullOrEmpty(footer))
+                Out(footer, ConsoleColor.White);
+            return selectedNumber;
         }
 
         protected static void ShowActions(List<ConsoleInvokeableMethod> actions)
@@ -540,7 +656,7 @@ namespace Brevitee.CommandLine
             {
                 if (parameterInfo.ParameterType != typeof(string))
                 {
-                    Out(string.Format("The method {0} can't be invoked because it takes parameters that are not of type string.", method.Name)
+                    OutLine(string.Format("The method {0} can't be invoked because it takes parameters that are not of type string.", method.Name)
                         , ConsoleColor.Red);                    
                 }
 

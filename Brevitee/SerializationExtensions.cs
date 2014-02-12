@@ -126,9 +126,19 @@ namespace Brevitee
             }            
         }
 
+        public static T FromBinaryFile<T>(this FileInfo file)
+        {
+            return FromBinaryFile<T>(file.FullName);
+        }
+
         public static T FromBinaryFile<T>(this string filePath)
         {
             return (T)filePath.FromBinaryFile(typeof(T));
+        }
+
+        public static object FromBinaryFile(this FileInfo file, Type type)
+        {
+            return FromBinaryFile(file.FullName, type);
         }
 
         public static object FromBinaryFile(this string filePath, Type type)

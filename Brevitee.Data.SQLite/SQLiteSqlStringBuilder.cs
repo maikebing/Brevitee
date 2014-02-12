@@ -37,11 +37,11 @@ namespace Brevitee.Data
                     if (c is KeyColumnAttribute)
                     {
                         return string.Format(KeyColumnFormat, string.Format("{0} INTEGER", c.Name)); 
-                        //return string.Format(KeyColumnFormat, c.ToString());
                     }
                     else
                     {
-                        return GetColumnDefinition(c);
+                        string columnDef = GetColumnDefinition(c);
+                        return columnDef;
                     }
                 }),
                 fks.Length > 0 ? ",": "",
@@ -81,7 +81,12 @@ namespace Brevitee.Data
 
         public override string GetColumnDefinition(ColumnAttribute column)
         {
-            return string.Format("\"{0}\" {1}{2}", column.Name, column.ExtractedType, column.AllowNull ? "" : " NOT NULL");
+            string type = column.ExtractedType;
+            if (type.Equals("Bit"))
+            {
+                type = "INTEGER"; // sqlite doesn't have a separate Bit/bool
+            }
+            return string.Format("\"{0}\" {1}{2}", column.Name, type, column.AllowNull ? "" : " NOT NULL");
         }
     }
 }

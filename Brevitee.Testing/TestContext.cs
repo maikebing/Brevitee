@@ -15,7 +15,7 @@ namespace Brevitee.Testing
     {
         SetupContext context;
         Because because;
-        Action<T> action;
+        Action<T> testMethod;
         Func<T, object> outputAction;
 
         internal TestContext(SetupContext setupContext, string testDescription)
@@ -31,11 +31,11 @@ namespace Brevitee.Testing
         /// <param name="setupContext">The setup or initialization context used for this
         /// test.</param>
         /// <param name="testDescription">The description of the current test.</param>
-        /// <param name="action">The delegate containing the test actions</param>
-        public TestContext(SetupContext setupContext, string testDescription, Action<T> action)
+        /// <param name="testMethod">The delegate containing the test actions</param>
+        public TestContext(SetupContext setupContext, string testDescription, Action<T> testMethod)
             : this(setupContext, testDescription)
         {
-            this.action = action;
+            this.testMethod = testMethod;
         }
 
         /// <summary>
@@ -79,9 +79,9 @@ namespace Brevitee.Testing
                     {
                         T objectUnderTest = context.Get<T>();                        
 
-                        if (action != null)
+                        if (testMethod != null)
                         {
-                            action(objectUnderTest);
+                            testMethod(objectUnderTest);
                         }
 
                         if (outputAction != null)

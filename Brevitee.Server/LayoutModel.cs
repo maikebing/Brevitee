@@ -1,0 +1,47 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Web.Mvc;
+
+namespace Brevitee.Server
+{
+    /// <summary>
+    /// Model used to write the default application layout
+    /// for an application
+    /// </summary>
+    public class LayoutModel
+    {
+        public LayoutModel()
+        {
+            this.LayoutName = "basic";
+            this.StartPage = "home";
+        }
+
+        public string StartPage { get; set; }
+
+        public string LayoutName { get; set; }
+
+        public string ScriptTags { get; set; }
+
+        public string StyleSheetLinkTags { get; set; }
+
+        public string ApplicationDisplayName { get; set; }
+
+
+        public string ApplicationName
+        {
+            get;
+            set;
+        }
+
+        public string Year
+        {
+            get
+            {
+                return DateTime.UtcNow.Year.ToString();
+            }
+        }
+    }
+}

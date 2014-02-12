@@ -12,7 +12,7 @@ namespace Brevitee.Html
     public class HttpServer : IDisposable
     {
         private readonly HttpListener _listener;
-        private readonly Thread _listenerThread;
+        private readonly Thread _handlerThread;
         private readonly Thread[] _workers;
         private readonly ManualResetEvent _stop, _ready;
         private Queue<HttpListenerContext> _queue;
@@ -27,7 +27,7 @@ namespace Brevitee.Html
             _stop = new ManualResetEvent(false);
             _ready = new ManualResetEvent(false);
             _listener = new HttpListener();
-            _listenerThread = new Thread(HandleRequests);
+            _handlerThread = new Thread(HandleRequests);
             _logger = logger;
         }
 
@@ -71,7 +71,7 @@ namespace Brevitee.Html
             _logger.AddEntry("HttpServer: {0}", path);
             _listener.Prefixes.Add(path);
             _listener.Start();
-            _listenerThread.Start();
+            _handlerThread.Start();
 
             for (int i = 0; i < _workers.Length; i++)
             {
@@ -88,7 +88,7 @@ namespace Brevitee.Html
         public void Stop()
         {
             _stop.Set();
-            _listenerThread.Join();
+            _handlerThread.Join();
             foreach (Thread worker in _workers)
             {
                 worker.Join();
@@ -139,11 +139,14 @@ namespace Brevitee.Html
 
                 try
                 {
-                    ProcessRequest(context);
+                    if (ProcessRequest != null)
+                    {
+                        ProcessRequest(context);
+                    }
                 }
                 catch (Exception ex)
                 {
-                    _logger.AddEntry("An error occurred processing request: {0}", ex, ex.Message);
+                    _logger.AddEntry("An error occurred processing HTTP request: {0}", ex, ex.Message);
                 }
             }
         }

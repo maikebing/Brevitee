@@ -205,6 +205,7 @@
     <Compile Include="Generated\UsersContext.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="OAuth.cs" />
     <Compile Include="Partials\Account.cs" />
     <Compile Include="Partials\Login.cs" />
     <Compile Include="Partials\LockOut.cs" />
@@ -219,7 +220,7 @@
     <Compile Include="UserNameNotFoundException.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="bryan.apellanes.users.db.js" />
+    <Content Include="Brevitee.Users.db.js" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Brevitee.Data\Brevitee.Data.csproj">

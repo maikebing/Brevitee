@@ -8,31 +8,31 @@
 	</appSettings>
 	<system.web>		
 		<httpModules>
-			<add name="EdwardRoleProvider" type="Bryan.Platform.EdwardRoleProvider, Bryan.Platform.Clients, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+			<add name="EdwardRoleProvider" type="Brevitee.Platform.EdwardRoleProvider, Brevitee.Platform.Clients, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
 		</httpModules>
 		<roleManager enabled="true" defaultProvider="EdwardRoleProvider">
 		  <providers>
 			<clear/>
-			<add name="EdwardRoleProvider" type="Bryan.Platform.EdwardRoleProvider, Bryan.Platform.Clients, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+			<add name="EdwardRoleProvider" type="Brevitee.Platform.EdwardRoleProvider, Brevitee.Platform.Clients, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
 		  </providers>
 		</roleManager>
 		<pages>
 			<namespaces>
-				<add namespace="Bryan.Apellanes" />
-				<add namespace="Bryan.Apellanes.Configuration" />
-				<add namespace="Bryan.Apellanes.Data" />
-				<add namespace="Bryan.Apellanes.Data.MsSql" />
-				<add namespace="Bryan.Apellanes.Dust" />
-				<add namespace="Bryan.Apellanes.ServiceProxy" />
-				<add namespace="Bryan.Apellanes.Html" />
-				<add namespace="Bryan.Apellanes.Incubation" />
-				<add namespace="Bryan.Apellanes.Logging" />
+				<add namespace="Brevitee" />
+				<add namespace="Brevitee.Configuration" />
+				<add namespace="Brevitee.Data" />
+				<add namespace="Brevitee.Data.MsSql" />
+				<add namespace="Brevitee.Dust" />
+				<add namespace="Brevitee.ServiceProxy" />
+				<add namespace="Brevitee.Html" />
+				<add namespace="Brevitee.Incubation" />
+				<add namespace="Brevitee.Logging" />
 			</namespaces>
 		</pages>
 	</system.web>
 	<system.webServer>
 		<modules runAllManagedModulesForAllRequests="true">
-		  <add name="EdwardRoleProvider" type="Bryan.Platform.EdwardRoleProvider, Bryan.Platform.Clients, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+		  <add name="EdwardRoleProvider" type="Brevitee.Platform.EdwardRoleProvider, Brevitee.Platform.Clients, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
 		</modules>
 	</system.webServer>
 </configuration>

@@ -19,7 +19,7 @@ namespace Brevitee.Logging
                 return true;
             }
         }
-
+        
         public override void CommitLogEvent(LogEvent logEvent)
         {
             // null logger is a place holder to prevent null reference

@@ -84,7 +84,7 @@ namespace foreman
             string workName = Prompt("Enter a name for the work");
             Type workToAdd = workTypes[workTypeIndex - 1];
             object work = workToAdd.Construct(workName);
-            job.AddWork((IWorker)work);
+            job.AddWorker((IWorker)work);
         }
     }
 }

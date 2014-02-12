@@ -9,7 +9,11 @@ using System.Web.WebPages;
 using System.Web.Script.Serialization;
 using System.IO;
 using System.Net;
+using Brevitee.Logging;
+using Brevitee;
+using Brevitee.Web;
 using Brevitee.Data;
+using Brevitee.Incubation;
 using Newtonsoft.Json;
 
 namespace Brevitee.ServiceProxy
@@ -24,6 +28,7 @@ namespace Brevitee.ServiceProxy
         public ExecutionRequest()
         {
             this.ViewName = "Default";
+            this.IsInitialized = true;
         }
 
         public ExecutionRequest(string className, string methodName, string ext)
@@ -32,17 +37,268 @@ namespace Brevitee.ServiceProxy
             this.ClassName = className;
             this.MethodName = methodName;
             this.Ext = ext;
+
+            this.IsInitialized = true;
         }
 
-        public string ClassName { get; set; }
-        public string MethodName { get; set; }
-        public string Ext { get; set; }
+        public ExecutionRequest(RequestWrapper request, ResponseWrapper response)
+        {
+            this.Request = request;
+            this.Response = response;
+        }
+
+        public ExecutionRequest(RequestWrapper request, ResponseWrapper response, ProxyAlias[] aliases)
+        {
+            this.Request = request;
+            this.Response = response;
+            this.ProxyAliases = aliases;
+        }
+
+        public ExecutionRequest(RequestWrapper request, ResponseWrapper response, ProxyAlias[] aliases, Incubator serviceProvider)
+            : this(request, response, aliases)
+        {
+            this.ServiceProvider = serviceProvider;
+        }
+
+        protected internal ProxyAlias[] ProxyAliases
+        {
+            get;
+            set;
+        }
+
+        protected internal bool IsInitialized
+        {
+            get;
+            set;
+        }
+
+        protected string HttpMethod
+        {
+            get
+            {
+                if (Request != null)
+                {
+                    return Request.HttpMethod.ToUpperInvariant();
+                }
+
+                return "GET";
+            }
+        }
+
+        string _inputString;
+        /// <summary>
+        /// The input stream of the request read in as 
+        /// a string
+        /// </summary>
+        protected string InputString
+        {
+            get
+            {
+                if (Request == null || Request.InputStream == null)
+                {
+                    _inputString = string.Empty;
+                }
+                else if (string.IsNullOrEmpty(_inputString))
+                {
+                    using (StreamReader sr = new StreamReader(Request.InputStream))
+                    {
+                        _inputString = sr.ReadToEnd();
+                    }
+                }
+
+                return _inputString;
+            }
+        }
+
+        HttpArgs _httpArgs;
+        protected HttpArgs HttpArgs
+        {
+            get
+            {
+                if (_httpArgs == null)
+                {
+                    string contentType = null;
+                    if (Request != null)
+                    {
+                        contentType = Request.ContentType;
+                    }
+                 
+                    _httpArgs = new HttpArgs(InputString, contentType);
+                }
+
+                return _httpArgs;
+            }
+        }
+
+        object _initLock = new object();
+        protected internal void Initialize()
+        {
+            lock(_initLock)
+            {
+                if (!IsInitialized)
+                {                   
+                    if (HttpMethod.Equals("POST") && string.IsNullOrEmpty(Path.GetExtension(Request.Url.AbsolutePath)))
+                    {
+                        HttpArgs args = HttpArgs;
+                        string jsonParams;
+                        if (args.Has("jsonParams", out jsonParams))
+                        {
+                            JsonParams = jsonParams;
+                        }
+                    }
+                    else if (InputString.StartsWith("{"))
+                    {
+                        JsonParams = InputString;
+                    }
+
+                    ParseRequestUrl();
+                    IsInitialized = true;
+                }
+            }
+        }
+
+        Uri _requestUrl;
+        protected internal Uri RequestUrl
+        {
+            get
+            {
+                if (_requestUrl == null)
+                {
+                    _requestUrl = Request.Url;
+                }
+
+                return _requestUrl;
+            }
+            set
+            {
+                _requestUrl = value;
+            }
+        }
+
+        protected internal void ParseRequestUrl()
+        {
+            // parse the request url to set the className, methodName and ext
+            //string[] split = Request.Url.AbsolutePath.DelimitSplit("/");
+            Queue<string> split = new Queue<string>(RequestUrl.AbsolutePath.DelimitSplit("/", "."));
+            while (split.Count > 0)
+            {
+                string currentChunk = split.Dequeue();
+                string upperred = currentChunk.ToUpperInvariant();
+                if (upperred.Equals("GET") || upperred.Equals("POST"))
+                {
+                    continue;
+                }
+
+                if (string.IsNullOrEmpty(_className))
+                {
+                    if (!ServiceProvider.HasClass(currentChunk) && ProxyAliases != null)
+                    {
+                        ProxyAlias alias = ProxyAliases.Where(pa => pa.Alias.Equals(currentChunk)).FirstOrDefault();
+                        if (alias != null)
+                        {
+                            _className = alias.ClassName;
+                        }
+                        else
+                        {
+                            _className = currentChunk;
+                        }
+                    }
+                    else
+                    {
+                        _className = currentChunk;
+                    }
+                }
+                else if (string.IsNullOrEmpty(_methodName))
+                {
+                    _methodName = currentChunk;
+                }
+                else if (string.IsNullOrEmpty(_ext))
+                {
+                    _ext = currentChunk;
+                }
+            }
+        }
+
+        string _className;
+        public string ClassName
+        {
+            get
+            {
+                if (!IsInitialized)
+                {
+                    Initialize();
+                }
+
+                return _className;
+            }
+            set
+            {
+                _className = value;
+            }
+        }
+
+        string _methodName;
+        public string MethodName
+        {
+            get
+            {
+                if (!IsInitialized)
+                {
+                    Initialize();
+                }
+
+                return _methodName;
+            }
+            set
+            {
+                _methodName = value;
+            }
+        }
+
+        string _ext;
+        public string Ext
+        {
+            get
+            {
+                if (!IsInitialized)
+                {
+                    Initialize();
+                }
+
+                return _ext;
+            }
+            set
+            {
+                _ext = value;
+            }
+        }
+
+        private void Reset()
+        {
+            IsInitialized = false;
+            Result = null;
+        }
 
         /// <summary>
         /// An array of strings stringified twice.  Parsing as Json will return an array of strings,
         /// each string can be individually parsed into separate objects
         /// </summary>
         public string JsonParams { get; set; }
+
+        Incubator _serviceProvider;
+        object _serviceProviderLock = new object();
+        public Incubator ServiceProvider
+        {
+            get
+            {
+                return _serviceProviderLock.DoubleCheckLock(ref _serviceProvider, () => ServiceProxySystem.Incubator);
+            }
+            set
+            {
+                Reset();
+                _serviceProvider = value;
+            }
+        }
 
         Type _targetType;
         public Type TargetType
@@ -51,7 +307,7 @@ namespace Brevitee.ServiceProxy
             {
                 if (_targetType == null && !string.IsNullOrWhiteSpace(ClassName))
                 {
-                    Instance = ServiceProxySystem.Incubator.Get(ClassName, out _targetType);
+                    Instance = ServiceProvider.Get(ClassName, out _targetType);//ServiceProxySystem.Incubator.Get(ClassName, out _targetType);
                 }
 
                 return _targetType;
@@ -68,7 +324,7 @@ namespace Brevitee.ServiceProxy
             {
                 if (_instance == null)
                 {
-                    _instance = ServiceProxySystem.Incubator.Get(ClassName, out _targetType);
+                    _instance = ServiceProvider.Get(ClassName, out _targetType);//ServiceProxySystem.Incubator.Get(ClassName, out _targetType);
                 }
                 return _instance;
             }
@@ -85,7 +341,7 @@ namespace Brevitee.ServiceProxy
             {
                 if (_methodInfo == null && TargetType != null)
                 {
-                    _methodInfo = TargetType.GetMethod(MethodName);
+                    _methodInfo = TargetType.GetMethod(MethodName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
                 }
                 return _methodInfo;
             }
@@ -130,27 +386,31 @@ namespace Brevitee.ServiceProxy
 
         protected object[] GetParameters()
         {
-            object[] result = null;
+            object[] result = new object[] { }; ;
 
-            if (!string.IsNullOrEmpty(JsonParams))
+            if (HttpArgs.Ordered.Length > 0)
+            {
+                result = new object[HttpArgs.Ordered.Length];
+                HttpArgs.Ordered.Each((val, i) =>
+                {
+                    result[i] = val;
+                });
+            }
+            else if (!string.IsNullOrEmpty(JsonParams))
             {
                 // POST: bam.invoke
                 string[] jsonStrings = JsonParams.FromJson<string[]>();
 
                 result = GetJsonParameters(jsonStrings);
             }
-            else if (Request != null && Request.ContentLength > 0)
+            else if (Request != null && InputString.Length > 0)
             {
                 // POST: probably from a form
-                Queue<string> inputValues;
-                using (StreamReader sr = new StreamReader(Request.InputStream))
-                {
-                    inputValues = new Queue<string>(sr.ReadToEnd().Split('&'));
-                }
+                Queue<string> inputValues = new Queue<string>(InputString.Split('&'));
 
                 result = GetFormParameters(inputValues);
             }
-            else
+            else if (Request != null)
             {
                 // GET: parse the querystring
                 ViewName = Request.QueryString["view"];
@@ -181,6 +441,25 @@ namespace Brevitee.ServiceProxy
 
             return result;
         }
+        
+        public dynamic GetSuccessWrapper(object toWrap, string methodName = "Unspecified")
+        {
+            Log.AddEntry("Success::{0}", methodName);
+            return new { Success = true, Message = "", Data = toWrap };
+        }
+
+        public dynamic GetErrorWrapper(Exception ex, bool stack = true, string methodName = "Unspecified")
+        {
+            Log.AddEntry("Error::{0}\r\n***{1}\r\n***", ex, methodName, ex.Message);
+            string message = GetMessage(ex, stack);
+            return new { Success = false, Message = message };
+        }
+
+        private string GetMessage(Exception ex, bool stack)
+        {
+            string st = stack ? ex.StackTrace : "";
+            return string.Format("{0}:\r\n\r\n{1}", ex.Message, st);
+        }
 
         private object[] GetJsonParameters(string[] jsonStrings)
         {
@@ -195,6 +474,8 @@ namespace Brevitee.ServiceProxy
                 string paramJson = jsonStrings[i];
                 Type paramType = ParameterInfos[i].ParameterType;
                 paramInstances[i] = paramJson.FromJson(paramType);
+
+                SetDefault(paramInstances, i);
             }
             return paramInstances;
         }
@@ -204,12 +485,24 @@ namespace Brevitee.ServiceProxy
             object[] results = new object[ParameterInfos.Length];
             for (int i = 0; i < ParameterInfos.Length; i++)
             {
-                Type paramType = ParameterInfos[i].ParameterType;
-                string value = Request.QueryString[ParameterInfos[i].Name];
+                ParameterInfo paramInfo = ParameterInfos[i];
+                Type paramType = paramInfo.ParameterType;
+                string value = Request.QueryString[paramInfo.Name];
                 SetValue(results, i, paramType, value);
+
+                SetDefault(results, i);
             }
 
             return results;
+        }
+
+        private void SetDefault(object[] parameters, int i)
+        {
+            object val = parameters[i];
+            if(val == null && ParameterInfos[i].HasDefaultValue)
+            {
+                parameters[i] = ParameterInfos[i].DefaultValue;
+            }
         }
 
         private object[] GetNumberedParameters()
@@ -220,6 +513,8 @@ namespace Brevitee.ServiceProxy
                 Type paramType = ParameterInfos[i].ParameterType;
                 string value = Request.QueryString[i.ToString()];
                 SetValue(results, i, paramType, value);
+
+                SetDefault(results, i);
             }
 
             return results;
@@ -336,6 +631,14 @@ namespace Brevitee.ServiceProxy
             return parameterValue;
         }
 
+        public bool HasCallback
+        {
+            get
+            {
+                return !string.IsNullOrEmpty(Request.QueryString["callback"]);
+            }
+        }
+
         string _callBack;
         object _callBackLock = new object();
         public string Callback
@@ -370,13 +673,19 @@ namespace Brevitee.ServiceProxy
         }
         public string ViewName { get; set; }
 
-        protected internal HttpRequestBase Request
+        protected internal RequestWrapper Request
         {
             get;
             set;
         }
 
-        protected internal HttpResponseBase Response
+        protected internal ResponseWrapper Response
+        {
+            get;
+            set;
+        }
+
+        public bool Success
         {
             get;
             set;
@@ -393,13 +702,15 @@ namespace Brevitee.ServiceProxy
 
         public virtual ValidationResult Validate()
         {
+            Initialize();
             ValidationResult result = new ValidationResult(this);
             result.Execute();
             return result;
         }
 
-        public void Execute()
+        public bool Execute()
         {
+            bool result = false;
             ValidationResult validation = Validate();
             if (!validation.Success)
             {
@@ -407,12 +718,22 @@ namespace Brevitee.ServiceProxy
             }
             else
             {
-                Execute(Instance, false);
+                result = Execute(Instance, false);
             }
+
+            return result;
         }
 
-        public void Execute(object target, bool validate = true)
+        public bool WasExecuted
         {
+            get;
+            private set;
+        }
+        
+
+        public bool Execute(object target, bool validate = true)
+        {
+            bool result = false;
             if (validate)
             {
                 ValidationResult validation = Validate();
@@ -424,8 +745,22 @@ namespace Brevitee.ServiceProxy
 
             if (Result == null)
             {
-                Result = MethodInfo.Invoke(target, Parameters);
+                try
+                {
+                    Initialize();
+                    Result = MethodInfo.Invoke(target, Parameters);
+                    result = true;
+                }
+                catch (Exception ex)
+                {
+                    Result = ex;
+                    result = false;
+                }
             }
+
+            WasExecuted = true;
+            Success = result;
+            return result;
         }
     }
 }

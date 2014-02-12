@@ -9,7 +9,7 @@ using System.IO;
 using Brevitee;
 using Brevitee.Testing;
 
-namespace KLGates.Images
+namespace Brevitee.Images
 {
     public class ImageSetParameters
     {

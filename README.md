@@ -76,13 +76,13 @@ var database = {
 			]
 		},
 		{
-			name: "LeftTable,
+			name: "LeftTable",
 			cols: [
 				{ LeftName: "String"}
 			]
 		},
 		{
-			name: "RightTable,
+			name: "RightTable",
 			cols: [
 				{ RightName: "String"}
 			]
@@ -93,6 +93,7 @@ var database = {
 	]
 }
 ```
+
 
 ### Dao From LaoTzu
 Another way of generating data access objects is by extracting those objects 
@@ -249,6 +250,8 @@ public class CustomLogger: Logger
 ```
 
 To configure the application to use a custom logger not included in Brevitee you 
-will need to specify the assembly qualified name in the app.config or web.config file.
+will need to specify the assembly qualified name in the app.config or web.config file
+as the value for the LogType entry.
+
 
 

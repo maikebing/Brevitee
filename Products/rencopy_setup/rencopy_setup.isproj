@@ -1,4 +1,5 @@
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup>
 		<!-- Select a Product Configuration -->
 		<InstallShieldProductConfiguration>Express</InstallShieldProductConfiguration>
@@ -28,10 +29,6 @@
 	</ItemGroup>
 	<Import Project="$(MSBuildExtensionsPath32)\InstallShield\2013Limited\InstallShield.targets"/>
 	<ItemGroup>
-		<ProjectReference Include="..\rencopy\rencopy.csproj">
-			<Name>rencopy</Name>
-			<Project>{1D58AF0C-0624-40CE-B369-A39DDF817A40}</Project>
-		</ProjectReference>
 		<ProjectReference Include="..\..\Brevitee\Brevitee.csproj">
 			<Name>Brevitee</Name>
 			<Project>{8794C09D-D72C-420C-812F-BFDA251B64C9}</Project>
@@ -43,6 +40,10 @@
 		<ProjectReference Include="..\..\Brevitee.Testing\Brevitee.Testing.csproj">
 			<Name>Brevitee.Testing</Name>
 			<Project>{85212881-C676-4B40-B311-37C2D1706042}</Project>
+		</ProjectReference>
+		<ProjectReference Include="..\rencopy\rencopy.csproj">
+			<Name>rencopy</Name>
+			<Project>{1D58AF0C-0624-40CE-B369-A39DDF817A40}</Project>
 		</ProjectReference>
 	</ItemGroup>
 </Project>

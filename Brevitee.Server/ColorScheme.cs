@@ -235,7 +235,7 @@ namespace Brevitee.Server
         {
             StringBuilder lessContent = new StringBuilder();
             lessContent.AppendLine(LessHeader);
-            lessContent.AppendLine(ResourceTextFiles.ReadTextFile("style.txt", typeof(AppServer).Assembly));
+            lessContent.AppendLine(ResourceTextFiles.ReadTextFile("style.txt", typeof(BreviteeServer).Assembly));
             string css = Less.Parse(lessContent.ToString());
             Fs.WriteFile("~/content/css/style.css", css);
         }

@@ -92,7 +92,7 @@ namespace Brevitee.Data.Schema
                 {
                     _started = true;
 
-                    Threads.Start(this.Name, () =>
+                    Exec.Start(this.Name, () =>
                     {
                         try
                         {

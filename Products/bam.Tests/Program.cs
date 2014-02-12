@@ -28,6 +28,7 @@ using Moq.Properties;
 using Moq.Protected;
 
 using Brevitee.Server;
+using Brevitee.ServiceProxy;
 
 namespace Bam.Tests
 {
@@ -216,6 +217,116 @@ namespace Bam.Tests
             }
 
             #endregion
+
+
+            public int ContentLength
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            public System.Collections.Specialized.NameValueCollection QueryString
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            string[] IRequest.AcceptTypes
+            {
+                get
+                {
+                    throw new NotImplementedException();
+                }
+                set
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            Encoding IRequest.ContentEncoding
+            {
+                get
+                {
+                    throw new NotImplementedException();
+                }
+                set
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            long IRequest.ContentLength64
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            int IRequest.ContentLength
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            System.Collections.Specialized.NameValueCollection IRequest.QueryString
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            string IRequest.ContentType
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            System.Net.CookieCollection IRequest.Cookies
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            System.Collections.Specialized.NameValueCollection IRequest.Headers
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            string IRequest.HttpMethod
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            Stream IRequest.InputStream
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            Uri IRequest.Url
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            Uri IRequest.UrlReferrer
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            string IRequest.UserAgent
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            string IRequest.UserHostAddress
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            string IRequest.UserHostName
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            string[] IRequest.UserLanguages
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            string IRequest.RawUrl
+            {
+                get { throw new NotImplementedException(); }
+            }
         }
 
         [UnitTest]
@@ -229,13 +340,13 @@ namespace Bam.Tests
                 context.Set<IContext>(ctx.Object);
                 SetupCtorParamsForExecutionClass(context);
             })
-            .WhenA<Execution>("execution MayHandle a request", (e) =>
+            .WhenA<ServiceProxyResponder>("execution MayHandle a request", (e) =>
             {
                 FakeRequest request = (FakeRequest)ctx.Object.Request;
                 request.SetUrl("http://blah.cxm/Execution");
-                Expect.IsFalse(e.MayHandle(ctx.Object), "MayHandle should have been false");
+                Expect.IsFalse(e.MayRespond(ctx.Object), "MayHandle should have been false");
                 request.SetUrl("http://blah.cxm/AnythingElse");
-                Expect.IsTrue(e.MayHandle(ctx.Object));
+                Expect.IsTrue(e.MayRespond(ctx.Object));
             })
             .TheTest
             .ShouldPass(because =>
@@ -258,15 +369,15 @@ namespace Bam.Tests
             {
                 SetupCtorParamsForExecutionClass(context);
             })
-            .WhenA<Execution>("has a type added", (e) =>
+            .WhenA<ServiceProxyResponder>("has a type added", (e) =>
             {
-                e.Add(typeof(TestType), new TestType());
+                e.AddCommonExecutor(typeof(TestType), new TestType());
             })
             .TheTest
             .ShouldPass(because =>
             {
                 because.ItsTrue("the executors count was incremented", // success message
-                    because.ObjectUnderTest<Execution>().Executors.Length == 1, // the assertion
+                    because.ObjectUnderTest<ServiceProxyResponder>().Executors.Length == 1, // the assertion
                     "Executors count didn't go up"); // failure message
             })
             .SoBeHappy()
@@ -282,18 +393,18 @@ namespace Bam.Tests
         [UnitTest]
         public void ExecutionDotRemoveShouldDecrementExecutors()
         {
-            Execution testObject = null;
+            ServiceProxyResponder testObject = null;
             After.Setup((ctx) =>
             {
                 SetupCtorParamsForExecutionClass(ctx);
-                ctx.Get<Execution>().Add(new TestType());
-                testObject = ctx.Get<Execution>();
+                ctx.Get<ServiceProxyResponder>().AddCommonExecutor(new TestType());
+                testObject = ctx.Get<ServiceProxyResponder>();
                 Expect.IsNotNull(testObject);
                 Expect.AreEqual(1, testObject.Executors.Length);
             })
-            .WhenA<Execution>("has its remove method called", (o) =>
+            .WhenA<ServiceProxyResponder>("has its remove method called", (o) =>
             {
-                o.Remove<TestType>();
+                o.RemoveCommonExecutor<TestType>();
             })
             .TheTest
             .ShouldPass(because =>
@@ -340,25 +451,25 @@ namespace Bam.Tests
 //            }
 //        }
 
-        [UnitTest("ExecutionRequest should return empty string array for chunks when the path is /")]
-        public void ExecutionRequestShouldReturnEmptyStringArray()
-        {
-            Mock<IContext> ctx = GetMockContext();
+        //[UnitTest("ExecutionRequest should return empty string array for chunks when the path is /")]
+        //public void ExecutionRequestShouldReturnEmptyStringArray()
+        //{
+        //    Mock<IContext> ctx = GetMockContext();
 
-            When.A<ExecutionRequest>("calls GetChunksAndValidate", (r) =>
-            {
-                return r.GetChunksAndValidate(ctx.Object);
-            })
-            .TheTest
-            .ShouldPass(because =>
-            {
-                string[] result = because.Result as string[];
-                because.ItsTrue("The result was a string array", result != null, "The result was not a string array");
-                because.ItsTrue("The results length was 0", result.Length == 0, string.Format("The length was ({0}) and not 0", result.Length));
-            })
-            .SoBeHappy()
-            .UnlessItFailed();
-        }
+        //    When.A<ExecutionRequest>("calls GetChunksAndValidate", (r) =>
+        //    {
+        //        return r.GetChunksAndValidate(ctx.Object);
+        //    })
+        //    .TheTest
+        //    .ShouldPass(because =>
+        //    {
+        //        string[] result = because.Result as string[];
+        //        because.ItsTrue("The result was a string array", result != null, "The result was not a string array");
+        //        because.ItsTrue("The results length was 0", result.Length == 0, string.Format("The length was ({0}) and not 0", result.Length));
+        //    })
+        //    .SoBeHappy()
+        //    .UnlessItFailed();
+        //}
 
         private static Mock<IContext> GetMockContext(FakeRequest request = null)
         {
@@ -440,24 +551,24 @@ namespace Bam.Tests
             }
         }
 
-        class FakeExecutionRequest : ExecutionRequest
-        {
-            public void TestSetContext(IContext context)
-            {
-                base.SetContext(context);
-            }
-        }
+        //class FakeExecutionRequest : ExecutionRequest
+        //{
+        //    public void TestSetContext(IContext context)
+        //    {
+        //        base.SetContext(context);
+        //    }
+        //}
 
-        [UnitTest("Set context should keep extension chain")]
-        public void CallingGetChunksAndValidateShouldCallSetMethodAndExt()
-        {
-            FakeRequest fr = GetFakeRequest("http://host/FakeClass/Method.json.html");
-            Mock<IContext> mockCtx = GetMockContext(fr);
-            FakeExecutionRequest testObject = new FakeExecutionRequest();
-            testObject.TestSetContext(mockCtx.Object);
+        //[UnitTest("Set context should keep extension chain")]
+        //public void CallingGetChunksAndValidateShouldCallSetMethodAndExt()
+        //{
+        //    FakeRequest fr = GetFakeRequest("http://host/FakeClass/Method.json.html");
+        //    Mock<IContext> mockCtx = GetMockContext(fr);
+        //    FakeExecutionRequest testObject = new FakeExecutionRequest();
+        //    testObject.TestSetContext(mockCtx.Object);
 
 
-        }
+        //}
 
     }
 

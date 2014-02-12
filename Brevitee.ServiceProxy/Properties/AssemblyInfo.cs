@@ -37,3 +37,5 @@ using System.Runtime.InteropServices;
 
 [assembly: InternalsVisibleTo("Brevitee.Html")]
 [assembly: InternalsVisibleTo("Brevitee.Automation.Tests")]
+[assembly: InternalsVisibleTo("Brevitee.Server")]
+[assembly: InternalsVisibleTo("Brevitee.Server.Tests")]

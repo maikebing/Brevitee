@@ -8,6 +8,7 @@ namespace Brevitee.Automation
 {
     public class WorkSequence: Worker, IEnumerable<IWorker>
     {
+        public WorkSequence() : base() { }
         public WorkSequence(string name)
             : base(name)
         {
@@ -34,6 +35,11 @@ namespace Brevitee.Automation
             return (from work in _workList
                     where work.Name.Equals(workName)
                     select work).FirstOrDefault() != null;
+        }
+
+        public override string[] RequiredProperties
+        {
+            get { return new string[] { "Name" }; }
         }
 
         protected override WorkState Do()

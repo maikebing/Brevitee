@@ -2,7 +2,7 @@
     // implement this at some point no time right now
     //proxies: [
     //    {
-    //        type: "KLGates.Core.Management.Fs, KLGates.Core.Management, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+    //        type: "Brevitee.Management.Fs, Brevitee.Management, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
     //        ctorArgs: ["{appName}"]
     //    }
     //],

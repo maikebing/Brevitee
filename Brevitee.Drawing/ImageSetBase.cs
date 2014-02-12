@@ -5,7 +5,7 @@ using System.Text;
 using System.Drawing;
 using System.Reflection;
 
-namespace KLGates.Images
+namespace Brevitee.Images
 {
     public class ImageSetBase: IImageSet
     {

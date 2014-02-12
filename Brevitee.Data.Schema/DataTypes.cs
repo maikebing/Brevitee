@@ -13,6 +13,9 @@ namespace Brevitee.Data.Schema
         Long,
         Decimal,
         String,
+        /// <summary>
+        /// The field will be generated as a byte array (byte[])
+        /// </summary>
         Byte,
         DateTime
     }

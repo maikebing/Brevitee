@@ -5,10 +5,10 @@ using System.Text;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
-using KLGates.Helpers;
+using Brevitee.Helpers;
 using System.Reflection;
 
-namespace KLGates.Images
+namespace Brevitee.Images
 {
     public class Tab: ImageSetProviderBase
     {

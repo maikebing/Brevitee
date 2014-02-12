@@ -81,7 +81,7 @@ namespace Brevitee.Breve.Tests
 
                 // this is an assertion
                 because.ItsTrue(/* success message */"the object under test was not null", testObj != null, /* failure message */"the object under test was null");
-                because.ItsTrue(/* success message */"Big-Bird is KLGates's favorite", true, /* failure message */"big bird is not cool");
+                because.ItsTrue(/* success message */"Big-Bird is Brevitee's favorite", true, /* failure message */"big bird is not cool");
                 because.ItsTrue(/* success message */"Oscar-the-Grouch is a very grouchy guy", true, /* failure message */"Oscar-the-Grouch is happy");
             })
             .SoBeHappy(c =>

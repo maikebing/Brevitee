@@ -29,6 +29,8 @@ namespace Brevitee
             public Attachment[] Attachments { get; set; }
             public bool IsBodyHtml { get; set; }
 
+            public int Port { get; set; }
+
             public bool EnablSsl { get; set; }
             public string SmtpHost { get; set; }
             public string UserName { get; set; }
@@ -43,6 +45,7 @@ namespace Brevitee
             this.Config = new Configuration();
             this._message = new MailMessage();
             this._client = new SmtpClient();
+            this.Config.Port = this._client.Port;
         }
 
         public SmtpClient SmtpClient
@@ -177,6 +180,12 @@ namespace Brevitee
             return this;
         }
 
+        public Email Port(int port)
+        {
+            Config.Port = port;
+            return this;
+        }
+
         public Email Attach(params string[] files)
         {
             List<FileInfo> infos = new List<FileInfo>();
@@ -213,6 +222,16 @@ namespace Brevitee
         {
             Config.EnablSsl = enable;
             return this;
+        }
+
+        /// <summary>
+        /// The same as SmtpHost
+        /// </summary>
+        /// <param name="serverHostName"></param>
+        /// <returns></returns>
+        public Email Server(string serverHostName)
+        {
+            return SmtpHost(serverHostName);
         }
 
         public Email SmtpHost(string smtpHost)
@@ -271,7 +290,8 @@ namespace Brevitee
 
             _client = new SmtpClient(host);
             _client.EnableSsl = Config.EnablSsl;
-            
+            _client.Port = Config.Port;
+
             if (!string.IsNullOrEmpty(Config.Password))
             {
                 string userName = string.IsNullOrEmpty(Config.UserName) ? Config.From.Address : Config.UserName;

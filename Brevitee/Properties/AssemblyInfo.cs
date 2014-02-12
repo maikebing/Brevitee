@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Brevitee")]
 [assembly: AssemblyProduct("Brevitee")]
-[assembly: AssemblyCopyright("Copyright © Brevitee 2012")]
+[assembly: AssemblyCopyright("Copyright © Brevitee 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -34,4 +34,7 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
+
+[assembly:InternalsVisibleTo("Brevitee.Tests")]
+[assembly: InternalsVisibleTo("Brevitee.Automation.Tests")]
 

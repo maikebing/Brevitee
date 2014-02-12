@@ -34,16 +34,28 @@ namespace Brevitee.Javascript
             }
         }
 
+        /// <summary>
+        /// Get a json string by reading an object from a javascript file
+        /// </summary>
+        /// <param name="javascriptFilePath"></param>
+        /// <param name="objName"></param>
+        /// <returns></returns>
         public static string JsonFromJsLiteralFile(this string javascriptFilePath, string objName)
         {
             return JsonFromJsLiteralFile(new FileInfo(javascriptFilePath), objName);
         }
 
+        /// <summary>
+        /// Get a json string by reading an object from a javascript file
+        /// </summary>
+        /// <param name="jsLiteralFile"></param>
+        /// <param name="objName"></param>
+        /// <returns></returns>
         public static string JsonFromJsLiteralFile(this FileInfo jsLiteralFile, string objName)
         {
             string json = Brevitee.Javascript.ResourceScripts.Get("json2.js");
             string database = File.ReadAllText(jsLiteralFile.FullName);
-            string command = string.Format(";var objJson = JSON.stringify({0});", objName);
+            string command = string.Format("\r\n;var objJson = JSON.stringify({0});", objName);
 
             string script = "{0}{1}{2}"._Format(json, database, command);
             JsContext context = script.RunJavascript();

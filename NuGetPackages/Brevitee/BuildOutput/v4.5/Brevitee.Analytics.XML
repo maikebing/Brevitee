@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Brevitee.Analytics</name>
+    </assembly>
+    <members>
+        <member name="M:Brevitee.Analytics.Classification.Classifier.Probability(System.String,System.String)">
+            <summary>
+            When implemented, should return the probablity that the specified
+            document is in the specified category
+            </summary>
+            <param name="documentString"></param>
+            <param name="category"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brevitee.Analytics.Classification.Classifier.Train(System.String,System.String)">
+            <summary>
+            Train the classifier assigning the specified doc to the 
+            specified category
+            </summary>
+            <param name="doc"></param>
+            <param name="category"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Classification.Classifier.DocumentCount">
+            <summary>
+            Total number of documents (corresponds to totalcount in Collective Intelligence chapter 6)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Brevitee.Analytics.Classification.Classifier.DocumentsInCategoryCount(System.String)">
+            <summary>
+            Total number of documents in a category (corresponds to catcount in Collective Intelligence chapter 6)
+            </summary>
+            <param name="category"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brevitee.Analytics.Classification.Classifier.IncreaseFeature(System.String,System.String)">
+            <summary>
+            Increase the count of a feature/category pair
+            </summary>
+            <param name="feature"></param>
+            <param name="category"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Classification.Classifier.GetCategory(System.String)">
+            <summary>
+            Get a Category entry for the specified category, creating it if necessary
+            </summary>
+            <param name="category"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brevitee.Analytics.Classification.Classifier.ExtractWords(System.String)">
+            <summary>
+            The default implementation of GetFeatures
+            </summary>
+            <param name="docContent"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Brevitee.Analytics.Classification.Classifier.FeatureExtractor">
+            <summary>
+            The delegate used for extracting features from a
+            given string.  Default is ExtractWords.
+            </summary>
+        </member>
+        <member name="M:Brevitee.Analytics.Classification.FisherClassifier.SetMinimum(System.String,System.Single)">
+            <summary>
+            Sets the minimum probability score for the specified
+            category.  The probablity score for a document must
+            be greater than the specified minimum for the category
+            for the document to be classified as being in 
+            the category.
+            </summary>
+            <param name="category"></param>
+            <param name="min"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Classification.NaiveBayesClassifier.Classify(System.String,System.String)">
+            <summary>
+            Attempts to classify the specified document taking into 
+            consideration the threshold set by SetThreshold, default is 1.
+            </summary>
+            <param name="documentString"></param>
+            <param name="defaultCategory"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brevitee.Analytics.Classification.NaiveBayesClassifier.SetThreshold(System.String,System.Single)">
+            <summary>
+            For a new document to be classified into a particular category, its 
+            probability must be a specified amount larget than the probablity
+            for any other category.  This specified amount is the threshold.
+            </summary>
+            <param name="category"></param>
+            <param name="threshold"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Crawlers.BaseCrawler.ExtractTargets(System.String)">
+            <summary>
+            When implemented by a derived class will extract
+            more targets to be processed from the specified target.  
+            (Think filepath or url)
+            </summary>
+            <param name="target"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brevitee.Analytics.Crawlers.ImageCrawler.ProcessTarget(System.String)">
+            <summary>
+            Reads the target and saves the url of any img tag it finds
+            </summary>
+            <param name="target"></param>
+        </member>
+    </members>
+</doc>

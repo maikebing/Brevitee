@@ -91,7 +91,7 @@ namespace Brevitee.Dust
 
         /// <summary>
         /// Holds references by template name to the DustTemplate
-        /// instance
+        /// instances
         /// </summary>
         public static Dictionary<string, DustTemplate> Templates
         {
@@ -217,14 +217,41 @@ namespace Brevitee.Dust
             }
         }
 
+        static Func<string, string> _getAbsoluteDustRootDelegate = (relative) =>
+        {
+            return HttpContext.Current.Server.MapPath(relative);
+        };
+
+        /// <summary>
+        /// The delegate used during initialization to determine the 
+        /// absolute path to the dust root folder given the relative path.
+        /// The default implementation uses HttpContext.Current.Server.MapPath
+        /// </summary>
+        public static Func<string, string> GetAbsoluteDustRootDelegate
+        {
+            get
+            {
+                return _getAbsoluteDustRootDelegate;
+            }
+            set
+            {
+                _getAbsoluteDustRootDelegate = value;
+            }
+        }
+
         private static void LoadTemplates()
         {
             string rootDir = _dustRoot;
             if (_dustRoot.StartsWith("~"))
             {
-                rootDir = HttpContext.Current.Server.MapPath(_dustRoot);
+                rootDir = GetAbsoluteDustRootDelegate(rootDir);
             }
 
+            LoadFromFileSystem(rootDir);
+        }
+
+        private static void LoadFromFileSystem(string rootDir)
+        {
             DirectoryInfo dir = new DirectoryInfo(rootDir);
             if (dir.Exists)
             {

@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace Brevitee.Logging
 {
+    /// <summary>
+    /// A custom text file logger that logs events in
+    /// a csv (comma separated values) format
+    /// </summary>
     public class CsvLogger: TextFileLogger
     {
         class CsvLogEvent

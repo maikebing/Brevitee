@@ -232,17 +232,19 @@ namespace Brevitee
             AreEqual(expected, actual, "");
         }
 
-        public static void AreEqual(string expected, string actual, string message)
+        public static void AreEqual(string expected, string actual, string failureMessage)
         {
-            if (!expected.Equals(actual))
+            if (((expected == null && actual != null) ||
+                (actual == null && expected != null)) ||
+                !expected.Equals(actual))                
             {
-                if (string.IsNullOrEmpty(message))
+                if (string.IsNullOrEmpty(failureMessage))
                 {
                     throw new ExpectFailedException(expected, actual, HtmlEncodeExceptions);
                 }
                 else
                 {
-                    throw new ExpectFailedException(message);
+                    throw new ExpectFailedException(failureMessage);
                 }
             }
         }
@@ -251,14 +253,22 @@ namespace Brevitee
         /// </summary>
         /// <param name="expected"></param>
         /// <param name="actual"></param>
-        public static void AreEqual(object expected, object actual, string message)
+        public static void AreEqual(object expected, object actual, string failureMessage)
         {
-            if (!expected.Equals(actual))
+            if (((expected == null && actual != null) ||
+                (actual == null && expected != null)) ||
+                !expected.Equals(actual))
             {
-                if (string.IsNullOrEmpty(message))
-                    throw new ExpectFailedException(expected.ToString(), actual.ToString(), HtmlEncodeExceptions);
+                if (string.IsNullOrEmpty(failureMessage))
+                {
+                    string expectString = expected == null ? "null" : expected.ToString();
+                    string actualString = actual == null ? "null" : actual.ToString();
+                    throw new ExpectFailedException(expectString, actualString, HtmlEncodeExceptions);
+                }
                 else
-                    throw new ExpectFailedException(message);
+                {
+                    throw new ExpectFailedException(failureMessage);
+                }
             }
         }
 
@@ -267,18 +277,18 @@ namespace Brevitee
             DerivesFromType<T>(objectToCheck, string.Empty);
         }
 
-        public static void DerivesFromType<T>(this object objectToCheck, string message)
+        public static void DerivesFromType<T>(this object objectToCheck, string failureMessage)
         {
             Type checkType = objectToCheck.GetType();
             if (!checkType.IsSubclassOf(typeof(T)))
             {
-                if (string.IsNullOrEmpty(message))
+                if (string.IsNullOrEmpty(failureMessage))
                 {
                     throw new ExpectFailedException(typeof(T), objectToCheck, HtmlEncodeExceptions);
                 }
                 else
                 {
-                    throw new ExpectFailedException(message);
+                    throw new ExpectFailedException(failureMessage);
                 }
             }
         }
@@ -299,28 +309,28 @@ namespace Brevitee
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="objectToCheck"></param>
-        public static void IsObjectOfType<T>(this object objectToCheck, string message)
+        public static void IsObjectOfType<T>(this object objectToCheck, string failureMessage)
         {
             if (objectToCheck.GetType() != typeof(T))
             {
-                if (string.IsNullOrEmpty(message))
+                if (string.IsNullOrEmpty(failureMessage))
                     throw new ExpectFailedException(typeof(T), objectToCheck, HtmlEncodeExceptions);
                 else
-                    throw new ExpectFailedException(message);
+                    throw new ExpectFailedException(failureMessage);
             }
         }
 
-        public static void IsInstanceOfType<T>(this object objectToCheck, string message = "")
+        public static void IsInstanceOfType<T>(this object objectToCheck, string failureMessage = "")
         {
             if (!typeof(T).IsInstanceOfType(objectToCheck))
             {
-                if (string.IsNullOrWhiteSpace(message))
+                if (string.IsNullOrWhiteSpace(failureMessage))
                 {
                     throw new ExpectFailedException(typeof(T), objectToCheck, HtmlEncodeExceptions);
                 }
                 else
                 {
-                    throw new ExpectFailedException(message);
+                    throw new ExpectFailedException(failureMessage);
                 }
             }
         }
@@ -339,14 +349,14 @@ namespace Brevitee
         /// an exception if the assertion fails.
         /// </summary>
         /// <param name="stringToCheck"></param>
-        public static void IsNullOrEmpty(string stringToCheck, string message)
+        public static void IsNullOrEmpty(string stringToCheck, string failureMessage)
         {
             if (!string.IsNullOrEmpty(stringToCheck))
             {
-                if (string.IsNullOrEmpty(message))
+                if (string.IsNullOrEmpty(failureMessage))
                     throw new ExpectFailedException("null or empty string", stringToCheck);
                 else
-                    throw new ExpectFailedException(message);
+                    throw new ExpectFailedException(failureMessage);
             }
         }
 
@@ -355,14 +365,14 @@ namespace Brevitee
             IsNotNullOrEmpty(stringToCheck, "");
         }
 
-        public static void IsNotNullOrEmpty(string stringToCheck, string message)
+        public static void IsNotNullOrEmpty(string stringToCheck, string failureMessage)
         {
             if (string.IsNullOrEmpty(stringToCheck))
             {
-                if (string.IsNullOrEmpty(message))
+                if (string.IsNullOrEmpty(failureMessage))
                     throw new ExpectFailedException("string with value", "null or empty string");
                 else
-                    throw new ExpectFailedException(message);
+                    throw new ExpectFailedException(failureMessage);
             }
         }
 
@@ -397,13 +407,13 @@ namespace Brevitee
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="objectToCheck"></param>
-        /// <param name="message"></param>
-        public static void IsNull(object objectToCheck, string message) 
+        /// <param name="failureMessage"></param>
+        public static void IsNull(object objectToCheck, string failureMessage) 
         {
             if (objectToCheck != null)
             {
-                if (!string.IsNullOrEmpty(message))
-                    throw new ExpectFailedException(message);
+                if (!string.IsNullOrEmpty(failureMessage))
+                    throw new ExpectFailedException(failureMessage);
                 else
                     throw new ExpectFailedException("null", objectToCheck.GetType().Name, HtmlEncodeExceptions);
             }
@@ -414,12 +424,12 @@ namespace Brevitee
             IsNotNull(objectToCheck, string.Empty);
         }
 
-        public static void IsNotNull(object objectToCheck, string message) 
+        public static void IsNotNull(object objectToCheck, string failureMessage) 
         {
             if (objectToCheck == null)
             {
-                if (!string.IsNullOrEmpty(message))
-                    throw new ExpectFailedException(message);
+                if (!string.IsNullOrEmpty(failureMessage))
+                    throw new ExpectFailedException(failureMessage);
                 else
                     throw new ExpectFailedException("object", "null", HtmlEncodeExceptions);
             }

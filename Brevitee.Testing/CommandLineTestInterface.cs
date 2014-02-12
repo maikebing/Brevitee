@@ -41,7 +41,7 @@ namespace Brevitee.Testing
             AddValidArgument("?", true, "Show usage");
 
             ParseArgs(args);
-
+            int? exitCode = 0;
             TestFailed += (o, t) =>
             {
                 Out("Test Failed: " + t.ConsoleInvokeableMethod.Information + "\r\n", ConsoleColor.Red);
@@ -50,12 +50,13 @@ namespace Brevitee.Testing
                 Out(t.Exception.StackTrace, ConsoleColor.Red);
                 Out("---", ConsoleColor.Red);
                 Out();
+                exitCode = 1;
             };
 
             if (Arguments.Contains("?"))
             {
                 Usage(Assembly.GetEntryAssembly());
-                Exit(0);
+                Exit(exitCode.Value);
             }
             else if (!Arguments.Contains("i"))
             {
@@ -118,7 +119,7 @@ namespace Brevitee.Testing
 
         protected static void Pass(string text)
         {
-            OutFormat("{0}:Passed", ConsoleColor.Green, text);
+            OutLineFormat("{0}:Passed", ConsoleColor.Green, text);
         }
 
         public static void TestMenu(Assembly assemblyToAnalyze, ConsoleMenu[] otherMenus, string header)
@@ -133,19 +134,48 @@ namespace Brevitee.Testing
 
             try
             {
-                if (answer.Trim().ToLower().Equals("all"))
+                answer = answer.Trim().ToLowerInvariant();
+                string[] individuals = answer.DelimitSplit(",", true);
+                string[] range = answer.DelimitSplit("-", true);
+                if (answer.Equals("all"))
                 {
                     bool enterManually = true;
                     if (interactive)
+                    {
                         enterManually = Confirm("Would you like to enter parameters manually? [y][N]");
+                    }
                     if (enterManually)
+                    {
                         RunAllTestsInteractively(assemblyToAnalyze);
+                    }
                     else
+                    {
                         RunAllTests(assemblyToAnalyze);
+                    }
+                }
+                else if(range.Length == 2)
+                {
+                    int first = Convert.ToInt32(range[0]);
+                    int end = Convert.ToInt32(range[1]);
+                    List<string> answers = new List<string>();
+                    for (int i = first; i <= end; i++)
+                    {
+                        answers.Add(i.ToString());
+                    }
+                    answers.Each(num =>
+                    {
+                        RunTest(tests, num);
+                    });
+                }
+                else if (individuals.Length > 1)
+                {
+                    individuals.Each(num =>
+                    {
+                        RunTest(tests, num);
+                    });
                 }
                 else
                 {
-                    
                     RunTest(tests, answer);
                 }
             }
@@ -155,25 +185,46 @@ namespace Brevitee.Testing
             }
 
             if (Confirm("Return to the Test menu? [y][N]"))
+            {
                 TestMenu(assemblyToAnalyze, otherMenus, header);
+            }
             else
+            {
                 Exit(0);
+            }
         }
 
         protected static void RunTest(List<ConsoleInvokeableMethod> tests, string answer)
         {
-            int selectedIndex = -1;
+            int selectedNumber = -1;
             try
             {
-                InvokeSelection(tests, answer, "******* Starting Test " + answer + "********", "******* Test " + answer + " Finished********", out selectedIndex);
+                ConsoleInvokeableMethod test;
+                string testName = answer;
+                if (int.TryParse(answer.ToString(), out selectedNumber) && (selectedNumber - 1) > -1 && (selectedNumber - 1) < tests.Count)
+                {
+                    test = tests[selectedNumber - 1];
+                    testName = "({0}) {1}"._Format(answer, test.Information);
 
-                Pass(tests[selectedIndex].Method.Name.PascalSplit(" "));
+                    StringBuilder header = new StringBuilder();
+                    header.AppendFormat("******* Starting Test {0} ********\r\n", testName);
+                    StringBuilder footer = new StringBuilder();
+                    footer.AppendFormat("******* Finished Test {0} ********\r\n", testName);
+
+                    InvokeSelection(tests, header.ToString(), footer.ToString(), selectedNumber);
+                }
+                else
+                {
+                    Console.WriteLine("Invalid entry");
+                    Environment.Exit(1);
+                }
+
+                Pass(testName);
             }
             catch (Exception ex)
             {
-                OnTestFailed(tests[selectedIndex], ex);
-            }
-            
+                OnTestFailed(tests[selectedNumber - 1], ex);
+            }            
         }
 
         protected static void RunAllTests(Assembly assemblyToAnalyze)
@@ -275,7 +326,7 @@ namespace Brevitee.Testing
             {
                  tests.AddRange(GetActions(assemblyToAnalyze, testMethodAttribute));
             }
-
+            tests.Sort((l, r) => l.Information.CompareTo(r.Information));
             return tests;
         }
 

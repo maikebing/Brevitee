@@ -42,10 +42,8 @@ namespace Brevitee.Users
                     List<string> usersToAddToRole = new List<string>();
                     userNames.Each(userName =>
                     {
-                        if (User.Exists(userName))
-                        {
-                            usersToAddToRole.Add(userName);
-                        }
+                        User.Ensure(userName);
+                        usersToAddToRole.Add(userName);
                     });
                     if (usersToAddToRole.Count > 0)
                     {
@@ -75,16 +73,21 @@ namespace Brevitee.Users
             sql.Execute(_.Db.For<User>());
         }
 
+        string _applicationName;
         public override string ApplicationName
         {
             get
             {
-                return DefaultConfiguration.GetAppSetting("ApplicationName", "UNKOWN");
+                if (string.IsNullOrEmpty(_applicationName))
+                {
+                    _applicationName = DefaultConfiguration.GetAppSetting("ApplicationName", "UNKOWN");
+                }
+
+                return _applicationName;
             }
             set
             {
-                // must be in the config file
-                Log.AddEntry("An attempt was made to set the ApplicationName property of {0}", this.GetType().Name);
+                _applicationName = value;
             }
         }
 

@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Brevitee.Configuration;
 
 namespace Brevitee.Automation
 {
-    public class MultiFileCopyWorker: Worker, IConfigurable, IEnumerable<string>
+    public class MultiFileCopyWorker: Worker, IEnumerable<string>
     {
         List<string> _filePaths;
+        public MultiFileCopyWorker() : base() { }
 
         public MultiFileCopyWorker(string name)
             : base(name)
@@ -39,14 +41,7 @@ namespace Brevitee.Automation
         {
             _filePaths.Remove(path);
         }
-        #region IConfigurable Members
 
-        public void Configure(object configuration)
-        {
-            Foreman.Configure(this, configuration);
-        }
-
-        #endregion
 
         #region IEnumerable<string> Members
 
@@ -65,6 +60,11 @@ namespace Brevitee.Automation
         }
 
         #endregion
+
+        public override string[] RequiredProperties
+        {
+            get { return new string[] { "Name", "Destination" }; }
+        }
 
         protected override WorkState Do()
         {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Diagnostics;
+using System.Threading;
 
 namespace Brevitee.CommandLine
 {
@@ -14,8 +15,9 @@ namespace Brevitee.CommandLine
         /// </summary>
         /// <param name="command">a valid command line</param>
         /// <returns>ProcessOutput</returns>
-        public static ProcessOutput Run(this string command)
+        public static ProcessOutput Run(this string command, int timeout = 600000)
         {
+            // fixed this to handle output correctly based on http://stackoverflow.com/questions/139593/processstartinfo-hanging-on-waitforexit-why
             Expect.IsFalse(string.IsNullOrEmpty(command), "command cannot be blank or null");
             Expect.IsFalse(command.Contains("\r"), "Multiple command lines not supported");
             Expect.IsFalse(command.Contains("\n"), "Multiple command lines not supported");
@@ -40,23 +42,60 @@ namespace Brevitee.CommandLine
             startInfo.FileName = string.IsNullOrEmpty(exe) ? command : exe;
             startInfo.Arguments = arguments;
 
-            string output = string.Empty;
-            string error = string.Empty;
+            StringBuilder output = new StringBuilder();
+            StringBuilder error = new StringBuilder();
 
             int exitCode = -1;
-            using (Process theProcess = new Process())
+            bool timedOut = false;
+            using (Process process = new Process())
             {
-                theProcess.StartInfo = startInfo;
-                theProcess.Start();
-                output = theProcess.StandardOutput.ReadToEnd();
-                theProcess.StandardOutput.Close();
-                error = theProcess.StandardError.ReadToEnd();
-                theProcess.StandardError.Close();
-                exitCode = theProcess.ExitCode;
-                theProcess.Close();
+                process.StartInfo = startInfo;
+                using (AutoResetEvent outputWaitHandle = new AutoResetEvent(false))
+                using (AutoResetEvent errorWaitHandle = new AutoResetEvent(false))
+                {
+                    process.OutputDataReceived += (sender, e) =>
+                    {
+                        if (e.Data == null)
+                        {
+                            outputWaitHandle.Set();
+                        }
+                        else
+                        {
+                            output.AppendLine(e.Data);
+                        }
+                    };
+                    process.ErrorDataReceived += (sender, e) =>
+                    {
+                        if (e.Data == null)
+                        {
+                            errorWaitHandle.Set();
+                        }
+                        else
+                        {
+                            error.AppendLine(e.Data);
+                        }
+                    };
+
+                    process.Start();
+                    process.BeginOutputReadLine();
+                    process.BeginErrorReadLine();
+
+                    if(process.WaitForExit(timeout) &&
+                        outputWaitHandle.WaitOne(timeout) &&
+                        errorWaitHandle.WaitOne(timeout))
+                    {
+                        exitCode = process.ExitCode;
+                    }
+                    else
+                    {
+                        error.AppendLine();
+                        error.AppendLine("Timeout elapsed prior to process completion");
+                        timedOut = true;
+                    }
+                }
             }
 
-            return new ProcessOutput(output, error, exitCode);
+            return new ProcessOutput(output.ToString(), error.ToString(), exitCode, timedOut);
         }
 
         private static ProcessStartInfo CreateStartInfo()

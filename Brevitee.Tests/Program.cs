@@ -44,33 +44,6 @@ namespace Brevitee.Tests
             #endregion
         }
 
-        [UnitTest]
-        public void SetAndRemoveAttribute()
-        {
-            FileInfo file = new FileInfo(".\\test.txt");
-            if (!file.Exists)
-            {
-                "test text _".RandomLetters(16).SafeWriteToFile(file.FullName);
-            }
 
-            Expect.IsFalse(file.Is(FileAttributes.ReadOnly));
-            file.SetAttribute(FileAttributes.ReadOnly);
-            Expect.IsTrue(file.Is(FileAttributes.ReadOnly));
-            file.RemoveAttribute(FileAttributes.ReadOnly);
-            Expect.IsFalse(file.Is(FileAttributes.ReadOnly));
-
-            bool thrown = false;
-            try
-            {
-                file.RemoveAttribute(FileAttributes.ReadOnly);
-                Expect.IsFalse(file.Is(FileAttributes.ReadOnly));
-            }
-            catch (Exception ex)
-            {
-                thrown = true;
-            }
-
-            Expect.IsFalse(thrown, "Remove attribute threw exception");
-        }
     }
 }

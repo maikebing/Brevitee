@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
-using KLGates.Extensions;
-using KLGates.Helpers;
+using Brevitee.Extensions;
+using Brevitee.Helpers;
 
-namespace KLGates.Images
+namespace Brevitee.Images
 {
     public abstract class ImageSetProviderBase: IImageSetProvider
     {

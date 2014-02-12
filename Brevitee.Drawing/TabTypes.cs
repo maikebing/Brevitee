@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace KLGates.Images
+namespace Brevitee.Images
 {
     public enum TabTypes
     {

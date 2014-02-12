@@ -8,6 +8,8 @@ namespace Brevitee.Automation
 {
     public class IfElseWork: Worker
     {
+        public IfElseWork() : base() { }
+        public IfElseWork(string name) : base(name) { }
         public IfElseWork(string name, Worker workIfTrue, Worker elseWork)
             : base(name)
         {
@@ -15,6 +17,10 @@ namespace Brevitee.Automation
             this.ElseWork = elseWork;
         }
 
+        public override string[] RequiredProperties
+        {
+            get { return new string[] { "Name" }; }
+        }
         public bool Condition { get; set; }
         public Worker WorkIfTrue { get; set; }
         public Worker ElseWork { get; set; }

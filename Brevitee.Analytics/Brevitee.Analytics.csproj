@@ -154,6 +154,7 @@
     <Compile Include="Generated\WriteHistory.cs" />
     <Compile Include="Generated\WriteHistoryCollection.cs" />
     <Compile Include="Generated\WriteHistoryColumns.cs" />
+    <Compile Include="Metrics\Timed.cs" />
     <Compile Include="Partials\Style.cs" />
     <Compile Include="Partials\Tag.cs" />
     <Compile Include="Partials\Url.cs" />

@@ -71,7 +71,6 @@
     <Compile Include="Comparison.cs" />
     <Compile Include="ContainsComparison.cs" />
     <Compile Include="CountResult.cs" />
-    <Compile Include="CsvResult.cs" />
     <Compile Include="DaoController.cs" />
     <Compile Include="DaoProxyRegistration.cs" />
     <Compile Include="DaoProxySystem.cs" />

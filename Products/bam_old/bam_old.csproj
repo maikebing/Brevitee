@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{B971AD24-4941-4A21-9B08-C9DE89CA7F77}</ProjectGuid>
+    <ProjectGuid>{580B1CA1-F77D-4268-8C00-264872BFA20F}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Bam</RootNamespace>

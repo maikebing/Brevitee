@@ -1,4 +1,4 @@
-﻿
+
 html {
     background: url(../images/bg-body-top.jpg) repeat-x;
 }

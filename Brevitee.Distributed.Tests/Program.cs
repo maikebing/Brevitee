@@ -206,10 +206,5 @@ namespace Brevitee.Distributed.Tests
             PrintSlots(ring);
         }
 
-        [UnitTest]
-        public void ComputeNodeInfoShouldHaveCorrectInfo()
-        {
-            ComputeNode node = new ComputeNode();
-        }
     }
 }

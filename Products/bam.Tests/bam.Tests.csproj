@@ -150,10 +150,6 @@
       <Project>{EA9863A9-8E0B-4497-B7FD-ABF450A3E468}</Project>
       <Name>Brevitee.CommandLine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\bam\bam.csproj">
-      <Project>{b971ad24-4941-4a21-9b08-c9de89ca7f77}</Project>
-      <Name>bam</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -166,7 +162,6 @@
     <Content Include="css\qunitmetro-light.css" />
     <Content Include="css\qunitmetro.css" />
     <Content Include="js\qunitmetro.js" />
-    <Content Include="README.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />

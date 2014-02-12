@@ -52,7 +52,7 @@ namespace Brevitee.ServiceProxy
 
         public string Ctors()
         {
-            return ServiceProxySystem.GetJsCtorScript(_serviceProvider, _serviceProvider.ClassNames).ToString();
+            return DaoProxyRegistration.GetDaoJsCtorScript(_serviceProvider, _serviceProvider.ClassNames).ToString();
         }
 
         public string Proxies()

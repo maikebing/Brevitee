@@ -326,6 +326,17 @@ namespace Brevitee.Data.Schema
             return Generate(result, compile ? new DirectoryInfo(BinDir): null, keepSource, genTo);
         }
 
+        public Result Generate(FileInfo databaseDotJs, DirectoryInfo compileTo, DirectoryInfo temp)
+        {
+            string databaseSchemaJson = databaseDotJs.JsonFromJsLiteralFile("database");
+            return Generate(databaseSchemaJson, compileTo, false, temp.FullName);
+        }
+
+        public Result Generate(string simpleSchemaJson, DirectoryInfo compileTo, DirectoryInfo temp)
+        {
+            return Generate(simpleSchemaJson, compileTo, false, temp.FullName);
+        }
+
         object _sync = new object();
         /// <summary>
         /// Generate 
@@ -341,9 +352,16 @@ namespace Brevitee.Data.Schema
                     bool compile = compileTo != null;
                     Result result = new Result("Generation completed");
                     dynamic rehydrated = JsonConvert.DeserializeObject<dynamic>(simpleSchemaJson);
-                    if (rehydrated["nameSpace"] == null || rehydrated["schemaName"] == null)
+                    if (rehydrated["nameSpace"] == null)// || rehydrated["schemaName"] == null)
                     {
-                        result.ExceptionMessage = "Please specify nameSpace and schemaName";
+                        result.ExceptionMessage = "Please specify nameSpace";
+                        result.Message = string.Empty;
+                        result.Success = false;
+                    }
+                    else if (rehydrated["schemaName"] == null)
+                    {
+                        result.ExceptionMessage = "Please specify schemaName";
+                        result.Message = string.Empty;
                         result.Success = false;
                     }
                     else
@@ -366,7 +384,7 @@ namespace Brevitee.Data.Schema
                             manager.SetForeignKey(fk.PrimaryTable, fk.ForeignKeyTable, fk.ReferencingColumn);
                         }
 
-                        DirectoryInfo daoDir = new DirectoryInfo(tempDir);//new DirectoryInfo(HttpContext.Current.Server.MapPath(string.Format("~/dao/{0}", nameSpace)));
+                        DirectoryInfo daoDir = new DirectoryInfo(tempDir);
                         if (!daoDir.Exists)
                         {
                             daoDir.Create();
@@ -423,28 +441,32 @@ namespace Brevitee.Data.Schema
 
         private void ProcessXrefs(dynamic rehydrated, SchemaManager manager, List<dynamic> foreignKeys)
         {
-            foreach (dynamic xref in rehydrated["xrefs"])
+            if(rehydrated["xrefs"] != null)
             {
-                string leftTableName = (string)xref[0];
-                string rightTableName = (string)xref[1];
-                
-                Args.ThrowIfNullOrEmpty(leftTableName, "xref[0]");
-                Args.ThrowIfNullOrEmpty(rightTableName, "xref[1]");
-                
-                string xrefTableName = string.Format("{0}{1}", leftTableName, rightTableName);
-                string leftColumnName = string.Format("{0}Id", leftTableName);
-                string rightColumnName = string.Format("{0}Id", rightTableName);
-                                
-                manager.AddXref(leftTableName, rightTableName);
+                foreach (dynamic xref in rehydrated["xrefs"])
+                {
+                    string leftTableName = (string)xref[0];
+                    string rightTableName = (string)xref[1];
 
-                manager.AddTable(xrefTableName);
-                manager.AddColumn(xrefTableName, new Column("Id", DataTypes.Long, false));
-                manager.SetKeyColumn(xrefTableName, "Id");
-                manager.AddColumn(xrefTableName, new Column(leftColumnName, DataTypes.Long, false));
-                manager.AddColumn(xrefTableName, new Column(rightColumnName, DataTypes.Long, false));
-                
-                AddForeignKey(foreignKeys, leftTableName, xrefTableName, leftColumnName);
-                AddForeignKey(foreignKeys, rightTableName, xrefTableName, rightColumnName);
+                    Args.ThrowIfNullOrEmpty(leftTableName, "xref[0]");
+                    Args.ThrowIfNullOrEmpty(rightTableName, "xref[1]");
+
+                    string xrefTableName = string.Format("{0}{1}", leftTableName, rightTableName);
+                    string leftColumnName = string.Format("{0}Id", leftTableName);
+                    string rightColumnName = string.Format("{0}Id", rightTableName);
+
+                    manager.AddXref(leftTableName, rightTableName);
+
+                    manager.AddTable(xrefTableName);
+                    manager.AddColumn(xrefTableName, new Column("Id", DataTypes.Long, false));
+                    manager.SetKeyColumn(xrefTableName, "Id");
+                    manager.AddColumn(xrefTableName, new Column(leftColumnName, DataTypes.Long, false));
+                    manager.AddColumn(xrefTableName, new Column(rightColumnName, DataTypes.Long, false));
+
+                    AddForeignKey(foreignKeys, leftTableName, xrefTableName, leftColumnName);
+                    AddForeignKey(foreignKeys, rightTableName, xrefTableName, rightColumnName);
+                }
+
             }
         }
 
@@ -458,6 +480,7 @@ namespace Brevitee.Data.Schema
                 manager.AddTable(tableName);
                 manager.AddColumn(tableName, new Column("Id", DataTypes.Long, false));
                 manager.SetKeyColumn(tableName, "Id");
+                manager.AddColumn(tableName, new Column("Uuid", DataTypes.String, false));
 
                 if (table["cols"] != null)
                 {
@@ -521,27 +544,30 @@ namespace Brevitee.Data.Schema
             {
                 CompilerErrors = null;
                 DirectoryInfo bin = new DirectoryInfo(BinDir);
+                if (!bin.Exists)
+                {
+                    bin.Create();
+                }
+
                 FileInfo dll = new FileInfo(results.CompiledAssembly.CodeBase.Replace("file:///", ""));
+                
                 string binFile = Path.Combine(bin.FullName, dll.Name);
                 string copy = Path.Combine(copyTo.FullName, dll.Name);
                 if (File.Exists(binFile))
                 {
                     BackupFile(binFile);
                 }
-                dll.CopyTo(binFile);
+                dll.CopyTo(binFile, true);
                 if (!binFile.ToLowerInvariant().Equals(copy.ToLowerInvariant()))
                 {
                     if (File.Exists(copy))
                     {
                         BackupFile(copy);
                     }
-
-                    dll.CopyTo(copy);
-                    if (!dll.FullName.ToLowerInvariant().Equals(copy.ToLowerInvariant()))
-                    {
-                        dll.Delete();
-                    }
+                    
+                    dll.CopyTo(copy);                    
                 }
+                
                 return new FileInfo(copy);                
             }
         }

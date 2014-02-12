@@ -119,7 +119,7 @@ namespace Brevitee.Html
             return tag.ToMvcHtml();
         }
 
-        public static MvcHtmlString FieldsetFor(this HtmlHelper helper, Type type, object defaults = null, string legendText = null, object wrapperAttrs = null)
+        public static MvcHtmlString FieldSetFor(this HtmlHelper helper, Type type, object defaults = null, string legendText = null, object wrapperAttrs = null)
         {
             InputFormBuilder builder = new InputFormBuilder();
             TagBuilder tag = builder.FieldsetFor(type, defaults, legendText);

@@ -70,9 +70,8 @@
     <AssemblyOriginatorKeyFile>signing.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    <Reference Include="Ionic.Zip">
+      <HintPath>..\packages\DotNetZip.1.9.2\lib\net20\Ionic.Zip.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -83,6 +82,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Management" />
+    <Reference Include="System.Net.FtpClient">
+      <HintPath>..\packages\System.Net.FtpClient.1.0.5120.19022\lib\net40\System.Net.FtpClient.dll</HintPath>
+    </Reference>
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
@@ -115,13 +117,28 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Args.cs" />
+    <Compile Include="Configuration\IConfigurer.cs" />
     <Compile Include="Configuration\DefaultConfiguration.cs" />
+    <Compile Include="Configuration\DefaultConfigurer.cs" />
+    <Compile Include="Configuration\IConfigurable.cs" />
     <Compile Include="Configuration\IHasRequiredProperties.cs" />
     <Compile Include="Configuration\InvalidIHasRequiredPropertiesImplementationException.cs" />
     <Compile Include="Configuration\RequiredPropertiesNotSetException.cs" />
     <Compile Include="Configuration\RequiredPropertyNotFoundException.cs" />
     <Compile Include="Documentation\doc.cs" />
     <Compile Include="Encryption\Rsa.cs" />
+    <Compile Include="IpcMessageLockInfo.cs" />
+    <Compile Include="Logging\DiagnosticDetails.cs" />
+    <Compile Include="Logging\ILoggable.cs" />
+    <Compile Include="Logging\Loggable.cs" />
+    <Compile Include="Logging\VerbosityAttribute.cs" />
+    <Compile Include="Logging\VerbosityLevel.cs" />
+    <Compile Include="IpcMessage.cs" />
+    <Compile Include="IpcMessageRoot.cs" />
+    <Compile Include="NamedThread.cs" />
+    <Compile Include="Validate.cs" />
+    <Compile Include="Web\Ftp.cs" />
+    <Compile Include="Web\Http.cs" />
     <Compile Include="Logging\CsvLogger.cs" />
     <Compile Include="ReflectionExtensions.cs" />
     <Compile Include="SerializationExtensions.cs" />
@@ -151,7 +168,6 @@
     <Compile Include="Logging\LogEventCollection.cs" />
     <Compile Include="Logging\LogEventType.cs" />
     <Compile Include="Logging\Logger.cs" />
-    <Compile Include="Logging\LogType.cs" />
     <Compile Include="Logging\MultiTargetLogger.cs" />
     <Compile Include="Logging\NamespaceDoc.cs" />
     <Compile Include="Logging\NullLogger.cs" />
@@ -176,14 +192,18 @@
     <Compile Include="ServiceInfo.cs" />
     <Compile Include="ServiceInstallHandler.cs" />
     <Compile Include="Smtp.cs" />
-    <Compile Include="Threads.cs" />
+    <Compile Include="Exec.cs" />
     <Compile Include="ToDelimitedDelegate.cs" />
+    <Compile Include="Web\HttpArgs.cs" />
+    <Compile Include="Web\ProxyAlias.cs" />
+    <Compile Include="Web\UserAgents.cs" />
     <Compile Include="UserUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="signing.snk" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

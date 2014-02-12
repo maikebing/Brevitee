@@ -48,7 +48,6 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -66,7 +65,6 @@
     </Compile>
     <Compile Include="TestContext.cs" />
     <Compile Include="AssertionWrapper.cs" />
-    <Compile Include="Timed.cs" />
     <Compile Include="UnitTest.cs" />
     <Compile Include="When.cs" />
   </ItemGroup>

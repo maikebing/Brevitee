@@ -14,12 +14,89 @@ using Brevitee.Configuration;
 using System.Security.Cryptography;
 using System.Web.Script.Serialization;
 using System.Xml;
+using Ionic.Zip;
 using Newtonsoft.Json;
 
 namespace Brevitee
 {
     public static class ExtensionsClass
     {
+        public static bool UnzipResource(this Assembly assembly, Type siblingOfResource, string resourceName, string extractTo, ExtractExistingFileAction existingFileAction = ExtractExistingFileAction.DoNotOverwrite)
+        {
+            return UnzipResource(assembly, Path.Combine(siblingOfResource.Namespace, resourceName).Replace("\\", "."), extractTo, existingFileAction);
+        }
+
+        public static bool UnzipResource(this Assembly assembly, string resourceName, string extractTo, ExtractExistingFileAction existingFileAction = ExtractExistingFileAction.DoNotOverwrite)
+        {
+            return UnzipResource(assembly, resourceName, new DirectoryInfo(extractTo));
+        }
+
+        public static bool UnzipResource(this Assembly assembly, string resourceName, DirectoryInfo extractTo, ExtractExistingFileAction existingFileAction = ExtractExistingFileAction.DoNotOverwrite)
+        {
+            string[] resourceNames = assembly.GetManifestResourceNames();
+            bool found = false;
+            resourceNames.Each(rn =>
+            {
+                bool thisIsTheOne = Path.GetFileName(rn).Equals(resourceName);
+                if (thisIsTheOne)
+                {
+                    found = true;
+                    Stream zipStream = assembly.GetManifestResourceStream(rn);
+                    ZipFile zipFile = ZipFile.Read(zipStream);
+                    zipFile.Each(entry =>
+                    {
+                        entry.Extract(extractTo.FullName, existingFileAction);
+                    });
+                }
+            });
+
+            return found;
+        }
+
+        public static void UnzipTo(this string zipFilePath, string extractToDirectory)
+        {
+            new FileInfo(zipFilePath).UnzipTo(new DirectoryInfo(extractToDirectory));
+        }
+
+        public static void UnzipTo(this FileInfo file, DirectoryInfo extractTo, ExtractExistingFileAction existingFileAction = ExtractExistingFileAction.DoNotOverwrite)
+        {
+            ZipFile zipFile = ZipFile.Read(file.FullName);
+            zipFile.Each(entry =>
+            {
+                entry.Extract(extractTo.FullName, existingFileAction);
+            });
+        }
+
+        public static void Zip(this DirectoryInfo dirToZip, string saveTo)
+        {
+            ZipFile ignore;
+            Zip(dirToZip, saveTo, out ignore);
+        }
+
+        public static void Zip(this DirectoryInfo dirToZip, string saveTo, out ZipFile zip)
+        {
+            zip = dirToZip.Zip();
+            zip.Save(saveTo);
+        }
+
+        public static ZipFile Zip(this DirectoryInfo dirToZip)
+        {
+            ZipFile zipFile = new ZipFile();
+            DirectoryInfo[] dirs = dirToZip.GetDirectories();
+            dirs.Each(dir =>
+            {
+                zipFile.AddDirectory(dir.FullName, dir.Name);
+            });
+
+            FileInfo[] files = dirToZip.GetFiles();
+            files.Each(f =>
+            {
+                zipFile.AddFile(f.FullName, "");             
+            });
+
+            return zipFile;
+        }
+
         static Dictionary<HashAlgorithms, Func<HashAlgorithm>> _hashAlgorithms;        
         static ExtensionsClass()
         {
@@ -40,6 +117,23 @@ namespace Brevitee
         {
             T result;
             Enum.TryParse<T>(value, out result);
+            return result;
+        }
+
+        public static bool TryCast<T>(this object instance, out T instanceAs)
+        {
+            bool result = true;
+            instanceAs = default(T);
+            try
+            {
+                instanceAs = (T)instance;
+            }
+            catch //(Exception ex)
+            {
+                
+                result = false;
+            }
+
             return result;
         }
 
@@ -239,6 +333,73 @@ namespace Brevitee
             }
         }
 
+        public static void Each<T>(this IEnumerable<T> arr, Func<T, bool> function)
+        {
+            arr.ToArray().Each(function);
+        }
+
+        /// <summary>
+        /// Iterate over the current array passing
+        /// each element to the specified function.  
+        /// Return true to continue the loop return 
+        /// false to stop
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="arr"></param>
+        /// <param name="function"></param>
+        public static void Each<T>(this T[] arr, Func<T, bool> function)
+        {
+            if (arr != null)
+            {
+                int l = arr.Length;
+                for (int i = 0; i < l; i++)
+                {
+                    if (!function(arr[i]))
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Iterate over the current array passing
+        /// each element to the specified function.  
+        /// Return true to continue the loop return 
+        /// false to stop
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="arr"></param>
+        /// <param name="function"></param>
+        public static void Each<T>(this IEnumerable<T> arr, Func<T, int, bool> function)
+        {
+            arr.ToArray().Each(function);
+        }
+
+        /// <summary>
+        /// Iterate over the current array passing
+        /// each element to the specified function.  
+        /// Return true to continue the loop return 
+        /// false to stop
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="arr"></param>
+        /// <param name="function"></param>
+        public static void Each<T>(this T[] arr, Func<T, int, bool> function)
+        {
+            if (arr != null)
+            {
+                int l = arr.Length;
+                for (int i = 0; i < l; i++)
+                {
+                    if (!function(arr[i], i))
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// Iterate over the current IEnumerable passing
         /// each element to the specified action
@@ -333,11 +494,27 @@ namespace Brevitee
             }
         }
 
+        /// <summary>
+        /// Iterate backwards over the specified array (IEnumerable).
+        /// This will allow one to remove the current element without
+        /// causing an exception.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="arr"></param>
+        /// <param name="action"></param>
         public static void BackwardsEach<T>(this IEnumerable<T> arr, Action<T> action)
         {
             arr.ToArray().BackwardsEach(action);
         }
 
+        /// <summary>
+        /// Iterate backwards over the specified array (IEnumerable).
+        /// This will allow one to remove the current element without
+        /// causing an exception.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="arr"></param>
+        /// <param name="action"></param>
         public static void BackwardsEach<T>(this T[] arr, Action<T> action)
         {
             if (arr != null)
@@ -350,11 +527,101 @@ namespace Brevitee
             }
         }
 
+        /// <summary>
+        /// Iterate backwards over the specified array (IEnumerable).
+        /// This will allow one to remove the current element without
+        /// causing an exception.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="arr"></param>
+        /// <param name="action"></param>
+        public static void BackwardsEach<T>(this IEnumerable<T> arr, Func<T, bool> function)
+        {
+            arr.ToArray().BackwardsEach(function);
+        }
+
+        /// <summary>
+        /// Iterate backwards over the specified array (IEnumerable).
+        /// This will allow one to remove the current element without
+        /// causing an exception.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="arr"></param>
+        /// <param name="action"></param>
+        public static void BackwardsEach<T>(this T[] arr, Func<T, bool> function)
+        {
+            if (arr != null)
+            {
+                int l = arr.Length;
+                for (int i = l - 1; i >= 0; i--)
+                {
+                    bool result = function(arr[i]);
+                    if (!result)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Iterate backwards over the specified array (IEnumerable).
+        /// This will allow one to remove the current element without
+        /// causing an exception.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="arr"></param>
+        /// <param name="action"></param>
+        public static void BackwardsEach<T>(this IEnumerable<T> arr, Func<T, int, bool> function)
+        {
+            arr.ToArray().BackwardsEach(function);
+        }
+
+        /// <summary>
+        /// Iterate backwards over the specified array (IEnumerable).
+        /// This will allow one to remove the current element without
+        /// causing an exception.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="arr"></param>
+        /// <param name="action"></param>
+        public static void BackwardsEach<T>(this T[] arr, Func<T, int, bool> function)
+        {
+            if (arr != null)
+            {
+                int l = arr.Length;
+                for (int i = l - 1; i >= 0; i--)
+                {
+                    bool result = function(arr[i], i);
+                    if (!result)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Iterate backwards over the specified array (IEnumerable).
+        /// This will allow one to remove the current element without
+        /// causing an exception.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="arr"></param>
+        /// <param name="action"></param>
         public static void BackwardsEach<T>(this IEnumerable<T> arr, Action<T, int> action)
         {
             arr.ToArray().BackwardsEach(action);
         }
 
+        /// <summary>
+        /// Iterate backwards over the specified array (IEnumerable).
+        /// This will allow one to remove the current element without
+        /// causing an exception.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="arr"></param>
+        /// <param name="action"></param>
         public static void BackwardsEach<T>(this T[] arr, Action<T, int> action)
         {
             if (arr != null)
@@ -386,6 +653,14 @@ namespace Brevitee
             return result;
         }
         
+        
+        /// <summary>
+        /// Construct an instance of the type
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="type"></param>
+        /// <param name="ctorParams"></param>
+        /// <returns></returns>
         public static T Construct<T>(this Type type, params object[] ctorParams)
         {
             return (T)type.Construct(ctorParams);
@@ -409,6 +684,14 @@ namespace Brevitee
             return val;
         }
 
+        /// <summary>
+        /// If the current string is null or empty returns
+        /// the specified "instead" string otherwise returns
+        /// the current string.
+        /// </summary>
+        /// <param name="valueOrNull"></param>
+        /// <param name="instead"></param>
+        /// <returns></returns>
         public static string Or(this string valueOrNull, string instead)
         {
             if (string.IsNullOrEmpty(valueOrNull))
@@ -457,9 +740,9 @@ namespace Brevitee
 
         public static void ToJsonFile(this object value, FileInfo file)
         {
-            using (StreamWriter sw = new StreamWriter(file.OpenWrite()))
+            using (StreamWriter sw = new StreamWriter(file.FullName))
             {
-                sw.Write(ToJson(value));
+                sw.Write(ToJson(value, Newtonsoft.Json.Formatting.Indented));
             }
         }
 
@@ -468,8 +751,6 @@ namespace Brevitee
             JsonSerializerSettings settings = new JsonSerializerSettings();
             
             return JsonConvert.SerializeObject(value);
-            //JavaScriptSerializer js = new JavaScriptSerializer();
-            //return js.Serialize(value);
         }
 
         public static string ToJson(this object value, Newtonsoft.Json.Formatting formatting)
@@ -480,6 +761,16 @@ namespace Brevitee
         public static string ToJson(this object value, JsonSerializerSettings settings)
         {
             return JsonConvert.SerializeObject(value, settings);
+        }
+
+        public static bool HasExtension(this FileInfo file, string dotExtension)
+        {
+            return Path.GetExtension(file.FullName).Equals(dotExtension);
+        }
+
+        public static bool HasNoExtension(this FileInfo file)
+        {
+            return Path.GetExtension(file.FullName).Equals(string.Empty);
         }
 
         /// <summary>
@@ -508,15 +799,23 @@ namespace Brevitee
         public static T FromJson<T>(this string json)
         {
             return JsonConvert.DeserializeObject<T>(json);
-            //JavaScriptSerializer js = new JavaScriptSerializer();
-            //return js.Deserialize<T>(json);
         }
 
         public static object FromJson(this string json, Type type)
         {
             return JsonConvert.DeserializeObject(json, type);
-            //JavaScriptSerializer js = new JavaScriptSerializer();
-            //return js.Deserialize(json, type);
+        }
+
+        /// <summary>
+        /// Deserialize the contents of the file path specified
+        /// in the current string to the type T
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public static T FromJsonFile<T>(this string filePath)
+        {
+            return filePath.SafeReadFile().FromJson<T>();
         }
 
         public static string ToHexString(this byte[] bytes)
@@ -553,6 +852,12 @@ namespace Brevitee
             return file.ContentHash(HashAlgorithms.RIPEMD160, encoding);
         }
 
+        /// <summary>
+        /// Calculate the SHA1 for the contents of the specified file
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="encoding"></param>
+        /// <returns></returns>
         public static string Sha1(this FileInfo file, Encoding encoding = null)
         {
             return file.ContentHash(HashAlgorithms.SHA1, encoding);
@@ -683,18 +988,144 @@ namespace Brevitee
             FileAttributes removed = File.GetAttributes(fileInfo.FullName) & ~attribute;
             File.SetAttributes(fileInfo.FullName, removed);
         }
+        
+        /// <summary>
+        /// Read the first line of the string and return the 
+        /// result.  A line is defined as a sequence of characters 
+        /// followed by a line feed ("\n"), a carriage return ("\r"), 
+        /// or a carriage return immediately followed by a line feed ("\r\n").
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static string ReadLine(this string value)
+        {
+            string result;
+            ReadLine(value, out result);
+            return result;
+        }
 
-        public static string RandomString(int length)
+        /// <summary>
+        /// Read the first line of the string returning
+        /// the remainder and outing the line.
+        /// A line is defined as a sequence of characters 
+        /// followed by a line feed ("\n"), a carriage return 
+        /// ("\r"), or a carriage return immediately followed 
+        /// by a line feed ("\r\n").
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        public static string ReadLine(this string value, out string line)
+        {
+            StringReader reader = new StringReader(value);
+            line = reader.ReadLine();
+            return value.TruncateFront(line.Length).Trim();
+        }
+
+        /// <summary>
+        /// Return the specified number of characters
+        /// from the beginning of the string
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public static string Head(this string value, int count)
+        {
+            string head;
+            value.Head(count, out head);
+            return head;
+        }
+
+        /// <summary>
+        /// Return the specified count of characters from the
+        /// begginning of the string returning the remaining
+        /// value and outing the head
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="count"></param>
+        /// <param name="head"></param>
+        /// <returns></returns>
+        public static string Head(this string value, int count, out string head)
+        {
+            char[] chars = value.ToCharArray();
+            StringBuilder headBuilder = new StringBuilder();            
+            count.Times((i) =>
+            {
+                headBuilder.Append(chars[i]);
+            });
+            head = headBuilder.ToString();
+
+            return value.TruncateFront(count);
+        }
+
+        /// <summary>
+        /// Return the specified number of characters
+        /// from the end of the string
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public static string Tail(this string value, int count)
+        {
+            string tail;
+            value.Tail(count, out tail);
+            return tail;
+        }
+
+        /// <summary>
+        /// Return the specified count of characters from the 
+        /// end of the string returning the remaining value
+        /// and outing the tail
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="count"></param>
+        /// <param name="tail"></param>
+        /// <returns></returns>
+        public static string Tail(this string value, int count, out string tail)
+        {
+            char[] chars = value.ToCharArray();
+            char[] tailBuffer = new char[count];
+            count.Times((i) =>
+            {
+                int num = i + 1;
+                tailBuffer[i] = chars[chars.Length - num];
+            });
+            tailBuffer = tailBuffer.Reverse().ToArray();
+            string tailTmp = string.Empty;
+            tailBuffer.Each(c =>
+            {
+                tailTmp += c;
+            });
+            tail = tailTmp;
+            
+            return value.Truncate(count);
+        }
+
+        /// <summary>
+        /// Return a random string of the specified
+        /// length
+        /// </summary>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        public static string RandomString(this int length)
         {
             return RandomString(length, true, true);
         }
 
+        /// <summary>
+        /// Add the specified length of random characters
+        /// to the current string.  Only  lowercase
+        /// letters.
+        /// </summary>
+        /// <param name="result"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
         public static string RandomString(this string result, int length)
         {
             for (int i = 0; i < length; i++)
             {
 
-                char ch = Convert.ToChar(RandomHelper.Next(97, 122));
+                char ch = Convert.ToChar(RandomHelper.Next(97, 122)); // ascii codes for printable alphabet
 
                 result += ch;
             }
@@ -719,6 +1150,11 @@ namespace Brevitee
             }
         }
 
+
+        /// <summary>
+        /// Get a random boolean
+        /// </summary>
+        /// <returns></returns>
         public static bool RandomBool()
         {
             return RandomHelper.Next(2) == 1;
@@ -853,6 +1289,12 @@ namespace Brevitee
                 return MixCase(upperIzed, --tryCount);
         }
 
+        /// <summary>
+        /// Attempts to return the plural version of the supplied word (assumed to be a noun)
+        /// using basic rules.
+        /// </summary>
+        /// <param name="stringToPluralize"></param>
+        /// <returns></returns>
         public static string Pluralize(this string stringToPluralize)
         {
             if (stringToPluralize.ToLowerInvariant().EndsWith("ies"))
@@ -863,7 +1305,8 @@ namespace Brevitee
             {
                 return stringToPluralize.Substring(0, stringToPluralize.Length - 2) + "i";
             }
-            else if (stringToPluralize.ToLowerInvariant().EndsWith("s"))
+            else if (stringToPluralize.ToLowerInvariant().EndsWith("s") ||
+                stringToPluralize.ToLowerInvariant().EndsWith("sh"))
             {
                 return stringToPluralize + "es";
             }
@@ -928,12 +1371,34 @@ namespace Brevitee
             return result;
         }
 
+        /// <summary>
+        /// Drops the specified number of characters from the end of the 
+        /// string toTruncate
+        /// </summary>
+        /// <param name="toTruncate"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
         public static string Truncate(this string toTruncate, int count)
         {
             if (count > toTruncate.Length)
                 return "";
 
             return toTruncate.Substring(0, toTruncate.Length - count);
+        }
+
+        /// <summary>
+        /// Drop the specified number of characters from the beginning of the
+        /// string toTruncate and returns the result
+        /// </summary>
+        /// <param name="toTruncate"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public static string TruncateFront(this string toTruncate, int count)
+        {
+            if (count > toTruncate.Length)
+                return "";
+
+            return toTruncate.Substring(count, toTruncate.Length - count);
         }
 
         /// <summary>
@@ -968,10 +1433,17 @@ namespace Brevitee
             {
                 try
                 {
-                    object value = property.GetValue(obj, null);
-                    if (value != null)
+                    if (property.GetIndexParameters().Length == 0)
                     {
-                        returnValue.AppendFormat("{0}: {1}{2}", property.Name, value.ToString(), separator);
+                        object value = property.GetValue(obj, null);
+                        if (value != null)
+                        {
+                            returnValue.AppendFormat("{0}: {1}{2}", property.Name, value.ToString(), separator);
+                        }
+                    }
+                    else
+                    {
+                        returnValue.AppendFormat("Indexed Property:{0}{1}", property.Name, separator);
                     }
                 }
                 catch (Exception ex)
@@ -1138,6 +1610,18 @@ namespace Brevitee
             lock (safeWriteLock)
             {
                 safeWriteLock.Clear();
+            }
+        }
+
+        /// <summary>
+        /// Clears the locks created for reading files.
+        /// </summary>
+        /// <param name="any"></param>
+        public static void ClearReadLocks(this object any)
+        {
+            lock(safeReadLock)
+            {
+                safeReadLock.Clear();
             }
         }
 
@@ -1563,9 +2047,16 @@ namespace Brevitee
             return destination;
         }
 
-        public static Type ValuePropertiesToDynamicType(this object instance, string typeName, out AssemblyBuilder assemblyBuilder)
+        public static object ValuePropertiesToDynamicInstance(this Type type, out AssemblyBuilder assemblyBuilder)
         {
-            if (DynamicTypeStore.Current.ContainsTypeInfo(typeName) && DynamicTypeStore.Current[typeName] != null)
+            object instance = type.Construct();
+            Type dynamicType = instance.ValuePropertiesToDynamicType(type.Name, out assemblyBuilder, false);
+            return dynamicType.Construct();
+        }
+
+        public static Type ValuePropertiesToDynamicType(this object instance, string typeName, out AssemblyBuilder assemblyBuilder, bool useCache = true)
+        {
+            if (DynamicTypeStore.Current.ContainsTypeInfo(typeName) && DynamicTypeStore.Current[typeName] != null && useCache)
             {
                 return GetExistingDynamicType(typeName, out assemblyBuilder);
             }
@@ -1634,7 +2125,7 @@ namespace Brevitee
             GetAssemblyAndTypeBuilder(type.Namespace + "." + type.Name, out assemblyBuilder, out typeBuilder);
         }
 
-        internal static void GetAssemblyAndTypeBuilder(string typeName, out AssemblyBuilder assemblyBuilder, out TypeBuilder typeBuilder)
+        public static void GetAssemblyAndTypeBuilder(string typeName, out AssemblyBuilder assemblyBuilder, out TypeBuilder typeBuilder)
         {
             if (DynamicTypeStore.Current.ContainsTypeInfo(typeName))
             {
@@ -1677,5 +2168,6 @@ namespace Brevitee
             propertyBuilder.SetGetMethod(getMethodBuilder);
             propertyBuilder.SetSetMethod(setMethodBuilder);
         }
+
     }
 }

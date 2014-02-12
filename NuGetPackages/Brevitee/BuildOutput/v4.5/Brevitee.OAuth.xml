@@ -1,0 +1,240 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Brevitee.OAuth</name>
+    </assembly>
+    <members>
+        <member name="M:Brevitee.OAuth.OAuthController.SetTarget(System.String,System.String)">
+            <summary>
+            Sets the controller and action to direct to after authentication
+            </summary>
+            <param name="controller"></param>
+            <param name="action"></param>
+        </member>
+        <member name="M:Brevitee.OAuth.OAuthController.GetUrl(System.String,System.String)">
+            <summary>
+            Returns the full application url for the specified controller actoin
+            </summary>
+            <param name="controller"></param>
+            <param name="action"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Brevitee.OAuth.OAuthResult.Scope">
+            <summary>
+            The pemissions to request.
+            </summary>
+        </member>
+        <member name="P:Brevitee.OAuth.OAuthResult.ClientId">
+            <summary>
+            The ClientId for the application assigned by the OAuth 
+            provider.
+            </summary>
+        </member>
+        <member name="P:Brevitee.OAuth.OAuthResult.RedirectUri">
+            <summary>
+            The uri that the OAuth provider will redirect to in the current
+            app after the user logs in/authorizes the app.
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.PublishStream">
+            <summary>
+             Enables your application to post content; comments; 
+             and likes to a user's stream and to the streams of the
+             user's friends. With this permission; you can publish
+             content to a user's feed at any time; without requiring
+             offline_access. However; please note that Facebook recommends
+             a user-initiated sharing model.
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.CreateEvent">
+            <summary>
+            Enables your application to create and modify events on the user's behalf
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.RsvpEvent">
+            <summary>
+            Enables your application to RSVP to events on the user's behalf 
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.Sms">
+            <summary>
+            Enables your application to send messages 
+            to the user and respond to messages from the user via text message
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.OfflineAccess">
+            <summary>
+            Enables your application to perform authorized requests on behalf of 
+            the user at any time. By default; most access tokens expire after a short
+            time period to ensure applications only make requests on behalf of the user 
+            when the are actively using the application. This permission makes the access
+            token returned by our OAuth endpoint long-lived.
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.PublishCheckins">
+            <summary>
+            Enables your application to perform checkins on behalf of the user
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.UserAboutMe">
+            <summary>
+            Provides access to the "About Me" section of the profile in the about property
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.UserActivities">
+            <summary>
+            Provides access to the user's list of activities as the activities connection
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.UserBirthday">
+            <summary>
+            Provides access to the birthday with year as the birthday_date property
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.UserEducationHistory">
+            <summary>
+            Provides access to education history as the education property
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.UserEvents">
+            <summary>
+            Provides access to the list of events the user is attending as the events connection
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.UserGroups">
+            <summary>
+            Provides access to the list of groups the user is a member of as the groups connection
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.UserHomeTown">
+            <summary>
+            Provides access to the user's hometown in the hometown property
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.UserInterests">
+            <summary>
+            Provides access to the user's list of interests as the interests connection
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.UserLikes">
+            <summary>
+            Provides access to the list of all of the pages the user has liked as the likes connection
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.UserLocation">
+            <summary>
+            Provides access to the user's current location as the location property
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.UserNotes">
+            <summary>
+            Provides access to the user's notes as the notes connection
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.UserOnlinePresence">
+            <summary>
+            Provides access to the user's online/offline presence
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.UserPhotoVideoTags">
+            <summary>
+            Provides access to the photos the user has been tagged in as the photos connection
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.UserPhotos">
+            <summary>
+            Provides access to the photos the user has uploaded
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.UserRelationships">
+            <summary>
+            Provides access to the user's family and personal relationships and relationship status
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.UserRelationshipDetails">
+            <summary>
+            Provides access to the user's relationship preferences
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.UserReligionPolitics">
+            <summary>
+            Provides access to the user's religious and political affiliations
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.UserStats">
+            <summary>
+            Provides access to the user's most recent status message
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.UserVideos">
+            <summary>
+            Provides access to the videos the user has uploaded
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.UserWebsite">
+            <summary>
+            Provides access to the user's web site URL
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.UserWorkHistory">
+            <summary>
+            Provides access to work history as the work property
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.Email">
+            <summary>
+            Provides access to the user's primary email address in the email property. 
+            Do not spam users. Your use of email must comply both with Facebook policies 
+            and with the CAN-SPAM Act.
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.ReadFriendLists">
+            <summary>
+            Provides read access to any friend lists the user created. 
+            NOTE: All user's friends are provided as part of basic data; this extended 
+            permission grants access to the lists of friends a user has created; and 
+            should only be requested if your application utilizes lists of friends.
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.ReadInsights">
+            <summary>
+            Provides read access to the Insights data for pages; applications; and domains the user owns.
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.ReadMailbox">
+            <summary>
+            Provides the ability to read from a user's Facebook Inbox.
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.ReadRequests">
+            <summary>
+            Provides read access to the user's friend requests
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.ReadStream">
+            <summary>
+            Provides access to all the posts in the user's News Feed and enables your application to perform searches against the user's News Feed
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.XmppLogin">
+            <summary>
+            Provides applications that integrate with Facebook Chat the ability to log in users.
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.AdsManagement">
+            <summary>
+            Provides the ability to manage ads and call the Facebook Ads API on behalf of a user.
+            </summary>
+        </member>
+        <member name="F:Brevitee.OAuth.FacebookPermissions.UserCheckins">
+            <summary>
+            Provides read access to the authorized user's check-ins or a friend's check-ins that the user can see.
+            </summary>
+        </member>
+        <member name="P:Brevitee.OAuth.FacebookIdentity.Id">
+            <summary>
+            Maps to the source id (currently the Facebook id property)
+            </summary>
+        </member>
+    </members>
+</doc>

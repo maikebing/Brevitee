@@ -34,4 +34,4 @@
 	- Custom Controls: We are custom development, we should have custom 
 		controls of our own.  Styled and awesome.
 		
-	- KLGates Core API: Server side SOA and client side library for all services exposed.
+	- Brevitee API: Server side SOA and client side library for all services exposed.

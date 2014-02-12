@@ -9,7 +9,6 @@ using System.Data.Sql;
 using System.Data.SqlClient;
 using System.IO;
 using System.Collections;
-using System.Collections.Generic;
 using Brevitee.CommandLine;
 using Brevitee;
 using Brevitee.Data;
@@ -19,12 +18,16 @@ using Brevitee.Automation;
 using Brevitee.Automation.Nuget;
 using System.Collections.ObjectModel;
 using Brevitee.SourceControl;
+using System.Messaging;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.Framework.Common;
 using Microsoft.TeamFoundation.Framework.Client;
 using Microsoft.TeamFoundation.VersionControl;
 using Microsoft.TeamFoundation.VersionControl.Common;
 using Microsoft.TeamFoundation.VersionControl.Client;
+using System.Threading;
+using System.Diagnostics;
+using System.ComponentModel;
 
 namespace Brevitee.Automation.Tests
 {
@@ -33,7 +36,51 @@ namespace Brevitee.Automation.Tests
     {
         public const string TFSServer = "http://tfs.klgates.com:8080/tfs";
         public const string TeamProjectCollection = "ISDEV";
-        
+
+        [Serializable]
+        public class TestMessage
+        {
+            public string Name { get; set; }
+            public bool IsMonkey { get; set; }
+        }
+        string messageName = "test";
+
+        [ConsoleAction("Start messaging")]
+        public void StartMessaging()
+        {
+            if (IpcMessage.Exists<TestMessage>(messageName))
+            {
+                IpcMessage.Delete(messageName, typeof(TestMessage));
+            }
+
+            IpcMessage msg = IpcMessage.Create<TestMessage>(messageName);
+
+            Timer timer = new Timer((o) =>
+            {
+                TestMessage message = new TestMessage();
+                message.Name = "Name_".RandomLetters(4);
+                message.IsMonkey = RandomHelper.Bool();
+
+                OutLineFormat("Setting data to:\r\n {0}", ConsoleColor.Cyan, message.PropertiesToString());
+                msg.Write(message);
+            }, null, 0, 1000);
+
+            Pause();
+        }
+
+        [ConsoleAction("Read messages")]
+        public void ReadMessages()
+        {
+            IpcMessage msg = IpcMessage.Get<TestMessage>(messageName);
+
+            Timer timer = new Timer((o) =>
+            {
+                OutLineFormat("Reading:\r\n {0}", ConsoleColor.Blue, msg.Read<TestMessage>().PropertiesToString());
+            }, null, 0, 900);
+
+            Pause();
+        }
+
         [ConsoleAction("List team projects")]
         public void ListTeamProjects()
         {

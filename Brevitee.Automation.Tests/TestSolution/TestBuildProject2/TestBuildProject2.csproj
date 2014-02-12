@@ -71,17 +71,17 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="KLGates.Core">
-      <HintPath>packages\KLGates.Core.2.0.0.0\lib\net45\KLGates.Core.dll</HintPath>
+    <Reference Include="Brevitee">
+      <HintPath>packages\Brevitee.2.0.0.0\lib\net45\Brevitee.dll</HintPath>
     </Reference>
-    <Reference Include="KLGates.Core.CommandLine">
-      <HintPath>packages\KLGates.Core.CommandLine.2.0.0.0\lib\net45\KLGates.Core.CommandLine.dll</HintPath>
+    <Reference Include="Brevitee.CommandLine">
+      <HintPath>packages\Brevitee.CommandLine.2.0.0.0\lib\net45\Brevitee.CommandLine.dll</HintPath>
     </Reference>
-    <Reference Include="KLGates.Core.Incubation">
-      <HintPath>packages\KLGates.Core.Incubation.2.0.0.0\lib\net45\KLGates.Core.Incubation.dll</HintPath>
+    <Reference Include="Brevitee.Incubation">
+      <HintPath>packages\Brevitee.Incubation.2.0.0.0\lib\net45\Brevitee.Incubation.dll</HintPath>
     </Reference>
-    <Reference Include="KLGates.Core.Testing">
-      <HintPath>packages\KLGates.Core.Testing.2.0.0.0\lib\net45\KLGates.Core.Testing.dll</HintPath>
+    <Reference Include="Brevitee.Testing">
+      <HintPath>packages\Brevitee.Testing.2.0.0.0\lib\net45\Brevitee.Testing.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

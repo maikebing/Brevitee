@@ -13,6 +13,12 @@ namespace Brevitee.Data.Schema
             this.Success = true;
         }
 
+        public Result(string message, bool success)
+        {
+            this.Message = message;
+            this.Success = success;
+        }
+
         public string Message { get; set; }
         public string ExceptionMessage { get; set; }
         public string StackTrace { get; set; }

@@ -9,8 +9,8 @@ using Brevitee;
 using Brevitee.Data;
 using Brevitee.Testing;
 using Brevitee.Encryption;
-using Brevitee.Automation;
-using Brevitee.Automation.Nuget;
+//using Brevitee.Automation;
+//using Brevitee.Automation.Nuget;
 using System.Collections.ObjectModel;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.Framework.Common;
@@ -23,10 +23,10 @@ namespace Brevitee.SourceControl
 {
     public class Tfs
     {
-        ConfigStack _config;
+        TfsConfigStack _config;
         public Tfs(string url)
         {
-            this._config = new ConfigStack { Url = url };
+            this._config = new TfsConfigStack { Url = url };
         }
 
         public Tfs Url(string url)
@@ -40,7 +40,7 @@ namespace Brevitee.SourceControl
             return new Tfs(url);
         }
         
-        internal ConfigStack Config
+        internal TfsConfigStack Config
         {
             get
             {

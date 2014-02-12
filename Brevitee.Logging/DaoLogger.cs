@@ -7,6 +7,10 @@ using Brevitee.Logging.Data;
 
 namespace Brevitee.Logging
 {
+    /// <summary>
+    /// A basic database logger.  Logs all entries
+    /// to a single table called LogEvent
+    /// </summary>
     public class DaoLogger: Logger
     {
         public override void CommitLogEvent(LogEvent logEvent)

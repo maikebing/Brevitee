@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Brevitee.CommandLine</id>
+    <version>2.0.0.0</version>
+    <title>Brevitee.CommandLine</title>
+    <authors>KL Gates</authors>
+    <owners>KL Gates</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>KL Gates Core Command Line Developer API</description>
+    <releaseNotes />
+    <copyright>Copyright 2013</copyright>
+    <dependencies>
+      <dependency id="Brevitee" version="[2.0.0.0]" />
+    </dependencies>
+  </metadata>
+</package>

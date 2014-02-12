@@ -19,6 +19,14 @@ namespace Brevitee.ServiceProxy
             this.propertyInfos = new List<PropertyInfo>();
         }
 
+        public CsvResult(object data)
+            : this()
+        {
+            this.Data = data;
+            this.FileName = data.GetType().Name;
+            this.InitPropertyInfos();
+        }
+
         public CsvResult(object data, string fileName)
             : this()
         {
@@ -26,22 +34,40 @@ namespace Brevitee.ServiceProxy
             this.FileName = fileName;
             this.InitPropertyInfos();
         }
-
+        
         public string FileName { get; set; }
         public object Data { get; set; }
 
         public override void ExecuteResult(ControllerContext context)
+        {
+            object[] toBeWritten = EnsureArray();
+
+            context.HttpContext.Response.AddHeader("Content-Disposition", "attachment;filename=" + FileName + ".csv");
+            context.HttpContext.Response.AddHeader("Content-Type", "application/vnd.ms-excel");
+            Stream output = context.HttpContext.Response.OutputStream;
+
+            WriteCsv(toBeWritten, output);
+        }
+
+        private object[] EnsureArray()
         {
             object[] toBeWritten = new object[] { Data };
             if (Data is Array)
             {
                 toBeWritten = (object[])Data;
             }
+            return toBeWritten;
+        }
 
-            context.HttpContext.Response.AddHeader("Content-Disposition", "attachment;filename=" + FileName + ".csv");
-            context.HttpContext.Response.AddHeader("Content-Type", "application/vnd.ms-excel");
+        public void WriteCsv(Stream output)
+        {
+            object[] toBeWritten = EnsureArray();
+            WriteCsv(toBeWritten, output);
+        }
 
-            TextWriter writer = new StreamWriter(context.HttpContext.Response.OutputStream);
+        public void WriteCsv(object[] toBeWritten, Stream output)
+        {
+            TextWriter writer = new StreamWriter(output);
             WriteHeaders(writer);
 
             foreach (object toWrite in toBeWritten)

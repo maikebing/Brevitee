@@ -8,10 +8,10 @@ using System.Data.Common;
 using System.Data.Sql;
 using System.Data.SqlClient;
 using System.IO;
-using KLGates.Core.CommandLine;
-using KLGates.Core;
-using KLGates.Core.Testing;
-using KLGates.Core.Encryption;
+using Brevitee.CommandLine;
+using Brevitee;
+using Brevitee.Testing;
+using Brevitee.Encryption;
 
 namespace TestBuildProject2
 {
@@ -81,7 +81,7 @@ namespace TestBuildProject2
 
                 // this is an assertion
                 because.ItsTrue(/* success message */"the object under test was not null", testObj != null, /* failure message */"the object under test was null");
-                because.ItsTrue(/* success message */"Big-Bird is KLGates's favorite", true, /* failure message */"big bird is not cool");
+                because.ItsTrue(/* success message */"Big-Bird is Brevitee's favorite", true, /* failure message */"big bird is not cool");
                 because.ItsTrue(/* success message */"Oscar-the-Grouch is a very grouchy guy", true, /* failure message */"Oscar-the-Grouch is happy");
             })
             .SoBeHappy(c =>

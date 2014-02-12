@@ -121,7 +121,21 @@ namespace Brevitee.Data
                 return base.Equals(obj);
             }
         }
-        
+
+        PropertyInfo _uuidProp;
+        bool? _hasUuid;
+        protected bool HasUuidProperty(out PropertyInfo uuidProp)
+        {
+            if (_hasUuid == null)
+            {
+                _uuidProp = this.GetType().GetProperty("Uuid");
+                _hasUuid = _uuidProp != null;
+            }
+
+            uuidProp = _uuidProp;
+            return _hasUuid.Value;
+        }
+
         /// <summary>
         /// If true, any references to the current
         /// record will be deleted prior to deleting
@@ -477,16 +491,22 @@ namespace Brevitee.Data
             OnBeforeWriteCommit(db);            
             if (this._newValues.Count > 0)
             {
-                AssignValue[] valueAssignments = GetNewAssignValues();
-
                 if (this.IsNew)
                 {
+                    PropertyInfo uuid;
+                    if (HasUuidProperty(out uuid))
+                    {
+                        string uui = Guid.NewGuid().ToString();
+                        uuid.SetValue(this, uuid);
+                    }
+
                     sqlStringBuilder
                         .Insert(this)
                         .Go();
                 }
                 else
                 {
+                    AssignValue[] valueAssignments = GetNewAssignValues();
                     sqlStringBuilder
                         .Update(this.TableName(), valueAssignments)
                         .Where(this.GetUniqueFilter())
@@ -938,6 +958,11 @@ namespace Brevitee.Data
                 if (val is long || val is int)
                 {
                     return new bool?((long)val > 0);
+                }
+                else if (val is string)
+                {
+                    string str = (string)val;
+                    return new bool?(str.ToLowerInvariant().Equals("true") || str.Equals("1"));
                 }
                 else
                 {

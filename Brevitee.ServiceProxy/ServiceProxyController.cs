@@ -178,8 +178,8 @@ namespace Brevitee.ServiceProxy
                 Ext = ext,
                 JsonParams = jsonParams,
                 ViewName = view ?? "Default",
-                Request = Request,
-                Response = Response
+                Request = new RequestWrapper(Request),
+                Response = new ResponseWrapper(Response)
             };
 
             try
@@ -199,8 +199,8 @@ namespace Brevitee.ServiceProxy
         public ActionResult Get(string className, string methodName, string ext)
         {
             ExecutionRequest request = new ExecutionRequest(className, methodName, ext);
-            request.Request = Request;
-            request.Response = Response;
+            request.Request = new RequestWrapper(Request);
+            request.Response = new ResponseWrapper(Response);
             try
             {
                 request.Execute();

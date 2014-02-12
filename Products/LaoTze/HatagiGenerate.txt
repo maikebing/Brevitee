@@ -1,3 +1,3 @@
-﻿/gen:E:\Source\GITRepositories\Bryan.Apellanes.Hatagi\Bryan.Apellanes.Hatagi.Data\Generated /ns:Bryan.Apellanes.Hatagi.Data
+/gen:E:\Source\GITRepositories\Brevitee.Hatagi\Brevitee.Hatagi.Data\Generated /ns:Brevitee.Hatagi.Data
 
-/gen:C:\Storage\Source\Bryan.Apellanes.Hatagi\Bryan.Apellanes.Hatagi.Data\Generated /ns:Bryan.Apellanes.Hatagi.Data
+/gen:C:\Storage\Source\Brevitee.Hatagi\Brevitee.Hatagi.Data\Generated /ns:Brevitee.Hatagi.Data

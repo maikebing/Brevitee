@@ -35,4 +35,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
 
-[assembly:InternalsVisibleTo("bam.Tests")]
+[assembly:InternalsVisibleTo("Brevitee.Server.Tests")]
+[assembly: InternalsVisibleTo("bd")]
+[assembly: InternalsVisibleTo("bdb")]
+[assembly: InternalsVisibleTo("bdi")]
+[assembly: InternalsVisibleTo("bam.Tests")]
+

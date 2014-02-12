@@ -520,7 +520,7 @@ namespace Brevitee.Configuration
         /// throw an error if any required property is null or an empty string.
         /// </summary>
         /// <param name="target">The IHasRequiredProperties implementation to check.</param>
-        public static void CheckRequiredProperties(IHasRequiredProperties target)
+        public static void CheckRequiredProperties(this IHasRequiredProperties target)
         {
             CheckRequiredProperties(target, target.GetType());
         }

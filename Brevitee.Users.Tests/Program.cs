@@ -157,7 +157,7 @@ namespace Brevitee.Users.Tests
 
             confirmation = Account.OneWhere(c => c.Id == confirmation.Id);
             Expect.IsFalse(confirmation.IsConfirmed.Value);
-            Out(confirmation.Token);
+            OutLine(confirmation.Token);
         }
 
         [UnitTest]
@@ -174,7 +174,7 @@ namespace Brevitee.Users.Tests
 
             account = Account.OneWhere(c => c.Id == account.Id);
             Expect.IsTrue(account.IsConfirmed.Value);
-            Out(account.Token);
+            OutLine(account.Token);
         }
 
         static string _testUserName = "TestUser";
@@ -199,7 +199,7 @@ namespace Brevitee.Users.Tests
             if (user == null)
             {
                 user = new User();
-                //user.Email = "test@test.cxm";
+                user.CreationDate = DateTime.UtcNow;
                 user.UserName = _testUserName;
                 user.Save();
             }

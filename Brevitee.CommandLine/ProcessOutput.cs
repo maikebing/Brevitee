@@ -14,12 +14,15 @@ namespace Brevitee.CommandLine
             this.StandardOutput = string.Empty;
         }
 
-        public ProcessOutput(string output, string errorOutput, int exitCode)
+        public ProcessOutput(string output, string errorOutput, int exitCode, bool timedOut)
         {
+            this.TimedOut = timedOut;
             this.StandardError = errorOutput;
             this.StandardOutput = output;
             this.ExitCode = exitCode;
         }
+
+        public bool TimedOut { get; set; }
 
         public int ExitCode { get; set; }
         public string StandardOutput { get; set; }

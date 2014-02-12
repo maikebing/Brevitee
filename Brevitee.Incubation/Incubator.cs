@@ -511,6 +511,11 @@ namespace Brevitee.Incubation
             }
         }
 
+        public bool HasClass(string className)
+        {
+            return this[className] != null;
+        }
+
         public bool Contains<T>()
         {
             return Contains(typeof(T));

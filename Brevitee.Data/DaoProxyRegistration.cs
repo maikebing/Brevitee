@@ -5,6 +5,7 @@ using System.Text;
 using System.Reflection;
 using System.Web.Routing;
 using System.Web.Mvc;
+using System.IO;
 using Brevitee;
 using Brevitee.Data;
 using Brevitee.Incubation;
@@ -16,8 +17,10 @@ namespace Brevitee.Data
 {
     public class DaoProxyRegistration
     {
-        static IDictionary<string, DaoProxyRegistration> _registrations;
-
+        //static DaoProxyRegistration()
+        //{
+        //    Initialize();
+        //}
         /// <summary>
         /// Initialize the inner registration container and 
         /// registers the mvc route for query interface (qi.js; pronounced "chi") 
@@ -26,6 +29,7 @@ namespace Brevitee.Data
         internal static void Initialize()
         {
             _registrations = new Dictionary<string, DaoProxyRegistration>();
+            
             RouteTable.Routes.MapRoute(
                 name: "Qi",
                 url: "Qi/{controller}/{action}",
@@ -47,6 +51,33 @@ namespace Brevitee.Data
             Dao.RegisterDaoTypes(daoType, this.ServiceProvider);
         }
 
+        public DaoProxyRegistration(Assembly assembly)
+        {
+            this.ServiceProvider = new Incubator();
+            this.Assembly = assembly;
+            Type daoType = (from type in assembly.GetTypes()
+                            where type.IsSubclassOf(typeof(Dao))
+                            select type).FirstOrDefault();
+
+            Args.ThrowIfNull(daoType, "daoType");
+
+            this.ContextName = Dao.ConnectionName(daoType);
+            Dao.RegisterDaoTypes(daoType, this.ServiceProvider);
+        }
+
+        static IDictionary<string, DaoProxyRegistration> _registrations;
+        protected static IDictionary<string, DaoProxyRegistration> Registrations
+        {
+            get
+            {
+                if (_registrations == null)
+                {
+                    _registrations = new Dictionary<string, DaoProxyRegistration>();
+                }
+
+                return _registrations;
+            }
+        }
         public static void RegisterConnection(string connectionName, int retryCount = 5)
         {
             try
@@ -94,25 +125,66 @@ namespace Brevitee.Data
         public static DaoProxyRegistration Register(Type daoType)
         {
             string connectionName = Dao.ConnectionName(daoType);
-            if (!_registrations.ContainsKey(connectionName))
+            if (!Registrations.ContainsKey(connectionName))
             {
                 lock (_registerLock)
                 {
-                    if (!_registrations.ContainsKey(connectionName))
+                    if (!Registrations.ContainsKey(connectionName))
                     {
                         DaoProxyRegistration registration = new DaoProxyRegistration(daoType);
-                        _registrations.Add(connectionName, registration);
+                        Registrations.Add(connectionName, registration);
                     }
                 }
             }
 
-            return _registrations[connectionName];
+            return Registrations[connectionName];
+        }
+
+        public static DaoProxyRegistration[] Register(DirectoryInfo dir, string searchPattern = "*.dll")
+        {
+            FileInfo[] dlls = dir.GetFiles(searchPattern);
+            List<DaoProxyRegistration> results = new List<DaoProxyRegistration>();
+            dlls.Each(dll =>
+            {
+                Assembly current = Assembly.LoadFrom(dll.FullName);
+                results.Add(Register(current));
+            });
+
+            return results.ToArray();
+        }
+
+        public static DaoProxyRegistration Register(FileInfo daoDll)
+        {
+            Assembly daoAssembly = Assembly.LoadFrom(daoDll.FullName);
+            return Register(daoAssembly);
+        }
+
+        public static DaoProxyRegistration Register(Assembly assembly)
+        {
+            Type daoType = (from type in assembly.GetTypes()
+                            where type.IsSubclassOf(typeof(Dao))
+                            select type).FirstOrDefault();
+
+            string connectionName = Dao.ConnectionName(daoType);
+            if (!Registrations.ContainsKey(connectionName))
+            {
+                lock (_registerLock)
+                {
+                    if (!Registrations.ContainsKey(connectionName))
+                    {
+                        DaoProxyRegistration registration = new DaoProxyRegistration(assembly);
+                        Registrations.Add(connectionName, registration);
+                    }
+                }
+            }
+
+            return Registrations[connectionName];
         }
 
         public static StringBuilder GetScript(bool min = false)
         {
             StringBuilder result = new StringBuilder();
-            foreach (string contextName in _registrations.Keys)
+            foreach (string contextName in Registrations.Keys)
             {
                 result.AppendLine(GetScript(contextName, min).ToString());
             }
@@ -122,17 +194,17 @@ namespace Brevitee.Data
         public static StringBuilder GetScript(string contextName, bool min = false)
         {
             Args.ThrowIf<InvalidOperationException>(
-                !_registrations.ContainsKey(contextName),
+                !Registrations.ContainsKey(contextName),
                 "The specified contextName ({0}) was not registered for proxying", contextName);
 
             StringBuilder result;
             if (min)
             {
-                result = _registrations[contextName].MinScript;
+                result = Registrations[contextName].MinProxies;
             }
             else
             {
-                result = _registrations[contextName].Script;
+                result = Registrations[contextName].Proxies;
             }
 
             return result;
@@ -142,29 +214,59 @@ namespace Brevitee.Data
         public Assembly Assembly { get; set; }
         public Incubator ServiceProvider { get; set; }
 
-        StringBuilder _script;
-        object _scriptLock = new object();
-        public StringBuilder Script
+        StringBuilder _proxiesScript;
+        object _proxiesScriptLock = new object();
+        public StringBuilder Proxies
         {
             get
             {
-                return _scriptLock.DoubleCheckLock<StringBuilder>(ref _script, () => BuildProxyScript());
+                return _proxiesScriptLock.DoubleCheckLock<StringBuilder>(ref _proxiesScript, () => BuildProxyScript());
             }
         }
 
-        StringBuilder _minScript;
-        object _minScriptLock = new object();
-        public StringBuilder MinScript
+        StringBuilder _minProxiesScript;
+        object _minProxiesScriptLock = new object();
+        public StringBuilder MinProxies
         {
             get
             {
-                return _minScriptLock.DoubleCheckLock<StringBuilder>(
-                    ref _minScript,
+                return _minProxiesScriptLock.DoubleCheckLock<StringBuilder>(
+                    ref _minProxiesScript,
                     () =>
                     {
                         StringBuilder temp = new StringBuilder();
                         JavaScriptCompressor jsc = new JavaScriptCompressor();
-                        string script = Script.ToString();
+                        string script = Proxies.ToString();
+                        string minScript = jsc.Compress(script);
+                        temp.Append(minScript);
+                        return temp;
+                    }
+                );
+            }
+        }
+        StringBuilder _ctorsScript;
+        object _ctorsScriptLock = new object();
+        public StringBuilder Ctors
+        {
+            get
+            {
+                return _ctorsScriptLock.DoubleCheckLock<StringBuilder>(ref _ctorsScript, () => BuildCtorScript());
+            }
+        }
+
+        StringBuilder _minCtorsScript;
+        object _minCtorsScriptLock = new object();
+        public StringBuilder MinCtors
+        {
+            get
+            {
+                return _minCtorsScriptLock.DoubleCheckLock<StringBuilder>(
+                    ref _minCtorsScript,
+                    () =>
+                    {
+                        StringBuilder temp = new StringBuilder();
+                        JavaScriptCompressor jsc = new JavaScriptCompressor();
+                        string script = Ctors.ToString();
                         string minScript = jsc.Compress(script);
                         temp.Append(minScript);
                         return temp;
@@ -173,6 +275,99 @@ namespace Brevitee.Data
             }
         }
 
+        private StringBuilder BuildCtorScript()
+        {
+            return GetDaoJsCtorScript(ServiceProvider, ServiceProvider.ClassNames);
+        }
+
+        internal static StringBuilder GetDaoJsCtorScript(Incubator incubator, string[] classes)
+        {
+            StringBuilder ctorScript = new StringBuilder();
+            StringBuilder fkProto = new StringBuilder();
+
+            foreach (string className in classes)
+            {
+                Type modelType = incubator[className];
+                MethodInfo modelTypeMethod = modelType.GetMethod("GetDaoType");
+                if (modelTypeMethod != null)
+                {
+                    modelType = (Type)modelTypeMethod.Invoke(null, null);
+                }
+
+                if (modelType.HasCustomAttributeOfType<TableAttribute>())
+                {
+                    StringBuilder parameters;
+                    StringBuilder body;
+                    GetJsCtorParamsAndBody(modelType, fkProto, out parameters, out body);
+                    ctorScript.AppendFormat("b.ctor.{0} = function {0}(", className);
+                    // -- params 
+                    ctorScript.Append(parameters.ToString());
+                    // -- end params
+                    ctorScript.AppendLine("){");
+                    // -- body
+                    ctorScript.Append(body.ToString());
+                    // -- end body
+                    ctorScript.AppendLine("}");
+                }
+            }
+
+            ctorScript.AppendLine(fkProto.ToString());
+            return ctorScript;
+        }
+
+        internal static void GetJsCtorParamsAndBody(Type type, StringBuilder fkProto, out StringBuilder paramList, out StringBuilder body)
+        {
+            paramList = new StringBuilder();
+            body = new StringBuilder();
+            PropertyInfo[] properties = (from prop in type.GetPropertiesWithAttributeOfType<ColumnAttribute>()
+                                         where !prop.HasCustomAttributeOfType<KeyColumnAttribute>()
+                                         select prop).ToArray();
+
+            for (int i = 0; i < properties.Length; i++)
+            {
+                PropertyInfo property = properties[i];
+
+                string propertyName = property.Name.CamelCase();
+                paramList.Append(propertyName);
+                if (i != properties.Length - 1)
+                {
+                    paramList.Append(", ");
+                }
+
+                ForeignKeyAttribute fk;
+                if (property.HasCustomAttributeOfType<ForeignKeyAttribute>(out fk))
+                {
+                    string refProperty = string.Format("{0}Of{1}", fk.ReferencedTable, fk.Name).CamelCase();
+                    body.AppendFormat("\tthis.{0} = new dao.entity('{1}', {2});\r\n", refProperty, fk.ReferencedTable, fk.Name);
+
+                    fkProto.AppendFormat("b.ctor.{0}.prototype.{1}Collection = function(){{\r\n", fk.ReferencedTable, fk.Table.CamelCase());
+                    fkProto.AppendFormat("\treturn new dao.collection(this, '{0}', '{1}', '{2}', '{3}');\r\n", fk.ReferencedTable, fk.ReferencedKey, fk.Table, fk.Name);
+                    fkProto.Append("};\r\n");
+                }
+                else
+                {
+                    body.AppendFormat("\tthis.{0} = {0};\r\n", propertyName);
+                }
+            }
+
+            string varName = GetVarName(type);
+            body.AppendFormat("\tthis.update = function(opts){{ bam.{0}.update(this, opts); }};\r\n", varName);
+            body.AppendFormat("\tthis.save = this.update;\r\n");
+            body.AppendFormat("\tthis.delete = function(opts){{ bam.{0}.delete(this, opts); }};\r\n", varName);
+            body.AppendFormat("\tthis.fks = function(){{ return dao.getFks('{0}');}};\r\n", Dao.TableName(type));
+            body.AppendFormat("\tthis.pk = function(){{ return '{0}'; }};\r\n", Dao.GetKeyColumnName(type).ToLowerInvariant());
+        }
+        private static string GetVarName(Type type)
+        {
+            string varName = type.Name;
+            ProxyAttribute proxyAttr = null;
+            if (type.HasCustomAttributeOfType<ProxyAttribute>(true, out proxyAttr))
+            {
+                varName = proxyAttr.VarName;
+            }
+
+            return varName;
+        }
         private StringBuilder BuildProxyScript()
         {
             return BuildProxyScript(ServiceProvider, ContextName);

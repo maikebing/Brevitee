@@ -8,8 +8,8 @@ namespace Brevitee.Server
     public class ResponderList: ResponderBase
     {
         List<IResponder> _responders;
-        public ResponderList(Fs fs, IEnumerable<IResponder> responders)
-            : base(fs)
+        public ResponderList(BreviteeConf conf, IEnumerable<IResponder> responders)
+            : base(conf)
         {
             this._responders = new List<IResponder>(responders);
         }
@@ -19,16 +19,11 @@ namespace Brevitee.Server
             _responders.AddRange(responder);
         }
 
-        public override bool MayHandle(IContext context)
+        public override bool MayRespond(IContext context)
         {
             return true;
         }
-
-        protected override void LogRequest(string path)
-        {
-            // overridden with the express intent of turning it off for the ResponderList
-        }
-
+        
         #region IResponder Members
 
         public override bool TryRespond(IContext context)

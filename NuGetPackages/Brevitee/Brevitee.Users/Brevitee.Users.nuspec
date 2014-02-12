@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+<package xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
-    <id>Brevitee.Security</id>
-    <version>3.0.0</version>
-    <title>Brevitee.Data</title>
+    <id>Brevitee.Users</id>
+    <version>3.0.5</version>
+    <title>Brevitee.Users</title>
     <authors>Brevitee</authors>
     <owners>Brevitee</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Role provider for Brevitee</description>
     <releaseNotes />
-    <copyright>Copyright 2013</copyright>
+    <copyright>Copyright 2014</copyright>
     <dependencies>
       <dependency id="Brevitee" version="2.0.0.0" />
       <dependency id="Brevitee.Data" version="2.0.0.0" />

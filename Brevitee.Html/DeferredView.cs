@@ -151,7 +151,7 @@ namespace Brevitee.Html
             {
                 if (_content == null)
                 {
-                    Thread thread = Threads.Get(this.Name);
+                    Thread thread = Exec.GetThread(this.Name);
                     if (thread != null)
                     {
                         _content = State;

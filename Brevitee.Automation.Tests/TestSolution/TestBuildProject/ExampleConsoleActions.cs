@@ -8,10 +8,10 @@ using System.Data.Common;
 using System.Data.Sql;
 using System.Data.SqlClient;
 using System.IO;
-using KLGates.Core.CommandLine;
-using KLGates.Core;
-using KLGates.Core.Testing;
-using KLGates.Core.Encryption;
+using Brevitee.CommandLine;
+using Brevitee;
+using Brevitee.Testing;
+using Brevitee.Encryption;
 
 namespace TestBuildProject
 {

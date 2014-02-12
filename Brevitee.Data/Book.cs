@@ -5,6 +5,11 @@ using System.Text;
 
 namespace Brevitee.Data
 {
+    /// <summary>
+    /// Convenience collection like object for 
+    /// paging IEnumerables
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class Book<T>
     {
         List<List<T>> allPages;

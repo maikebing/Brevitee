@@ -208,7 +208,14 @@ namespace Brevitee.Users.Data
         
         public static bool Exists(string userName)
         {
-            return GetByUserName(userName) != null;
+            User ignore;
+            return Exists(userName, out ignore);
+        }
+
+        public static bool Exists(string userName, out User user)
+        {
+            user = GetByUserName(userName);
+            return user != null;
         }
 
         /// <summary>

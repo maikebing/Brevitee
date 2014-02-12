@@ -81,7 +81,7 @@ namespace Brevitee.Profiguration
             }
             // --
 
-            // override wtih values from "this"
+            // override with values from "this"
             foreach (string key in AppSettings.Keys)
             {
                 appSettings[key] = AppSettings[key];

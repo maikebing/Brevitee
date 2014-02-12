@@ -191,7 +191,7 @@ namespace Brevitee.Data
         /// <summary>
         /// Gets the Database for the specified type.
         /// </summary>
-        /// <typeparam name="D"></typeparam>
+        /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public Database For<T>() where T : Dao
         {

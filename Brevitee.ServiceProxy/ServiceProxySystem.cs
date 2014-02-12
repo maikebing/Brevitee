@@ -273,8 +273,12 @@ namespace Brevitee.ServiceProxy
             }
         }
 
-
         public static StringBuilder GenerateCSharpProxyCode(string defaultBaseAddress, string[] classNames, string nameSpace, string contractNamespace)
+        {
+            return GenerateCSharpProxyCode(defaultBaseAddress, classNames, nameSpace, contractNamespace, ServiceProxySystem.Incubator);
+        }
+
+        public static StringBuilder GenerateCSharpProxyCode(string defaultBaseAddress, string[] classNames, string nameSpace, string contractNamespace, Incubator incubator)
         {
             string headerFormat = @"/**
 This file was generated from {0}ServiceProxy/CSharpProxies.  This file should not be modified directly
@@ -332,7 +336,7 @@ namespace {0}
 
             foreach (string className in classNames)
             {
-                Type type = ServiceProxySystem.Incubator[className];
+                Type type = incubator[className];
 
                 StringBuilder methods = new StringBuilder();
                 StringBuilder interfaceMethods = new StringBuilder();
@@ -409,7 +413,7 @@ namespace {0}
         {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("(function(b, d, $, win){");
-            stringBuilder.AppendLine(GetJsCtorScript(incubator, classes).ToString());
+            stringBuilder.AppendLine(DaoProxyRegistration.GetDaoJsCtorScript(incubator, classes).ToString());
 
             foreach (string className in classes)
             {
@@ -463,7 +467,8 @@ namespace {0}
                     }
                 }
 
-                stringBuilder.AppendFormat("\twin.{0} = {1};\r\n", varName, var.Trim());
+                stringBuilder.AppendFormat("\twin.{0} = win.{0} || {{}};\r\n", varName);
+                stringBuilder.AppendFormat("\t$.extend(win.{0}, {1});\r\n", varName, var.Trim());
                 stringBuilder.AppendFormat("\twin.{0}.className = '{1}';\r\n", varName, className);
                 stringBuilder.AppendFormat("\td.{0} = b.{1};\r\n", varName, className);
             }
@@ -548,83 +553,6 @@ namespace {0}
             return varName;
         }
 
-        internal static StringBuilder GetJsCtorScript(Incubator incubator, string[] classes)
-        {
-            StringBuilder ctorScript = new StringBuilder();
-            StringBuilder fkProto = new StringBuilder();
-
-            foreach (string className in classes)
-            {
-                Type modelType = incubator[className];
-                MethodInfo modelTypeMethod = modelType.GetMethod("GetDaoType");
-                if (modelTypeMethod != null)
-                {
-                    modelType = (Type)modelTypeMethod.Invoke(null, null);
-                }
-
-                if (modelType.HasCustomAttributeOfType<TableAttribute>())
-                {
-                    StringBuilder parameters;
-                    StringBuilder body;
-                    GetJsCtorParamsAndBody(modelType, fkProto, out parameters, out body);
-                    ctorScript.AppendFormat("b.ctor.{0} = function {0}(", className);
-                    // -- params 
-                    ctorScript.Append(parameters.ToString());
-                    // -- end params
-                    ctorScript.AppendLine("){");
-                    // -- body
-                    ctorScript.Append(body.ToString());
-                    // -- end body
-                    ctorScript.AppendLine("}");
-                }
-            }
-
-            ctorScript.AppendLine(fkProto.ToString());
-            return ctorScript;
-        }
-
-        internal static void GetJsCtorParamsAndBody(Type type, StringBuilder fkProto, out StringBuilder paramList, out StringBuilder body)
-        {
-            paramList = new StringBuilder();
-            body = new StringBuilder();
-            PropertyInfo[] properties = (from prop in type.GetPropertiesWithAttributeOfType<ColumnAttribute>()
-                                         where !prop.HasCustomAttributeOfType<KeyColumnAttribute>()
-                                         select prop).ToArray();
-
-            for (int i = 0; i < properties.Length; i++)
-            {
-                PropertyInfo property = properties[i];
-
-                string propertyName = property.Name.CamelCase();
-                paramList.Append(propertyName);
-                if (i != properties.Length - 1)
-                {
-                    paramList.Append(", ");
-                }
-
-                ForeignKeyAttribute fk;
-                if (property.HasCustomAttributeOfType<ForeignKeyAttribute>(out fk))
-                {
-                    string refProperty = string.Format("{0}Of{1}", fk.ReferencedTable, fk.Name).CamelCase();
-                    body.AppendFormat("\tthis.{0} = new dao.entity('{1}', {2});\r\n", refProperty, fk.ReferencedTable, fk.Name);
-
-                    fkProto.AppendFormat("b.ctor.{0}.prototype.{1}Collection = function(){{\r\n", fk.ReferencedTable, fk.Table.CamelCase());
-                    fkProto.AppendFormat("\treturn new dao.collection(this, '{0}', '{1}', '{2}', '{3}');\r\n", fk.ReferencedTable, fk.ReferencedKey, fk.Table, fk.Name);
-                    fkProto.Append("};\r\n");
-                }
-                else
-                {
-                    body.AppendFormat("\tthis.{0} = {0};\r\n", propertyName);
-                }
-            }
-
-            string varName = GetVarName(type);
-            body.AppendFormat("\tthis.update = function(opts){{ bam.{0}.update(this, opts); }};\r\n", varName);
-            body.AppendFormat("\tthis.save = this.update;\r\n");
-            body.AppendFormat("\tthis.delete = function(opts){{ bam.{0}.delete(this, opts); }};\r\n", varName);
-            body.AppendFormat("\tthis.fks = function(){{ return dao.getFks('{0}');}};\r\n", Dao.TableName(type));
-            body.AppendFormat("\tthis.pk = function(){{ return '{0}'; }};\r\n", Dao.GetKeyColumnName(type).ToLowerInvariant());
-        }
 
         internal static bool ServiceProxyPartialExists(Type type, string viewName)
         {

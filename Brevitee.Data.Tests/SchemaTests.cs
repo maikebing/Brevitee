@@ -48,7 +48,7 @@ namespace Brevitee.Data.Tests
             }
             catch (Exception ex)
             {
-                OutFormat("An error occurred deleting schema file: {0}", ConsoleColor.Red, ex.Message);
+                OutLineFormat("An error occurred deleting schema file: {0}", ConsoleColor.Red, ex.Message);
             }
         }
 
@@ -189,7 +189,7 @@ namespace Brevitee.Data.Tests
             Result r = mgr.SetForeignKey("TableOne", "ReferringTable", "TableOneID");
 
             Expect.IsFalse(r.Success);
-            Out(r.Message, ConsoleColor.Yellow);
+            OutLine(r.Message, ConsoleColor.Yellow);
 
             TryDeleteSchema(s);
         }
@@ -213,7 +213,7 @@ namespace Brevitee.Data.Tests
             }
             catch (Exception ex)
             {
-                OutFormat("An error occurred deleting test data. {0}", ConsoleColor.Red, ex.Message);
+                OutLineFormat("An error occurred deleting test data. {0}", ConsoleColor.Red, ex.Message);
             }
         }
 

@@ -9,18 +9,49 @@ namespace Brevitee.CommandLine
 {
     public static class Extensions
     {
+		public static void InvokeInCurrentAppDomain(this ConsoleInvokeableMethod consoleInvokeableMethod)
+		{
+			CommandLineInterface.InvokeInCurrentAppDomain(consoleInvokeableMethod.Method, consoleInvokeableMethod.Provider, consoleInvokeableMethod.Parameters);
+		}
+
+		public static void InvokeInSeparateAppDomain(this ConsoleInvokeableMethod consoleInvokeableMethod)
+		{
+			CommandLineInterface.InvokeInSeparateAppDomain(consoleInvokeableMethod.Method, consoleInvokeableMethod.Provider, consoleInvokeableMethod.Parameters);
+		}
+
+		public static ProcessOutput Run(this string command, int timeout = 600000)
+		{
+			return command.Run(false, null, null, timeout);
+		}
+
         /// <summary>
         /// Executes the current string on the command line
         /// and returns the output.
         /// </summary>
         /// <param name="command">a valid command line</param>
         /// <returns>ProcessOutput</returns>
-        public static ProcessOutput Run(this string command, int timeout = 600000)
+        public static ProcessOutput Run(this string command, StringBuilder output, StringBuilder error, int timeout = 600000)        
+        {
+            return command.Run(false, output, error, timeout);
+        }
+
+		public static ProcessOutput Run(this string command, bool promptForAdmin, int timeout = 600000)
+		{
+			return command.Run(promptForAdmin, null, null, timeout);
+		}
+
+         /// <summary>
+         /// Executes the current string on the command line
+         /// and returns the output.
+         /// </summary>
+         /// <param name="command"></param>
+         /// <param name="promptForAdmin"></param>
+         /// <param name="timeout"></param>
+         /// <returns></returns>
+        public static ProcessOutput Run(this string command, bool promptForAdmin, StringBuilder output = null, StringBuilder error = null,  int timeout = 600000)
         {
             // fixed this to handle output correctly based on http://stackoverflow.com/questions/139593/processstartinfo-hanging-on-waitforexit-why
-            Expect.IsFalse(string.IsNullOrEmpty(command), "command cannot be blank or null");
-            Expect.IsFalse(command.Contains("\r"), "Multiple command lines not supported");
-            Expect.IsFalse(command.Contains("\n"), "Multiple command lines not supported");
+			ValidateCommand(command);
 
             string exe = string.Empty;
             string arguments = string.Empty;
@@ -36,14 +67,35 @@ namespace Brevitee.CommandLine
                 }
             }
 
-            ProcessStartInfo startInfo = CreateStartInfo();
+            return Run(string.IsNullOrEmpty(exe) ? command : exe, arguments, promptForAdmin, output, error, timeout);
+        }
 
+		private static void ValidateCommand(string command)
+		{
+			Expect.IsFalse(string.IsNullOrEmpty(command), "command cannot be blank or null");
+			Expect.IsFalse(command.Contains("\r"), "Multiple command lines not supported");
+			Expect.IsFalse(command.Contains("\n"), "Multiple command lines not supported");
+		}
 
-            startInfo.FileName = string.IsNullOrEmpty(exe) ? command : exe;
+        private static ProcessOutput Run(this string command, string arguments, bool promptForAdmin, StringBuilder output = null, StringBuilder error = null, int timeout = 600000)
+        {
+            ProcessStartInfo startInfo = CreateStartInfo(promptForAdmin);
+
+            startInfo.FileName = command;
             startInfo.Arguments = arguments;
 
-            StringBuilder output = new StringBuilder();
-            StringBuilder error = new StringBuilder();
+            return Run(startInfo, output, error, timeout);
+        }
+
+		public static ProcessOutput Run(this ProcessStartInfo startInfo, int timeout = 600000)
+		{
+			return Run(startInfo, null, null, timeout);
+		}
+
+        public static ProcessOutput Run(this ProcessStartInfo startInfo, StringBuilder output = null, StringBuilder error = null, int timeout = 600000)
+        {
+            output = output ?? new StringBuilder();
+            error = error ?? new StringBuilder();
 
             int exitCode = -1;
             bool timedOut = false;
@@ -80,7 +132,7 @@ namespace Brevitee.CommandLine
                     process.BeginOutputReadLine();
                     process.BeginErrorReadLine();
 
-                    if(process.WaitForExit(timeout) &&
+                    if (process.WaitForExit(timeout) &&
                         outputWaitHandle.WaitOne(timeout) &&
                         errorWaitHandle.WaitOne(timeout))
                     {
@@ -97,8 +149,8 @@ namespace Brevitee.CommandLine
 
             return new ProcessOutput(output.ToString(), error.ToString(), exitCode, timedOut);
         }
-
-        private static ProcessStartInfo CreateStartInfo()
+        
+        private static ProcessStartInfo CreateStartInfo(bool promptForAdmin)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.UseShellExecute = false;
@@ -106,6 +158,12 @@ namespace Brevitee.CommandLine
             startInfo.CreateNoWindow = true; ;
             startInfo.RedirectStandardOutput = true;
             startInfo.RedirectStandardError = true;
+
+            if (promptForAdmin)
+            {
+                startInfo.Verb = "runas";
+            }
+
             return startInfo;
         }
     }

@@ -15,7 +15,7 @@ namespace Brevitee.Automation.ContinuousIntegration.Data
 		{
 			get
 			{
-				return _.Db.For("BuildAutomation");
+                return Brevitee.Data.Db.For("BuildAutomation");
 			}
 		}
 

@@ -58,15 +58,15 @@ namespace Brevitee.Data.Tests
         [UnitTest]
         public static void DatabaseNameShouldNotBeNull()
         {
-            Database db = _.Db["DaoRef"];
+            Database db = Db.For("DaoRef");//_.Db["DaoRef"];
             Expect.IsNotNullOrEmpty(db.Name);
-            Out(db.Name, ConsoleColor.Yellow);
+            OutLine(db.Name, ConsoleColor.Yellow);
         }
 
         [UnitTest]
-        public static void ShouldGetDatabase()
+        public static void ShouldGetDatabaseFactory()
         {
-            DbProviderFactory factory = _.Db[typeof(TestDao)].ServiceProvider.Get<DbProviderFactory>();
+            DbProviderFactory factory = Db.For(typeof(TestDao)).ServiceProvider.Get<DbProviderFactory>();//_.Db[typeof(TestDao)].ServiceProvider.Get<DbProviderFactory>();
             Expect.IsNotNull(factory);
             factory.IsInstanceOfType<SqlClientFactory>();
         }
@@ -74,11 +74,11 @@ namespace Brevitee.Data.Tests
         [UnitTest]
         public static void ShouldGetDatabaseUsingGeneric()
         {
-            DbProviderFactory factory = _.Db.For<TestDao>().ServiceProvider.Get<DbProviderFactory>();
+            DbProviderFactory factory = Db.For<TestDao>().ServiceProvider.Get<DbProviderFactory>();
             Expect.IsNotNull(factory);
             factory.IsInstanceOfType<SqlClientFactory>();
             Type type = factory.GetType();
-            OutFormat("{0}.{1}", ConsoleColor.Cyan, type.Namespace, type.Name);
+            OutLineFormat("{0}.{1}", ConsoleColor.Cyan, type.Namespace, type.Name);
         }
 
     }

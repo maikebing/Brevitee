@@ -112,7 +112,7 @@ namespace Brevitee.Data.Model
             {
                 Type type = _types[i];
                 string display = string.Format("{0}.{1}", type.Namespace, type.Name);
-                OutFormat("{0}. {1}", i + 1, display);
+                OutLineFormat("{0}. {1}", i + 1, display);
             }
             string selection = Prompt(" select class");
             int num = 0;

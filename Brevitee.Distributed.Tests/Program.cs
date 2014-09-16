@@ -125,11 +125,11 @@ namespace Brevitee.Distributed.Tests
         {
             ring.Slots.Each((s, i) =>
             {
-                OutFormat("Slot {0}", ConsoleColor.Blue, i);
-                OutFormat("\tstart angle: {0}", ConsoleColor.White, s.StartAngle);
-                OutFormat("\t  end angle: {0}", ConsoleColor.Yellow, s.EndAngle);
-                OutFormat("\tstart key: {0}", ConsoleColor.Cyan, s.Keyspace.Start);
-                OutFormat("\t  end key: {0}", ConsoleColor.Cyan, s.Keyspace.End);
+                OutLineFormat("Slot {0}", ConsoleColor.Blue, i);
+                OutLineFormat("\tstart angle: {0}", ConsoleColor.White, s.StartAngle);
+                OutLineFormat("\t  end angle: {0}", ConsoleColor.Yellow, s.EndAngle);
+                OutLineFormat("\tstart key: {0}", ConsoleColor.Cyan, s.Keyspace.Start);
+                OutLineFormat("\t  end key: {0}", ConsoleColor.Cyan, s.Keyspace.End);
             });
         }
 
@@ -145,14 +145,14 @@ namespace Brevitee.Distributed.Tests
         }
 
         [UnitTest]
-        public void CoputeNodeFromCurrentHostShouldBeSelf()
+        public void ComputeNodeFromCurrentHostShouldBeSelf()
         {
             ComputeNode current = ComputeNode.FromCurrentHost();
             string hostName = Dns.GetHostName();
             Expect.AreEqual(hostName, current.HostName);
             object info = current.GetInfo();
             Expect.AreEqual(hostName, info.Property<string>("HostName"));
-            Out(info.PropertiesToString());
+            OutLine(info.PropertiesToString());
         }
 
         [UnitTest]
@@ -162,18 +162,18 @@ namespace Brevitee.Distributed.Tests
             Dictionary<string, string> info = current.GetInfoDictionary();
             info.Keys.Each((k) =>
             {
-                OutFormat("Key: {0}, Val: {1}", k, info[k]);
+                OutLineFormat("Key: {0}, Val: {1}", k, info[k]);
             });
         }
 
         public void Before()
         {
-            Out("BEFORE RAN", ConsoleColor.Cyan);
+            OutLine("BEFORE RAN", ConsoleColor.Cyan);
         }
 
         public void After()
         {
-            Out("AFTER RAN", ConsoleColor.Cyan);
+            OutLine("AFTER RAN", ConsoleColor.Cyan);
         }
 
         [UnitTest]

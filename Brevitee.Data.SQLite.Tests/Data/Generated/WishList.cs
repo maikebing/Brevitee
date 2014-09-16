@@ -32,7 +32,7 @@ namespace SampleData
 		}
 
 	// property:Id, columnName:Id	
-	[Brevitee.Data.KeyColumn(Name="Id", ExtractedType="BigInt", MaxLength="8")]
+	[Brevitee.Data.KeyColumn(Name="Id", DbDataType="BigInt", MaxLength="8")]
 	public long? Id
 	{
 		get
@@ -46,7 +46,7 @@ namespace SampleData
 	}
 
 	// property:Name, columnName:Name	
-	[Brevitee.Data.Column(Name="Name", ExtractedType="NVarChar", MaxLength="255", AllowNull=false)]
+	[Brevitee.Data.Column(Name="Name", DbDataType="NVarChar", MaxLength="255", AllowNull=false)]
 	public string Name
 	{
 		get
@@ -60,7 +60,7 @@ namespace SampleData
 	}
 
 	// property:Description, columnName:Description	
-	[Brevitee.Data.Column(Name="Description", ExtractedType="NVarChar", MaxLength="4000", AllowNull=true)]
+	[Brevitee.Data.Column(Name="Description", DbDataType="NVarChar", MaxLength="4000", AllowNull=true)]
 	public string Description
 	{
 		get
@@ -78,7 +78,7 @@ namespace SampleData
 	[Brevitee.Data.ForeignKey(
         Table="WishList",
 		Name="UserId", 
-		ExtractedType="BigInt", 
+		DbDataType="BigInt", 
 		MaxLength="8",
 		AllowNull=false, 
 		ReferencedKey="Id",
@@ -204,7 +204,7 @@ namespace SampleData
             WishListColumns c = new WishListColumns();
             IQueryFilter filter = where(c);         
             
-			Database db = database == null ? _.Db.For<WishList>(): database;
+			Database db = database == null ? Db.For<WishList>(): database;
 			QuerySet query = GetQuerySet(db); 
             query.Top<WishList>(count);
             query.Where(filter);
@@ -223,7 +223,7 @@ namespace SampleData
 			WishListColumns c = new WishListColumns();
 			IQueryFilter filter = where(c) ;
 
-			Database db = database == null ? _.Db.For<WishList>(): database;
+			Database db = database == null ? Db.For<WishList>(): database;
 			QuerySet query = GetQuerySet(db);	 
 			query.Count<WishList>();
 			query.Where(filter);	  

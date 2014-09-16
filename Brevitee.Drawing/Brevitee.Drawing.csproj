@@ -35,6 +35,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>bin\Release\Brevitee.Drawing.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BoneSoft.CSS">
@@ -43,12 +44,9 @@
     <Reference Include="CsQuery">
       <HintPath>..\Assemblies\CsQuery.dll</HintPath>
     </Reference>
-    <Reference Include="dotless.Core">
-      <HintPath>..\Assemblies\dotless.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Assemblies\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -76,21 +74,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Brevitee.Testing\Brevitee.Testing.csproj">
-      <Project>{85212881-C676-4B40-B311-37C2D1706042}</Project>
-      <Name>Brevitee.Testing</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Brevitee.Yaml\Brevitee.Yaml.csproj">
-      <Project>{1C5258EC-7579-4032-94EC-B016BDC1B876}</Project>
+      <Project>{1c5258ec-7579-4032-94ec-b016bdc1b876}</Project>
       <Name>Brevitee.Yaml</Name>
     </ProjectReference>
     <ProjectReference Include="..\Brevitee\Brevitee.csproj">
       <Project>{8794C09D-D72C-420C-812F-BFDA251B64C9}</Project>
       <Name>Brevitee</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Brevitee.CommandLine\Brevitee.CommandLine.csproj">
-      <Project>{EA9863A9-8E0B-4497-B7FD-ABF450A3E468}</Project>
-      <Name>Brevitee.CommandLine</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

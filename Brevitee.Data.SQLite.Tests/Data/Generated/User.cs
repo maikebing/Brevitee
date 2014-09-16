@@ -59,7 +59,7 @@ namespace SampleData
 		}
 
 	// property:Id, columnName:Id	
-	[Brevitee.Data.KeyColumn(Name="Id", ExtractedType="BigInt", MaxLength="8")]
+	[Brevitee.Data.KeyColumn(Name="Id", DbDataType="BigInt", MaxLength="8")]
 	public long? Id
 	{
 		get
@@ -73,7 +73,7 @@ namespace SampleData
 	}
 
 	// property:FirstName, columnName:FirstName	
-	[Brevitee.Data.Column(Name="FirstName", ExtractedType="VarChar", MaxLength="30", AllowNull=true)]
+	[Brevitee.Data.Column(Name="FirstName", DbDataType="VarChar", MaxLength="30", AllowNull=true)]
 	public string FirstName
 	{
 		get
@@ -87,7 +87,7 @@ namespace SampleData
 	}
 
 	// property:LastName, columnName:LastName	
-	[Brevitee.Data.Column(Name="LastName", ExtractedType="VarChar", MaxLength="50", AllowNull=true)]
+	[Brevitee.Data.Column(Name="LastName", DbDataType="VarChar", MaxLength="50", AllowNull=true)]
 	public string LastName
 	{
 		get
@@ -101,7 +101,7 @@ namespace SampleData
 	}
 
 	// property:UserName, columnName:UserName	
-	[Brevitee.Data.Column(Name="UserName", ExtractedType="VarChar", MaxLength="4000", AllowNull=false)]
+	[Brevitee.Data.Column(Name="UserName", DbDataType="VarChar", MaxLength="4000", AllowNull=false)]
 	public string UserName
 	{
 		get
@@ -115,7 +115,7 @@ namespace SampleData
 	}
 
 	// property:Email, columnName:Email	
-	[Brevitee.Data.Column(Name="Email", ExtractedType="VarChar", MaxLength="4000", AllowNull=false)]
+	[Brevitee.Data.Column(Name="Email", DbDataType="VarChar", MaxLength="4000", AllowNull=false)]
 	public string Email
 	{
 		get
@@ -129,7 +129,7 @@ namespace SampleData
 	}
 
 	// property:AuthSource, columnName:AuthSource	
-	[Brevitee.Data.Column(Name="AuthSource", ExtractedType="VarChar", MaxLength="4000", AllowNull=false)]
+	[Brevitee.Data.Column(Name="AuthSource", DbDataType="VarChar", MaxLength="4000", AllowNull=false)]
 	public string AuthSource
 	{
 		get
@@ -143,7 +143,7 @@ namespace SampleData
 	}
 
 	// property:SourceId, columnName:SourceId	
-	[Brevitee.Data.Column(Name="SourceId", ExtractedType="VarChar", MaxLength="4000", AllowNull=false)]
+	[Brevitee.Data.Column(Name="SourceId", DbDataType="VarChar", MaxLength="4000", AllowNull=false)]
 	public string SourceId
 	{
 		get
@@ -738,7 +738,7 @@ namespace SampleData
             UserColumns c = new UserColumns();
             IQueryFilter filter = where(c);         
             
-			Database db = database == null ? _.Db.For<User>(): database;
+			Database db = database == null ? Db.For<User>(): database;
 			QuerySet query = GetQuerySet(db); 
             query.Top<User>(count);
             query.Where(filter);
@@ -757,7 +757,7 @@ namespace SampleData
 			UserColumns c = new UserColumns();
 			IQueryFilter filter = where(c) ;
 
-			Database db = database == null ? _.Db.For<User>(): database;
+			Database db = database == null ? Db.For<User>(): database;
 			QuerySet query = GetQuerySet(db);	 
 			query.Count<User>();
 			query.Where(filter);	  

@@ -18,6 +18,7 @@ using System.Web.Mvc;
 
 namespace Brevitee.Html.Tests
 {
+    [Serializable]
     public class TestProgram : CommandLineTestInterface
     {
         // Add optional code here to be run before initialization/argument parsing.
@@ -90,6 +91,17 @@ namespace Brevitee.Html.Tests
                     string.Format("{0},\r\n", iconname).SafeAppendToFile("c:\\src\\tmp\\enumvals.txt");
                 }
             }
+        }
+
+        [UnitTest]
+        public void TestPathUtility()
+        {
+            string absPath = "/monkey/boat/island.txt";
+            string extension = Path.GetExtension(absPath);
+            string path = absPath.Truncate(extension.Length);
+
+            Expect.AreEqual("/monkey/boat/island", path);
+            OutLine(path);
         }
 
         [UnitTest]

@@ -39,7 +39,7 @@ namespace Brevitee.Server.Renderers
             
             string path = request.Request.Url.AbsolutePath;
             string ext = Path.GetExtension(path);
-            string callBack = request.Request.QueryString["callback"];
+            //string callBack = request.Request.QueryString["callback"];
 
             IRenderer renderer = null;
 

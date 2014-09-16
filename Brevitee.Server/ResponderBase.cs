@@ -100,7 +100,7 @@ namespace Brevitee.Server
         public ILogger Logger
         {
             get;
-            private set;
+            internal set;
         }
 
         protected internal virtual string Name
@@ -116,7 +116,7 @@ namespace Brevitee.Server
         /// </summary>
         public event ResponderEventHandler Responded;
 
-        protected void OnResponded(IContext context)
+        protected void OnResponded(IHttpContext context)
         {
             if (Responded != null)
             {
@@ -129,7 +129,7 @@ namespace Brevitee.Server
         /// </summary>
         public event ResponderEventHandler NotResponded;
 
-        protected void OnNotResponded(IContext context)
+        protected void OnNotResponded(IHttpContext context)
         {
             if (NotResponded != null)
             {
@@ -160,6 +160,7 @@ namespace Brevitee.Server
         List<string> _respondToPrefixes;
         protected internal void AddRespondToPrefix(string prefix)
         {
+            prefix = prefix.ToLowerInvariant();
             if (_ignorePrefixes.Contains(prefix))
             {
                 _ignorePrefixes.Remove(prefix);
@@ -171,6 +172,7 @@ namespace Brevitee.Server
         List<string> _ignorePrefixes;
         protected internal void AddIgnorPrefix(string prefix)
         {
+            prefix = prefix.ToLowerInvariant();
             if (_respondToPrefixes.Contains(prefix))
             {
                 _respondToPrefixes.Remove(prefix);
@@ -179,7 +181,7 @@ namespace Brevitee.Server
             _ignorePrefixes.Add(prefix);
         }
 
-        protected internal bool WillIgnore(IContext context)
+        protected internal bool WillIgnore(IHttpContext context)
         {
             return ShouldIgnore(context.Request.Url.AbsolutePath.ToLowerInvariant());
         }
@@ -191,7 +193,7 @@ namespace Brevitee.Server
             {
                 if (!result)
                 {
-                    result = path.StartsWith(string.Format("/{0}", ignore));
+                    result = path.ToLowerInvariant().StartsWith(string.Format("/{0}", ignore));
                 }
             });
 
@@ -206,7 +208,7 @@ namespace Brevitee.Server
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public virtual bool MayRespond(IContext context)
+        public virtual bool MayRespond(IHttpContext context)
         {
             string lowered = context.Request.Url.AbsolutePath.ToLowerInvariant();
             bool result = false;
@@ -225,7 +227,7 @@ namespace Brevitee.Server
             return result;         
         }
         
-        public bool Respond(IContext context)
+        public bool Respond(IHttpContext context)
         {
             bool result = false;
             string path = context.Request.Url.AbsolutePath;
@@ -263,6 +265,6 @@ namespace Brevitee.Server
             }
         }
 
-        public abstract bool TryRespond(IContext context);        
+        public abstract bool TryRespond(IHttpContext context);        
     }
 }

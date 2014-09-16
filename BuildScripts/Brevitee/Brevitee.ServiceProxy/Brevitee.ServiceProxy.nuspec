@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Brevitee.ServiceProxy</id>
+    <version>3.0.7</version>
+    <authors>Brevitee</authors>
+    <owners>Brevitee</owners>
+    <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
+    <projectUrl>http://breviteedocs.wordpress.com/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+	System for simply and easily exposing pocos as RESTful webservices
+	with automatic generation of both .Net and Javascript clients
+	</description>
+    <copyright>Copyright 2014</copyright>
+    <dependencies>
+      <dependency id="BouncyCastle" version="1.7.0" />
+      <dependency id="Brevitee.Data" version="3.0.6" />
+      <dependency id="Brevitee.Encryption" version="3.0.6" />
+      <dependency id="Brevitee.Incubation" version="3.0.6" />
+      <dependency id="EcmaScript.NET" version="1.0.1.0" />
+      <dependency id="Newtonsoft.Json" version="6.0.3" />
+      <dependency id="YUICompressor.NET" version="2.3.0" />
+    </dependencies>
+  </metadata>
+</package>

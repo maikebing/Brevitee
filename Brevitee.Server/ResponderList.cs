@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Brevitee.ServiceProxy;
 
 namespace Brevitee.Server
 {
@@ -19,14 +20,14 @@ namespace Brevitee.Server
             _responders.AddRange(responder);
         }
 
-        public override bool MayRespond(IContext context)
+        public override bool MayRespond(IHttpContext context)
         {
             return true;
         }
         
         #region IResponder Members
 
-        public override bool TryRespond(IContext context)
+        public override bool TryRespond(IHttpContext context)
         {
             bool handled = false;
             foreach (IResponder r in _responders)

@@ -1,21 +1,26 @@
 var database = {
     nameSpace: "Brevitee.Application.Data",
-    schemaName: "BreviteeApplication",
+    schemaName: "DaoTestData",
 	xrefs: [
-		["ApplicationXrefLeft", "ApplicationXrefRight"]
+		["LeftOfManyItem", "RightOfManyItem"]
 	],
     tables: [
         {
-            name: "ApplicationItem",
-            fks: [],
+            name: "DaoBaseItem",
             cols: [
-                { Name: "String", Null: false }
+                { Name: "String", Null: false },
+                { Created: "DateTime" },
+                { IsCool: "Boolean" },
+                { IntValue: "Int" },
+                { LongValue: "Long" },
+                { DecimalValue: "Decimal" },
+                { ByteArrayValue: "Byte" }
             ]            
         },
         {
-            name: "ApplicationSubItem",
+            name: "DaoSubItem",
             fks: [
-                { ApplicationItemId: "ApplicationItem" }
+                { DaoBaseItemId: "DaoBaseItem" }
             ],
             cols:[
                 { Name: "String", Null: false },
@@ -23,18 +28,25 @@ var database = {
             ]
         },
 		{
-			name: "ApplicationXrefLeft",
-			fks: [],
+			name: "LeftOfManyItem",
 			cols:[
 				{ Name: "String", Null: false }
 			]
 		},
 		{
-			name: "ApplicationXrefRight",
+			name: "RightOfManyItem",
 			fks: [],
 			cols:[
 				{ Name: "String", Null: false }
 			]
 		}
     ]
-}
+};
+
+//Boolean,
+//Int,
+//Long,
+//Decimal,
+//String,
+//Byte,
+//DateTime

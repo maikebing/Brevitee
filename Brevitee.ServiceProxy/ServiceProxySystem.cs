@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Brevitee;
 using Brevitee.Data;
 using Brevitee.Incubation;
 using Brevitee.Logging;
@@ -11,12 +12,39 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using System.Reflection;
 using System.IO;
+using Org.BouncyCastle.Security;
 
 namespace Brevitee.ServiceProxy
 {
     public class ServiceProxySystem
     {
         public const string ServiceProxyPartialFormat = "~/Views/ServiceProxy/{0}/{1}";
+
+        static ServiceProxySystem()
+        {
+            UserResolvers = new ServiceProxy.UserResolvers();
+            UserResolvers.AddResolver(new DefaultWebUserResolver());
+            RoleResolvers = new RoleResolvers();
+            RoleResolvers.AddResolver(new DefaultRoleResolver());
+        }
+
+        /// <summary>
+        /// Used to identify a service proxy session.  This value is
+        /// used as the name of the cookie used to track ServiceProxy sessions.
+        /// </summary>
+        public static string SecureSessionName
+        {
+            get
+            {
+                return "SPSSESS";
+            }
+        }
+        
+        public static string GenerateId()
+        {
+            SecureRandom random = new SecureRandom();            
+            return random.GenerateSeed(64).ToBase64().Sha256();            
+        }
 
         static bool initialized;
         static object initLock = new object();
@@ -99,6 +127,18 @@ namespace Brevitee.ServiceProxy
                 return _proxySearchPatternLock.DoubleCheckLock(ref _proxySearchPattern, () => DefaultConfiguration.GetAppSetting("ProxySearchPattern", "*.dll"));
             }
         }
+        
+        public static UserResolvers UserResolvers
+        {
+            get;
+            private set;
+        }
+
+        public static RoleResolvers RoleResolvers
+        {
+            get;
+            private set;
+        }
 
         /// <summary>
         /// Analyzes all the files in the bin directory of the current app that match the
@@ -136,7 +176,7 @@ namespace Brevitee.ServiceProxy
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="dir"></param>
-        public static void RegisterTypesWithAttributeFrom<T>(DirectoryInfo dir) where T : Attribute
+        public static void RegisterTypesWithAttributeFrom<T>(DirectoryInfo dir, ILogger logger = null) where T : Attribute
         {
             FileInfo[] files = dir.GetFiles(ProxySearchPattern);
             for (int i = 0; i < files.Length; i++)
@@ -149,7 +189,11 @@ namespace Brevitee.ServiceProxy
                 }
                 catch (Exception ex)
                 {
-                    Log.AddEntry("Non fatal exception occurred registering proxy types from {0}", ex, file.Name);
+                    if (logger == null)
+                    {
+                        logger = Log.Default;
+                    }
+                    logger.AddEntry("Non fatal exception occurred registering proxy types from {0}", ex, file.Name);
                 }
             }
         }
@@ -273,6 +317,12 @@ namespace Brevitee.ServiceProxy
             }
         }
 
+        public static string GetBaseAddress(Uri uri)
+        {
+            string defaultBaseAddress = string.Format("{0}://{1}{2}", uri.Scheme, uri.Host, uri.IsDefaultPort ? "/" : string.Format(":{0}/", uri.Port));
+            return defaultBaseAddress;
+        }
+
         public static StringBuilder GenerateCSharpProxyCode(string defaultBaseAddress, string[] classNames, string nameSpace, string contractNamespace)
         {
             return GenerateCSharpProxyCode(defaultBaseAddress, classNames, nameSpace, contractNamespace, ServiceProxySystem.Incubator);
@@ -281,7 +331,7 @@ namespace Brevitee.ServiceProxy
         public static StringBuilder GenerateCSharpProxyCode(string defaultBaseAddress, string[] classNames, string nameSpace, string contractNamespace, Incubator incubator)
         {
             string headerFormat = @"/**
-This file was generated from {0}ServiceProxy/CSharpProxies.  This file should not be modified directly
+This file was generated from {0}serviceproxy/csharpproxies.  This file should not be modified directly
 **/
 
 ";
@@ -296,6 +346,20 @@ namespace {0}
 }}";
             string classFormat = @"
     public class {0}Client: ServiceProxyClient<{1}.I{2}>, {1}.I{2}
+    {{
+        public {0}Client(): base(DefaultConfiguration.GetAppSetting(""{2}Url"", ""{3}""))
+        {{            
+        }}
+
+        public {0}Client(string baseAddress): base(baseAddress)
+        {{
+        }}
+        
+        {4}
+    }}
+";
+            string secureClassFormat = @"
+    public class {0}Client: SecureServiceProxyClient<{1}.I{2}>, {1}.I{2}
     {{
         public {0}Client(): base(DefaultConfiguration.GetAppSetting(""{2}Url"", ""{3}""))
         {{            
@@ -332,6 +396,7 @@ namespace {0}
             usingNamespaces.Add("System.Data");
             usingNamespaces.Add("Brevitee.Configuration");
             usingNamespaces.Add("Brevitee.ServiceProxy");
+            usingNamespaces.Add("Brevitee.ServiceProxy.Secure");
             usingNamespaces.Add(contractNamespace);
 
             foreach (string className in classNames)
@@ -384,7 +449,9 @@ namespace {0}
                 {
                     clientName = clientName.Truncate(6);
                 }
-                classes.AppendFormat(classFormat, clientName, contractNamespace, serverName, defaultBaseAddress, methods.ToString());
+
+                string classFormatToUse = type.HasCustomAttributeOfType<EncryptAttribute>() ? secureClassFormat : classFormat;
+                classes.AppendFormat(classFormatToUse, clientName, contractNamespace, serverName, defaultBaseAddress, methods.ToString());
                 interfaces.AppendFormat(interfaceFormat, serverName, interfaceMethods.ToString());
             }
 
@@ -490,7 +557,16 @@ namespace {0}
             string comma = parameterInfos.Length > 0 ? ", " : "";
             builder.AppendFormat("\tb.{0}.{1} = function({2}{3}options)", type.Name, defaultMethodName, parameters, comma);
             builder.AppendLine("{");
-            builder.AppendFormat("\t\treturn b.invoke('{0}', '{1}', [{2}], options != null ? (options.format == null ? 'json': options.format) : 'json', $.isFunction(options) ? {3} : options);\r\n", type.Name, method.Name, parameters, "{success: options}");
+
+            if (type.HasCustomAttributeOfType<EncryptAttribute>())
+            {
+                builder.AppendFormat("\t\treturn b.secureInvoke('{0}', '{1}', [{2}], options != null ? (options.format == null ? 'json': options.format) : 'json', $.isFunction(options) ? {3} : options);\r\n", type.Name, method.Name, parameters, "{success: options}");
+            }
+            else
+            {
+                builder.AppendFormat("\t\treturn b.invoke('{0}', '{1}', [{2}], options != null ? (options.format == null ? 'json': options.format) : 'json', $.isFunction(options) ? {3} : options);\r\n", type.Name, method.Name, parameters, "{success: options}");
+            }
+            
             builder.AppendLine("\t}");
 
             MethodCase methodCase = GetMethodCase(type.GetCustomAttributeOfType<ProxyAttribute>());
@@ -547,7 +623,10 @@ namespace {0}
             ProxyAttribute proxyAttr = null;
             if (type.HasCustomAttributeOfType<ProxyAttribute>(true, out proxyAttr))
             {
-                varName = proxyAttr.VarName;
+                if(!string.IsNullOrEmpty(proxyAttr.VarName))
+                {
+                    varName = proxyAttr.VarName;
+                }
             }
 
             return varName;

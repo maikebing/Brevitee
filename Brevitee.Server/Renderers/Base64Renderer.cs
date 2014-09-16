@@ -10,7 +10,7 @@ namespace Brevitee.Server.Renderers
     public class Base64Renderer: RendererBase
     {
         public Base64Renderer()
-            : base("text/plain")
+            : base("text/plain; charset=utf-8")
         { }
 
         public override void Render(object toRender, Stream output)

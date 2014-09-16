@@ -31,7 +31,7 @@ namespace SampleData
 		}
 
 	// property:Id, columnName:Id	
-	[Brevitee.Data.KeyColumn(Name="Id", ExtractedType="BigInt", MaxLength="8")]
+	[Brevitee.Data.KeyColumn(Name="Id", DbDataType="BigInt", MaxLength="8")]
 	public long? Id
 	{
 		get
@@ -45,7 +45,7 @@ namespace SampleData
 	}
 
 	// property:To, columnName:To	
-	[Brevitee.Data.Column(Name="To", ExtractedType="NVarChar", MaxLength="4000", AllowNull=true)]
+	[Brevitee.Data.Column(Name="To", DbDataType="NVarChar", MaxLength="4000", AllowNull=true)]
 	public string To
 	{
 		get
@@ -59,7 +59,7 @@ namespace SampleData
 	}
 
 	// property:Cc, columnName:Cc	
-	[Brevitee.Data.Column(Name="Cc", ExtractedType="NVarChar", MaxLength="4000", AllowNull=true)]
+	[Brevitee.Data.Column(Name="Cc", DbDataType="NVarChar", MaxLength="4000", AllowNull=true)]
 	public string Cc
 	{
 		get
@@ -73,7 +73,7 @@ namespace SampleData
 	}
 
 	// property:Bcc, columnName:Bcc	
-	[Brevitee.Data.Column(Name="Bcc", ExtractedType="NVarChar", MaxLength="4000", AllowNull=true)]
+	[Brevitee.Data.Column(Name="Bcc", DbDataType="NVarChar", MaxLength="4000", AllowNull=true)]
 	public string Bcc
 	{
 		get
@@ -87,7 +87,7 @@ namespace SampleData
 	}
 
 	// property:Subject, columnName:Subject	
-	[Brevitee.Data.Column(Name="Subject", ExtractedType="NVarChar", MaxLength="255", AllowNull=true)]
+	[Brevitee.Data.Column(Name="Subject", DbDataType="NVarChar", MaxLength="255", AllowNull=true)]
 	public string Subject
 	{
 		get
@@ -101,7 +101,7 @@ namespace SampleData
 	}
 
 	// property:Body, columnName:Body	
-	[Brevitee.Data.Column(Name="Body", ExtractedType="NVarChar", MaxLength="4000", AllowNull=true)]
+	[Brevitee.Data.Column(Name="Body", DbDataType="NVarChar", MaxLength="4000", AllowNull=true)]
 	public string Body
 	{
 		get
@@ -115,7 +115,7 @@ namespace SampleData
 	}
 
 	// property:Sent, columnName:Sent	
-	[Brevitee.Data.Column(Name="Sent", ExtractedType="DateTime", MaxLength="8", AllowNull=false)]
+	[Brevitee.Data.Column(Name="Sent", DbDataType="DateTime", MaxLength="8", AllowNull=false)]
 	public DateTime Sent
 	{
 		get
@@ -133,7 +133,7 @@ namespace SampleData
 	[Brevitee.Data.ForeignKey(
         Table="Message",
 		Name="FromUserId", 
-		ExtractedType="BigInt", 
+		DbDataType="BigInt", 
 		MaxLength="8",
 		AllowNull=true, 
 		ReferencedKey="Id",
@@ -241,7 +241,7 @@ namespace SampleData
             MessageColumns c = new MessageColumns();
             IQueryFilter filter = where(c);         
             
-			Database db = database == null ? _.Db.For<Message>(): database;
+			Database db = database == null ? Db.For<Message>(): database;
 			QuerySet query = GetQuerySet(db); 
             query.Top<Message>(count);
             query.Where(filter);
@@ -260,7 +260,7 @@ namespace SampleData
 			MessageColumns c = new MessageColumns();
 			IQueryFilter filter = where(c) ;
 
-			Database db = database == null ? _.Db.For<Message>(): database;
+			Database db = database == null ? Db.For<Message>(): database;
 			QuerySet query = GetQuerySet(db);	 
 			query.Count<Message>();
 			query.Where(filter);	  

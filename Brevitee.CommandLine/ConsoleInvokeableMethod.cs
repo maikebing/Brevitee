@@ -68,19 +68,19 @@ namespace Brevitee.CommandLine
             if (preAndPost != null && Provider != null)
             {
                 Type providerType = Provider.GetType();
-                if (!string.IsNullOrEmpty(preAndPost.PreInvokeMethodName))
+                if (!string.IsNullOrEmpty(preAndPost.Before))
                 {
-                    pre = providerType.GetMethod(preAndPost.PreInvokeMethodName);
+                    pre = providerType.GetMethod(preAndPost.Before);
                 }
 
-                if (!string.IsNullOrEmpty(preAndPost.PostInvokeMethodName))
+                if (!string.IsNullOrEmpty(preAndPost.AfterSuccess))
                 {
-                    post = providerType.GetMethod(preAndPost.PostInvokeMethodName);
+                    post = providerType.GetMethod(preAndPost.AfterSuccess);
                 }
 
-                if (!string.IsNullOrEmpty(preAndPost.AlwaysPostInvokeMethodName))
+                if (!string.IsNullOrEmpty(preAndPost.AlwaysAfter))
                 {
-                    alwaysPost = providerType.GetMethod(preAndPost.AlwaysPostInvokeMethodName);
+                    alwaysPost = providerType.GetMethod(preAndPost.AlwaysAfter);
                 }
             }
 

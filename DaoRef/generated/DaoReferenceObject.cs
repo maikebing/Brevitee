@@ -32,7 +32,7 @@ namespace Brevitee.DaoRef
 
         // property:Id, columnName:Id	
         [Exclude]
-        [Brevitee.Data.KeyColumn(Name = "Id", ExtractedType = "BigInt", MaxLength = "8")]
+        [Brevitee.Data.KeyColumn(Name = "Id", DbDataType = "BigInt", MaxLength = "8")]
         public long? Id
         {
             get
@@ -46,7 +46,7 @@ namespace Brevitee.DaoRef
         }
 
         // property:IntProperty, columnName:IntProperty	
-        [Brevitee.Data.Column(Name = "IntProperty", ExtractedType = "Int", MaxLength = "4", AllowNull = true)]
+        [Brevitee.Data.Column(Name = "IntProperty", DbDataType = "Int", MaxLength = "4", AllowNull = true)]
         public int? IntProperty
         {
             get
@@ -60,7 +60,7 @@ namespace Brevitee.DaoRef
         }
 
         // property:DecimalProperty, columnName:DecimalProperty	
-        [Brevitee.Data.Column(Name = "DecimalProperty", ExtractedType = "Decimal", MaxLength = "9", AllowNull = true)]
+        [Brevitee.Data.Column(Name = "DecimalProperty", DbDataType = "Decimal", MaxLength = "9", AllowNull = true)]
         public decimal? DecimalProperty
         {
             get
@@ -74,7 +74,7 @@ namespace Brevitee.DaoRef
         }
 
         // property:LongProperty, columnName:LongProperty	
-        [Brevitee.Data.Column(Name = "LongProperty", ExtractedType = "BigInt", MaxLength = "8", AllowNull = true)]
+        [Brevitee.Data.Column(Name = "LongProperty", DbDataType = "BigInt", MaxLength = "8", AllowNull = true)]
         public long? LongProperty
         {
             get
@@ -88,7 +88,7 @@ namespace Brevitee.DaoRef
         }
 
         // property:DateTimeProperty, columnName:DateTimeProperty	
-        [Brevitee.Data.Column(Name = "DateTimeProperty", ExtractedType = "DateTime", MaxLength = "8", AllowNull = true)]
+        [Brevitee.Data.Column(Name = "DateTimeProperty", DbDataType = "DateTime", MaxLength = "8", AllowNull = true)]
         public DateTime DateTimeProperty
         {
             get
@@ -102,7 +102,7 @@ namespace Brevitee.DaoRef
         }
 
         // property:BoolProperty, columnName:BoolProperty	
-        [Brevitee.Data.Column(Name = "BoolProperty", ExtractedType = "Bit", MaxLength = "1", AllowNull = true)]
+        [Brevitee.Data.Column(Name = "BoolProperty", DbDataType = "Bit", MaxLength = "1", AllowNull = true)]
         public bool? BoolProperty
         {
             get
@@ -116,7 +116,7 @@ namespace Brevitee.DaoRef
         }
 
         // property:GuidProperty, columnName:GuidProperty	
-        [Brevitee.Data.Column(Name = "GuidProperty", ExtractedType = "UniqueIdentifier", MaxLength = "16", AllowNull = true)]
+        [Brevitee.Data.Column(Name = "GuidProperty", DbDataType = "UniqueIdentifier", MaxLength = "16", AllowNull = true)]
         public string GuidProperty
         {
             get
@@ -130,7 +130,7 @@ namespace Brevitee.DaoRef
         }
 
         // property:DoubleProperty, columnName:DoubleProperty	
-        [Brevitee.Data.Column(Name = "DoubleProperty", ExtractedType = "Float", MaxLength = "8", AllowNull = true)]
+        [Brevitee.Data.Column(Name = "DoubleProperty", DbDataType = "Float", MaxLength = "8", AllowNull = true)]
         public string DoubleProperty
         {
             get
@@ -144,7 +144,7 @@ namespace Brevitee.DaoRef
         }
 
         // property:ByteArrayProperty, columnName:ByteArrayProperty	
-        [Brevitee.Data.Column(Name = "ByteArrayProperty", ExtractedType = "VarBinary", MaxLength = "MAX", AllowNull = true)]
+        [Brevitee.Data.Column(Name = "ByteArrayProperty", DbDataType = "VarBinary", MaxLength = "MAX", AllowNull = true)]
         public byte[] ByteArrayProperty
         {
             get
@@ -158,7 +158,7 @@ namespace Brevitee.DaoRef
         }
 
         // property:StringProperty, columnName:StringProperty	
-        [Brevitee.Data.Column(Name = "StringProperty", ExtractedType = "VarChar", MaxLength = "50", AllowNull = true)]
+        [Brevitee.Data.Column(Name = "StringProperty", DbDataType = "VarChar", MaxLength = "50", AllowNull = true)]
         public string StringProperty
         {
             get
@@ -267,7 +267,7 @@ namespace Brevitee.DaoRef
             DaoReferenceObjectColumns c = new DaoReferenceObjectColumns();
             IQueryFilter filter = where(c);
 
-            Database db = database == null ? _.Db.For<DaoReferenceObject>() : database;
+            Database db = database == null ? Db.For<DaoReferenceObject>() : database;
             QuerySet query = GetQuerySet(db);
             query.Top<DaoReferenceObject>(count);
             query.Where(filter);
@@ -286,7 +286,7 @@ namespace Brevitee.DaoRef
             DaoReferenceObjectColumns c = new DaoReferenceObjectColumns();
             IQueryFilter filter = where(c);
 
-            Database db = database == null ? _.Db.For<DaoReferenceObject>() : database;
+            Database db = database == null ? Db.For<DaoReferenceObject>() : database;
             QuerySet query = GetQuerySet(db);
             query.Count<DaoReferenceObject>();
             query.Where(filter);

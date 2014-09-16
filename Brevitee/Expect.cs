@@ -13,6 +13,10 @@ namespace Brevitee
     {
         public static bool HtmlEncodeExceptions { get; set; }
 
+		/// <summary>
+		/// Asserts that the current boolean is true
+		/// </summary>
+		/// <param name="boolToCheck"></param>
         public static void IsTrue(this bool boolToCheck)
         {
             IsTrue(boolToCheck, "Expected <true>, Actual <false>");
@@ -57,7 +61,7 @@ namespace Brevitee
 
         /// <summary>
         /// Executes the specified actionThatThrowsException action passing the exception to the specified 
-        /// catchDelegate and throws an ExpectFailedException if the actionThatThrowException doesn't
+        /// catchDelegate and throws an ExpectFailedException if the actionThatThrowsException doesn't
         /// throw an Exception
         /// </summary>
         /// <param name="actionThatThrowsException"></param>
@@ -70,7 +74,7 @@ namespace Brevitee
 
         /// <summary>
         /// Executes the specified actionThatThrowsException action passing the exception to the specified 
-        /// catchDelegate and throws an ExpectFailedException if the actionThatThrowException doesn't
+        /// catchDelegate and throws an ExpectFailedException if the actionThatThrowsException doesn't
         /// throw an Exception
         /// </summary>
         /// <param name="actionThatThrowsException"></param>

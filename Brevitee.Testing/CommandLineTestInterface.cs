@@ -242,24 +242,27 @@ namespace Brevitee.Testing
         /// </summary>
         public static event EventHandler<TestExceptionEventArgs> TestFailed;
 
+	    public static event EventHandler<ConsoleInvokeableMethod> TestPassed;
+
         protected static void RunAllTests(Assembly assemblyToAnalyze, bool generateParameters)
         {
             List<ConsoleInvokeableMethod> tests = GetTests(assemblyToAnalyze);
             if (tests.Count == 0)
             {
-                Info("No tests were found");
+                Info("No tests were found in {0}", assemblyToAnalyze.FullName);
                 return;
             }
 
-            Info("Running all tests");
-            
+            Info("Running all tests in {0}", assemblyToAnalyze.FullName);
+            int passedCount = 0;
+            int failedCount = 0;
             foreach (ConsoleInvokeableMethod consoleMethod in tests)
             {
-               
                 try
                 {
                     InvokeTest(consoleMethod, generateParameters);
                     Pass(consoleMethod.Method.Name.PascalSplit(" "));
+                    passedCount++;
                 }
                 catch (Exception ex)
                 {
@@ -267,9 +270,28 @@ namespace Brevitee.Testing
                         ex = ex.InnerException;
 
                     OnTestFailed(consoleMethod, ex);
+                    failedCount++;
                 }
             }
+            Out();
+            OutLine("********");
+            if (failedCount > 0)
+            {
+                OutLineFormat("({0}) tests passed", ConsoleColor.Green, passedCount);
+                OutLineFormat("({0}) tests failed", ConsoleColor.Red, failedCount);
+            }
+            else
+            {
+                OutLineFormat("All ({0}) tests passed", ConsoleColor.Green, passedCount);
+            }
+            OutLine("********");
         }
+
+	    private static void OnTestPassed(ConsoleInvokeableMethod consoleMethod) 
+		{
+		    if (TestPassed != null) {
+			    TestPassed(null, consoleMethod);}
+	    }
 
         private static void OnTestFailed(ConsoleInvokeableMethod consoleMethod, Exception ex)
         {

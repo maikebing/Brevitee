@@ -52,20 +52,43 @@ namespace Brevitee.Data
             set;
         }
 
+        Func<DirectoryInfo> _directoryResolver;
+        object _directoryResolverLock = new object();
+        public Func<DirectoryInfo> DirectoryResolver
+        {
+            get
+            {
+                return _directoryResolverLock.DoubleCheckLock(ref _directoryResolver, () =>
+                {
+                    return () =>
+                    {
+                        DirectoryInfo dirInfo = new DirectoryInfo(".");
+                        if (HttpContext.Current != null)
+                        {
+                            dirInfo = new DirectoryInfo(HttpContext.Current.Server.MapPath("~/App_Data"));
+                        }
+
+                        return dirInfo;
+                    };
+                });
+            }
+        }
+
         #region IConnectionStringResolver Members
 
         public ConnectionStringSettings Resolve(string connectionName)
         {
             if (Directory == null)
             {
-                if (HttpContext.Current != null)
-                {
-                    Directory = new DirectoryInfo(HttpContext.Current.Server.MapPath("~/App_Data"));
-                }
-                else
-                {
-                    Directory = new DirectoryInfo(".");
-                }
+                Directory = DirectoryResolver();
+                //if (HttpContext.Current != null)
+                //{
+                //    Directory = new DirectoryInfo(HttpContext.Current.Server.MapPath("~/App_Data"));
+                //}
+                //else
+                //{
+                //    Directory = new DirectoryInfo(".");
+                //}
             }
 
             ConnectionStringSettings s = new ConnectionStringSettings();

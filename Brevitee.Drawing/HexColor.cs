@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 using Brevitee;
-using dotless.Core;
+//using dotless.Core;
 
 namespace Brevitee.Drawing
 {

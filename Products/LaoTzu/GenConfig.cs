@@ -5,7 +5,7 @@ using System.Text;
 using Brevitee;
 using System.IO;
 
-namespace LaoTzu
+namespace laotzu
 {
     public class GenConfig
     {
@@ -28,6 +28,8 @@ namespace LaoTzu
         public string SchemaFileName { get; set; }
 
         public bool Extract { get; set; }
+
+		public bool Verbose { get; set; }
 
         List<string> _referenceAssemblies;
         public string[] ReferenceAssemblies

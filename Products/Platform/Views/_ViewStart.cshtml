@@ -1,7 +1,0 @@
-﻿@{
-    string layout = Request.QueryString["layout"];
-    if(string.IsNullOrEmpty(layout)){
-        layout = "_NarrowLayout";
-    }
-    Layout = string.Format("~/Views/Shared/{0}.cshtml", layout);
-}

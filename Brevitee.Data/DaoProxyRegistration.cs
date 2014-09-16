@@ -17,10 +17,6 @@ namespace Brevitee.Data
 {
     public class DaoProxyRegistration
     {
-        //static DaoProxyRegistration()
-        //{
-        //    Initialize();
-        //}
         /// <summary>
         /// Initialize the inner registration container and 
         /// registers the mvc route for query interface (qi.js; pronounced "chi") 
@@ -142,15 +138,21 @@ namespace Brevitee.Data
 
         public static DaoProxyRegistration[] Register(DirectoryInfo dir, string searchPattern = "*.dll")
         {
-            FileInfo[] dlls = dir.GetFiles(searchPattern);
-            List<DaoProxyRegistration> results = new List<DaoProxyRegistration>();
-            dlls.Each(dll =>
-            {
-                Assembly current = Assembly.LoadFrom(dll.FullName);
-                results.Add(Register(current));
-            });
+            DaoProxyRegistration[] results = new DaoProxyRegistration[] { };
 
-            return results.ToArray();
+            if (dir.Exists)
+            {
+                FileInfo[] dlls = dir.GetFiles(searchPattern);
+                List<DaoProxyRegistration> tmp = new List<DaoProxyRegistration>();
+                dlls.Each(dll =>
+                {
+                    Assembly current = Assembly.LoadFrom(dll.FullName);
+                    tmp.Add(Register(current));
+                });
+                results = tmp.ToArray();
+            }
+
+            return results;//.ToArray();
         }
 
         public static DaoProxyRegistration Register(FileInfo daoDll)
@@ -208,6 +210,11 @@ namespace Brevitee.Data
             }
 
             return result;
+        }
+
+        public override int GetHashCode()
+        {
+            return ContextName.GetHashCode() + Assembly.GetHashCode() + ServiceProvider.GetHashCode();
         }
 
         public string ContextName { get; set; }

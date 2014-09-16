@@ -17,7 +17,7 @@ using Brevitee.Data.Schema;
 using Brevitee.Data.MsSql;
 using Brevitee.Incubation;
 
-namespace LaoTzu
+namespace laotzu
 {
     public partial class Main : Form
     {
@@ -226,7 +226,7 @@ namespace LaoTzu
             if (config.Extract)
             {
                 OutFormat("Extracting schema using ({0})...", config.Name);
-                schema = ExtractSchema(config.Name, schemaPath);
+                schema = ExtractSchema(config, schemaPath);
                 gotSchema = true;
             }
             else
@@ -252,14 +252,14 @@ namespace LaoTzu
             Out("\r\n");
         }
 
-        private void Out(string txt)
-        {
-            textBoxOutput.Text = string.Format("{0}\r\n{1}", textBoxOutput.Text, txt);
-            textBoxOutput.SelectionStart = textBoxOutput.Text.Length;
-            textBoxOutput.ScrollToCaret();
-            this.Refresh();
-            Thread.Sleep(30);
-        }
+	    private void Out(string txt) 
+		{
+			textBoxOutput.Text = string.Format("{0}\r\n{1}", textBoxOutput.Text, txt);
+			textBoxOutput.SelectionStart = textBoxOutput.Text.Length;
+			textBoxOutput.ScrollToCaret();
+			this.Refresh();
+			Thread.Sleep(30);
+	    }
 
         private void OutFormat(string format, params object[] args)
         {
@@ -300,17 +300,20 @@ namespace LaoTzu
         private void Generate(GenConfig config, SchemaDefinition schema)
         {
             DaoGenerator generator = new DaoGenerator(config.Namespace);
-            generator.BeforeClassParse += (ns, t) =>
-            {
-                Out(string.Format("Generating code for {0}.{1}", ns, t.ClassName));
-            };
+            generator.BeforeClassParse += (ns, t) => Out(string.Format("Generating code for {0}.{1}", ns, t.ClassName));
             
             generator.Generate(schema, config.TargetDirectory);
         }
 
-        private static SchemaDefinition ExtractSchema(string connectionName, string filePath)
+		private SchemaDefinition ExtractSchema(GenConfig config, string filePath)
         {
-            SqlClientSchemaExtractor extractor = new SqlClientSchemaExtractor(connectionName);
+            SqlClientSchemaExtractor extractor = new SqlClientSchemaExtractor(config.Name);
+			if (config.Verbose) 
+			{
+				extractor.ProcessingTable += (o, a) => Out(string.Format("Processing table {0}", a.Table.Name));
+				extractor.ProcessingColumn += (o, a) => Out(string.Format("Processing column {0}", a.Column.Name));
+			}
+
             SchemaDefinition schema = extractor.Extract();
             schema.Save(filePath);
             return schema;
@@ -384,6 +387,7 @@ namespace LaoTzu
             config.PartialDirectory = textBoxPartialDirectory.Text;
             config.SchemaFileName = comboBoxSchemaFiles.Text;
             config.Extract = checkBoxExtractSchema.Checked;
+	        config.Verbose = checkBoxVerbose.Checked;
             return config;
         }
 

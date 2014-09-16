@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Brevitee.Yaml</name>
+    </assembly>
+    <members>
+        <member name="M:Brevitee.Yaml.Extensions.ToYaml(System.Object,System.Yaml.YamlConfig)">
+            <summary>
+            Serialize the specified object to yaml
+            </summary>
+            <param name="val"></param>
+            <param name="conf"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brevitee.Yaml.ServiceProxySystemYaml.Register">
+            <summary>
+            Registers the rss file extension and the delegate used
+            to handle it.
+            </summary>
+        </member>
+    </members>
+</doc>

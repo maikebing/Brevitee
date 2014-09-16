@@ -207,7 +207,7 @@ namespace Brevitee
         /// <param name="memberInfo"></param>
         /// <param name="inherit"></param>
         /// <param name="attribute"></param>
-        /// <param name="concreteAttribute"></param>
+        /// <param name="concreteAttribute">If true, must be the attribute specified and not an attribute that extends the specified attribute</param>
         /// <returns></returns>
         public static bool HasCustomAttributeOfType<T>(this MemberInfo memberInfo, bool inherit, out T attribute, bool concreteAttribute) where T : Attribute
         {

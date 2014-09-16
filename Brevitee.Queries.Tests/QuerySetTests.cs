@@ -29,6 +29,7 @@ namespace Brevitee.Data.Tests
         }
     }
 
+    [Serializable]
     public class QuerySetTests : CommandLineTestInterface
     {
         [UnitTest]
@@ -59,7 +60,7 @@ namespace Brevitee.Data.Tests
             query.Select<DaoReferenceObject>().Where<DaoReferenceObjectColumns>(c => c.StringProperty == third.StringProperty);
 
 
-            query.Execute(_.Db.For<DaoReferenceObject>());
+            query.Execute(Db.For<DaoReferenceObject>());
 
             DaoReferenceObjectCollection coll = query.Results.As<DaoReferenceObjectCollection>(1);
             foreach (DaoReferenceObject obj in coll)
@@ -94,7 +95,7 @@ namespace Brevitee.Data.Tests
 
             testQuerySet.Insert<DaoReferenceObject>(dao);
 
-            testQuerySet.Execute(_.Db.For<DaoReferenceObject>());
+            testQuerySet.Execute(Db.For<DaoReferenceObject>());
 
             Expect.IsNotNull(testQuerySet.DataSet);
             Expect.IsTrue(testQuerySet.DataSet.Tables.Count == 2);
@@ -109,20 +110,61 @@ namespace Brevitee.Data.Tests
             Expect.IsGreaterThan(coll.Count, 0);
         }
 
-        //[UnitTest]
-        //public static void QuerySetCount()
-        //{
-        //    SqlClientRegistrar.Register<Item>();
-        //    QuerySet query = new QuerySet();
-        //    query.Count<Item>().Where<ItemColumns>(c => c.Name.StartsWith("Mort"));
-        //    query.Execute(_.Db.For<Item>());
+        [UnitTest]
+        public static void QuerySetCount()
+        {
+            SqlClientRegistrar.Register<Item>();
+            QuerySet query = new QuerySet();
+            query.Count<Item>().Where<Brevitee.Data.Tests.ItemColumns>(c => c.Name.StartsWith("Mort"));
+            query.Execute(Db.For<Item>());
 
-        //    long result = query.Results[0].As<CountResult>().Value;
-        //    long toCountResult = query.Results.ToCountResult(0);
+            long result = query.Results[0].As<CountResult>().Value;
+            long toCountResult = query.Results.ToCountResult(0);
 
-        //    Expect.AreEqual(result, toCountResult);
-        //    Out(query.Results.ToCountResult(0).ToString());
-        //}
+            Expect.AreEqual(result, toCountResult);
+            Out(query.Results.ToCountResult(0).ToString());
+        }
+
+        [UnitTest]
+        public void AlternativeSyntaxTest()
+        {
+            SqlClientRegistrar.Register<Item>();
+            Db.TryEnsureSchema<Item>();
+
+            Database db = Db.For(typeof(Item));
+
+            Item createdItem = new Item();
+            createdItem.Name = "Item_".RandomLetters(8);
+            QuerySet query = new QuerySet();
+            query.Insert<Item>(createdItem);
+            query.Select<Item>().Where<ItemColumns>(c => c.Name.StartsWith("I"));
+            query.Count<Item>();
+
+            query.Execute(db);
+
+            // alternative syntax
+
+            //query.Insert<Item>(createdItem)
+            //    .Select<Item>().Where<ItemColumns>(c => c.Name.StartsWith("I"))
+            //    .Count<Item>()
+            //    .Execute(db);
+
+            // -- end alternative syntax
+
+            Item insertedItem = query.Results.ToDao<Item>(0);
+            OutLineFormat("InsertedItemId: {0}, Name: {1}", ConsoleColor.Green, insertedItem.Id, insertedItem.Name);
+
+            ItemCollection items = query.Results[1].As<ItemCollection>();
+
+            OutLine("** Item Results **", ConsoleColor.DarkYellow);
+            items.Each(item =>
+            {
+                OutLineFormat("Id: {0}, Name: {1}", ConsoleColor.DarkYellow, item.Id, item.Name);
+            });
+
+            long count = query.Results[2].As<CountResult>().Value;
+            OutLineFormat("Count Result: {0}", ConsoleColor.Yellow, count);
+        }
 
         //[UnitTest]
         //public static void WhatIfNoResults()
@@ -137,7 +179,7 @@ namespace Brevitee.Data.Tests
         //    query.Select<Want>().Where<WantColumns>(c => c.UserId == user.Id && c.ItemId == itemId);
         //    // index 1
         //    query.Select<Item>().Where<ItemColumns>(c => c.Id == itemId);
-        //    query.Execute(_.Db.For<Item>());
+        //    query.Execute(Db.For<Item>());
         //    WantCollection wants = query.Results.As<WantCollection>(0);
         //    Expect.IsTrue(wants.Count == 0);
         //    ItemCollection items = query.Results.As<ItemCollection>(1);

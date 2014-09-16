@@ -68,7 +68,7 @@ namespace Bam.Tests
         public void EnsureDaoRefSchema()
         {
             SqlClientRegistrar.Register<Brevitee.DaoRef.TestTable>();
-            _.EnsureSchema<Brevitee.DaoRef.TestTable>();
+            Db.EnsureSchema<Brevitee.DaoRef.TestTable>();
         }
 
         string _filePath = "C:\\files.txt";
@@ -332,12 +332,12 @@ namespace Bam.Tests
         [UnitTest]
         public void ExecutionMayHandleAnyRequestNotSpecificallyAddressedToItself()
         {
-            Mock<IContext> ctx = new Mock<IContext>();
+            Mock<IHttpContext> ctx = new Mock<IHttpContext>();
             ctx.SetupProperty<IRequest>(c => c.Request, new FakeRequest());
             
             After.Setup((context) =>
             {
-                context.Set<IContext>(ctx.Object);
+                context.Set<IHttpContext>(ctx.Object);
                 SetupCtorParamsForExecutionClass(context);
             })
             .WhenA<ServiceProxyResponder>("execution MayHandle a request", (e) =>
@@ -371,13 +371,13 @@ namespace Bam.Tests
             })
             .WhenA<ServiceProxyResponder>("has a type added", (e) =>
             {
-                e.AddCommonExecutor(typeof(TestType), new TestType());
+                e.AddCommonService(typeof(TestType), new TestType());
             })
             .TheTest
             .ShouldPass(because =>
             {
                 because.ItsTrue("the executors count was incremented", // success message
-                    because.ObjectUnderTest<ServiceProxyResponder>().Executors.Length == 1, // the assertion
+                    because.ObjectUnderTest<ServiceProxyResponder>().Services.Length == 1, // the assertion
                     "Executors count didn't go up"); // failure message
             })
             .SoBeHappy()
@@ -397,20 +397,20 @@ namespace Bam.Tests
             After.Setup((ctx) =>
             {
                 SetupCtorParamsForExecutionClass(ctx);
-                ctx.Get<ServiceProxyResponder>().AddCommonExecutor(new TestType());
+                ctx.Get<ServiceProxyResponder>().AddCommonService(new TestType());
                 testObject = ctx.Get<ServiceProxyResponder>();
                 Expect.IsNotNull(testObject);
-                Expect.AreEqual(1, testObject.Executors.Length);
+                Expect.AreEqual(1, testObject.Services.Length);
             })
             .WhenA<ServiceProxyResponder>("has its remove method called", (o) =>
             {
-                o.RemoveCommonExecutor<TestType>();
+                o.RemoveCommonService<TestType>();
             })
             .TheTest
             .ShouldPass(because =>
             {
                 because.ItsTrue("the Executors length was 0", 
-                    testObject.Executors.Length == 0, 
+                    testObject.Services.Length == 0, 
                     "the Executors length was not 0");                
             }).SoBeHappy()
             .UnlessItFailed();
@@ -471,9 +471,9 @@ namespace Bam.Tests
         //    .UnlessItFailed();
         //}
 
-        private static Mock<IContext> GetMockContext(FakeRequest request = null)
+        private static Mock<IHttpContext> GetMockContext(FakeRequest request = null)
         {
-            Mock<IContext> ctx = new Mock<IContext>();
+            Mock<IHttpContext> ctx = new Mock<IHttpContext>();
             if (request == null)
             {
                 request = GetFakeRequest();

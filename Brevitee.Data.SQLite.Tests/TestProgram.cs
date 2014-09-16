@@ -81,7 +81,7 @@ namespace Brevitee.Data.Tests
             SQLiteSqlStringBuilder sql = new SQLiteSqlStringBuilder();
             sql.WriteSchemaScript<Item>();
 
-            sql.Execute(_.Db.For<Item>());
+            sql.Execute(Db.For<Item>());
         }
 
         private static void SetMSSqlDatabase(string connectionName)
@@ -93,7 +93,7 @@ namespace Brevitee.Data.Tests
             SqlClientSqlStringBuilder sql = new SqlClientSqlStringBuilder();
             sql.WriteSchemaScript<Item>();
 
-            sql.Execute(_.Db.For<Item>());
+            sql.Execute(Db.For<Item>());
         }
 
         private static void DeleteTestDb()
@@ -192,7 +192,7 @@ namespace Brevitee.Data.Tests
         {
             string cn = "BAMvc4";
             SQLiteRegistrar.Register(cn);
-            Database db = _.Db.For(cn);
+            Database db = Db.For(cn);
             IParameterBuilder pb = db.ServiceProvider.Get<IParameterBuilder>();
             QuerySet qs = db.ServiceProvider.Get<QuerySet>();
             Expect.IsTrue(pb is SQLiteParameterBuilder);
@@ -227,7 +227,7 @@ namespace Brevitee.Data.Tests
             SetSQLiteDatabase("SQLiteTest");
             bool? rolledBack = false;
             Item test = new Item();
-            using (DaoTransaction tx = new DaoTransaction(_.Db.For<Item>()))
+            using (DaoTransaction tx = new DaoTransaction(Db.For<Item>()))
             {
                 tx.RolledBack += (o, a) =>
                 {
@@ -254,45 +254,28 @@ namespace Brevitee.Data.Tests
         public static void TransactionShouldSetDb()
         {
             SetSQLiteDatabase("SQLiteTest");
-            Database db = _.Db[typeof(Item)];
-            using (DaoTransaction tx = _.BeginTransaction<Item>())
+            Database db = Db.For(typeof(Item));//_.Db[typeof(Item)];
+            using (DaoTransaction tx = Db.BeginTransaction<Item>())
             {
-                Expect.IsFalse(_.Db[typeof(Item)] == db);
+                Expect.IsFalse(Db.For(typeof(Item)) == db);//_.Db[typeof(Item)] == db);
             }
 
-            Expect.IsTrue(_.Db[typeof(Item)] == db);
+            Expect.IsTrue(Db.For(typeof(Item)) == db);//_.Db[typeof(Item)] == db);
         }
 
         [UnitTest]
         public static void TransactionShouldSetDbFromDb()
         {
             SetSQLiteDatabase("SQLiteTest");
-            Database db = _.Db.For<Item>();
-            using (DaoTransaction tx = _.Db.For<Item>().BeginTransaction())
+            Database db = Db.For<Item>();
+            using (DaoTransaction tx = Db.For<Item>().BeginTransaction())
             {
-                Expect.IsFalse(_.Db[typeof(Item)] == db);
+                Expect.IsFalse(Db.For<Item>() == db);//_.Db[typeof(Item)] == db);
             }
 
-            Expect.IsTrue(_.Db[typeof(Item)] == db);
+            Expect.IsTrue(Db.For<Item>() == db);//_.Db[typeof(Item)] == db);
         }
 
-        [UnitTest]
-        public static void TransactionShouldRollbackFromContainer()
-        {
-            SetSQLiteDatabase("SQLiteTest");
-            using (DaoTransaction tx = _.BeginTransaction<Item>())
-            {
-                Item item = new Item();
-                item.Name = "Name_".RandomString(8);
-                item.Commit();
-
-                Expect.IsNotNull(item.Id);
-                Item check = Item.OneWhere(c => c.Id == item.Id);
-                Expect.IsNotNull(check);
-                Expect.AreEqual(item.Name, check.Name);
-            }
-
-        }
         #region do not modify
         static void Main(string[] args)
         {

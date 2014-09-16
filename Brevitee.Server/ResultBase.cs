@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Brevitee.ServiceProxy;
 
 namespace Brevitee.Server
 {
@@ -9,6 +10,6 @@ namespace Brevitee.Server
     {
         public object Value { get; set; }
 
-        public abstract void Execute(IContext context);
+        public abstract void Execute(IHttpContext context);
     }
 }

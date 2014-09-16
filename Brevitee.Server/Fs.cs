@@ -211,12 +211,31 @@ namespace Brevitee.Server
             return new DirectoryInfo(GetAbsolutePath(relativePath));
         }
 
+        public FileInfo GetFile(string relativePath)
+        {
+            relativePath = EnsureRelative(relativePath);
+
+            return new FileInfo(GetAbsolutePath(relativePath));
+        }
+
         public FileInfo[] GetFiles(string relativePath, string searchPattern = "*")
         {
             relativePath = EnsureRelative(relativePath);
 
             DirectoryInfo dir = new DirectoryInfo(GetAbsolutePath(relativePath));
-            return dir.GetFiles(searchPattern);
+            if(dir.Exists)
+            {
+                return dir.GetFiles(searchPattern);
+            }
+            else
+            {
+                return new FileInfo[] { };
+            }
+        }
+
+        public string GetAbsolutePath(params string[] segments)
+        {
+            return GetAbsolutePath(Path.Combine(segments));
         }
 
         public string GetAbsolutePath(string relativePath)
@@ -225,11 +244,12 @@ namespace Brevitee.Server
             if (relativePath.StartsWith("~"))
             {
                 relativePath = relativePath.Substring(1, relativePath.Length - 1);
-                if (relativePath.StartsWith("/"))
+                if (relativePath.StartsWith("/") ||
+                    relativePath.StartsWith("\\"))
                 {
                     relativePath = relativePath.Substring(1, relativePath.Length - 1);
                 }
-                string path = string.Format("{0}{1}", Root, relativePath);
+                string path = string.Format("{0}{1}", Root, relativePath).Replace("\\", "/");
                 result = path;
             }
             else

@@ -4,8 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using Brevitee;
-//using Brevitee.FileExt;
-//using Brevitee.FileExt.Js;
 
 namespace Brevitee.Data
 {
@@ -20,16 +18,27 @@ namespace Brevitee.Data
         }
 
         public string Table { get; set; }
-
         public string Name { get; set; }
-        public string ExtractedType { get; set; }
+        [Obsolete("Use DbDataType instead")]
+        public string ExtractedType
+        {
+            get
+            {
+                return DbDataType;
+            }
+            set
+            {
+                DbDataType = value;
+            }
+        }
+        public string DbDataType { get; set; }
         public string MaxLength { get; set; }
         public virtual bool AllowNull { get; set; }
 
         public override string ToString()
         {
             string maxLength = string.IsNullOrEmpty(MaxLength) ? "" : string.Format("({0})", MaxLength);
-            return string.Format("\"{0}\" {1}{2}{3}", Name, ExtractedType, maxLength, AllowNull ? "" : " NOT NULL");
+            return string.Format("\"{0}\" {1}{2}{3}", Name, DbDataType, maxLength, AllowNull ? "" : " NOT NULL");
         }
 
         public string ToString(SchemaWriter builder)

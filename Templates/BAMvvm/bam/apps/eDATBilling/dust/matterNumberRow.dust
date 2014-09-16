@@ -1,8 +1,0 @@
-﻿<tr itemscope="itemscope">
-  <td itemprop="type">
-    {type}
-  </td>
-  <td>
-    <span data-plugin="edit" itemprop="value">{value}</span>
-  </td>
-</tr>

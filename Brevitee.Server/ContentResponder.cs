@@ -7,10 +7,12 @@ using System.Reflection;
 using Ionic.Zip;
 using Brevitee.Yaml;
 using Brevitee;
+using Brevitee.ServiceProxy.Secure;
 using Brevitee.Logging;
 using Brevitee.ServiceProxy;
 using Brevitee.Server.Renderers;
 using Brevitee.Javascript;
+using Brevitee.UserAccounts.Data;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Yahoo.Yui.Compressor;
@@ -35,7 +37,7 @@ namespace Brevitee.Server
             CommonDustRenderer = new CommonDustRenderer(this);
             this.UseCache = conf.UseCache;
         }
-        
+
         /// <summary>
         /// The server content root path, not to be confused with the 
         /// application root which should be [Root]\apps\[appName]
@@ -54,7 +56,7 @@ namespace Brevitee.Server
             set;
         }
 
-        public override bool MayRespond(IContext context)
+        public override bool MayRespond(IHttpContext context)
         {
             return !WillIgnore(context);
         }
@@ -138,7 +140,7 @@ namespace Brevitee.Server
                 return _subscribers.Contains(logger);
             }
         }
-        public void Subscribe(ILogger logger)
+        public virtual void Subscribe(ILogger logger)
         {
             if (!IsSubscribed(logger))
             {
@@ -156,13 +158,29 @@ namespace Brevitee.Server
                 {
                     logger.AddEntry("{0}::FileSystemInitializ(ED)", className);
                 };
-                this.AppsInitializing += (c) =>
+                this.AppContentRespondersInitializing += (c) =>
                 {
-                    logger.AddEntry("{0}::AppsInitializ(ING)", className);
+                    logger.AddEntry("{0}::AppContentRespondersInitializ(ING)", className);
                 };
-                this.AppsInitialized += (c) =>
+                this.AppContentRespondersInitialized += (c) =>
                 {
-                    logger.AddEntry("{0}::AppsInitializ(ED)", className);
+                    logger.AddEntry("{0}::AppContentRespondersInitializ(ED)", className);
+                };
+                this.AppContentResponderInitializing += (c, a) =>
+                {
+                    logger.AddEntry("{0}::AppContentResponderInitializ(ING):{1}", className, a.Name);
+                };
+                this.AppContentResponderInitialized += (c, a) =>
+                {
+                    logger.AddEntry("{0}::AppContentResponderInitializ(ED):{1}", className, a.Name);
+                };
+                this.AppInitializing += (c, a) =>
+                {
+                    logger.AddEntry("{0}::AppInitializ(ING):{1}", className, a.Name);
+                };
+                this.AppInitialized += (c, a) =>
+                {
+                    logger.AddEntry("{0}::AppInitializ(ED):{1}", className, a.Name);
                 };
                 this.Initializing += (c) =>
                 {
@@ -198,32 +216,52 @@ namespace Brevitee.Server
             OnCommonDustRendererInitialized();
         }
 
-        public event Action<ContentResponder> AppsInitializing;
-        public event Action<ContentResponder> AppsInitialized;
+        public event Action<ContentResponder> AppContentRespondersInitializing;
+        public event Action<ContentResponder> AppContentRespondersInitialized;
         
-        protected internal void OnAppsInitializing()
+        protected internal void OnAppContentRespondersInitializing()
         {
-            if (AppsInitializing != null)
+            if (AppContentRespondersInitializing != null)
             {
-                AppsInitializing(this);
+                AppContentRespondersInitializing(this);
             }
         }
 
-        protected internal void OnAppsInitialized()
+        public event Action<ContentResponder, AppConf> AppContentResponderInitializing;
+        public event Action<ContentResponder, AppConf> AppContentResponderInitialized;
+
+        protected internal void OnAppContentResponderInitializing(AppConf appConf)
         {
-            if (AppsInitialized != null)
+            if (AppContentResponderInitializing != null)
             {
-                AppsInitialized(this);
+                AppContentResponderInitializing(this, appConf);
+            }
+        }
+
+        protected internal void OnAppContentResponderInitialized(AppConf appConf)
+        {
+            if (AppContentResponderInitialized != null)
+            {
+                AppContentResponderInitialized(this, appConf);
+            }
+        }
+
+        protected internal void OnAppRespondersInitialized()
+        {
+            if (AppContentRespondersInitialized != null)
+            {
+                AppContentRespondersInitialized(this);
             }
         }
 
         object _initAppsLock = new object();
         /// <summary>
-        /// 
+        /// Initialize all the AppContentResponders for the 
+        /// apps found in the ~s:/apps folder
         /// </summary>
-        protected internal void InitializeApps()
+        protected internal void InitializeAppResponders()
         {
-            OnAppsInitializing();
+            OnAppContentRespondersInitializing();
             lock(_initAppsLock)
             {
                 if(!IsAppsInitialized)
@@ -235,14 +273,86 @@ namespace Brevitee.Server
                     IsAppsInitialized = true;
                 }
             }
-            OnAppsInitialized();
+            OnAppRespondersInitialized();
         }
         
         private void InitializeAppResponders(AppConf[] configs)
         {
             configs.Each(ac =>
             {
-                AppContentResponders[ac.Name] = new AppContentResponder(this, ac);
+                OnAppContentResponderInitializing(ac);
+                
+                AppContentResponder responder = new AppContentResponder(this, ac);                
+                responder.Logger = this.Logger;
+                Subscribers.Each(logger =>
+                {
+                    responder.Subscribe(logger);
+                });
+                string appName = ac.Name.ToLowerInvariant();
+                AppContentResponders[appName] = responder;
+                
+                OnAppContentResponderInitialized(ac);
+            });
+        }
+
+        public event Action<ContentResponder, AppConf> AppInitializing;
+        protected void OnAppInitializing(AppConf conf)
+        {
+            if (AppInitializing != null)
+            {
+                AppInitializing(this, conf);
+            }
+        }
+        public event Action<ContentResponder, AppConf> AppInitialized;
+        protected void OnAppInitialized(AppConf conf)
+        {
+            if (AppInitialized != null)
+            {
+                AppInitialized(this, conf);
+            }        
+        }
+
+        protected internal void InitializeApps()
+        {
+            InitializeApps(AppConfigs);
+        }
+
+        private void InitializeApps(AppConf[] configs)
+        {
+            configs.Each(ac =>
+            {
+                OnAppInitializing(ac);
+                if (!string.IsNullOrEmpty(ac.AppInitializer))
+                {
+                    Type appInitializer = null;
+                    if (!string.IsNullOrEmpty(ac.AppInitializerAssemblyPath))
+                    {
+                        Assembly assembly = Assembly.LoadFrom(ac.AppInitializerAssemblyPath);
+                        appInitializer = assembly.GetType(ac.AppInitializer);
+                        if (appInitializer == null)
+                        {
+                            appInitializer = assembly.GetTypes().Where(t => t.AssemblyQualifiedName.Equals(ac.AppInitializer)).FirstOrDefault();
+                        }
+
+                        if (appInitializer == null)
+                        {
+                            Args.Throw<InvalidOperationException>("The specified AppInitializer type ({0}) wasn't found in the specified assembly ({1})", ac.AppInitializer, ac.AppInitializerAssemblyPath);
+                        }
+                    }
+                    else
+                    {
+                        appInitializer = Type.GetType(ac.AppInitializer);
+                        if (appInitializer == null)
+                        {
+                            Args.Throw<InvalidOperationException>("The specified AppInitializer type ({0}) wasn't found", ac.AppInitializer);
+                        }
+                    }
+
+                    IInitialize initializer = appInitializer.Construct<IInitialize>();
+                    initializer.Subscribe(Logger);
+                    initializer.Initialize();
+                }
+                OnAppInitialized(ac);
             });
         }
 
@@ -348,23 +458,23 @@ namespace Brevitee.Server
         protected static internal Includes GetCommonIncludesFromIncludeJs(string root, bool useCache)
         {
             string includeJs = Path.Combine(root, "apps", "include.js");
-            return GetIncludes(includeJs, useCache);
+            return GetIncludesFromIncludeJs(includeJs, useCache);
         }
 
         /// <summary>
         /// Gets the Includes for the specified AppConf prefixing each
         /// path with /bam/apps/[appName] before returning.  Also adds
         /// the init.js and all viewModel .js files.  Adding the prefix
-        /// /bam/apps/[appName] will ensure that the AppResponder
+        /// /bam/apps/[appName] will ensure that the AppContentResponder
         /// picks the scripts from the correct location.
         /// </summary>
         /// <param name="appConf"></param>
         /// <returns></returns>
-        protected static internal Includes GetAppIncludesFromIncludeJs(AppConf appConf)
+        protected static internal Includes GetAppIncludes(AppConf appConf)
         {
             string includeJs = Path.Combine(appConf.AppRoot.Root, "include.js");
-            string appRoot = Path.Combine("/bam", "apps", appConf.Name).Replace("\\", "/");
-            Includes includes = GetIncludes(includeJs, appConf.BreviteeConf.UseCache);
+            string appRoot = "/";
+            Includes includes = GetIncludesFromIncludeJs(includeJs, appConf.BreviteeConf.UseCache);
             includes.Scripts.Each((scr, i) =>
             {
                 includes.Scripts[i] = Path.Combine(appRoot, scr).Replace("\\", "/");
@@ -372,6 +482,11 @@ namespace Brevitee.Server
             includes.Css.Each((css, i) =>
             {
                 includes.Css[i] = Path.Combine(appRoot, css).Replace("\\", "/");
+            });
+
+            GetPageScripts(appConf).Each(script =>
+            {
+                includes.AddScript(Path.Combine(appRoot, script).Replace("\\", "/"));
             });
 
             DirectoryInfo viewModelsDir = appConf.AppRoot.GetDirectory("viewModels");
@@ -382,7 +497,25 @@ namespace Brevitee.Server
             });
 
             includes.AddScript(Path.Combine(appRoot, "init.js").Replace("\\", "/"));
+            
             return includes;
+        }
+
+        protected static internal string[] GetPageScripts(AppConf appConf)
+        {
+            BreviteeApplicationManager manager = new BreviteeApplicationManager(appConf.BreviteeConf);
+            string[] pageNames = manager.GetPageNames(appConf.Name);
+            List<string> results = new List<string>();
+            pageNames.Each(pageName =>
+            {
+                string script = Path.Combine("pages", pageName + ".js").Replace("\\", "/");
+                if (appConf.AppRoot.FileExists(script))
+                {
+                    results.Add(script);
+                }
+            });
+
+            return results.ToArray();
         }
 
         static Dictionary<string, Includes> _includesCache;
@@ -405,7 +538,7 @@ namespace Brevitee.Server
             }
         }
 
-        protected static internal Includes GetIncludes(string includeJs, bool useCache)
+        protected static internal Includes GetIncludesFromIncludeJs(string includeJs, bool useCache)
         {
             Includes returnValue = new Includes();
             string[] result = new string[] { };
@@ -415,10 +548,13 @@ namespace Brevitee.Server
             }
             else if (File.Exists(includeJs))
             {
-                dynamic include = includeJs.JsonFromJsLiteralFile("include").JsonToDynamic();
-                returnValue.Css = ((JArray)include["css"]).Select(v => (string)v).ToArray();
-                returnValue.Scripts = ((JArray)include["scripts"]).Select(v => (string)v).ToArray();
-                IncludesCache.Add(includeJs, returnValue);
+                lock (_includesCacheLock)
+                {
+                    dynamic include = includeJs.JsonFromJsLiteralFile("include").JsonToDynamic();
+                    returnValue.Css = ((JArray)include["css"]).Select(v => (string)v).ToArray();
+                    returnValue.Scripts = ((JArray)include["scripts"]).Select(v => (string)v).ToArray();
+                    IncludesCache[includeJs] = returnValue;
+                }
             }
 
             return returnValue;
@@ -426,7 +562,7 @@ namespace Brevitee.Server
         #region IResponder Members
 
         object _handleLock = new object();
-        public override bool TryRespond(IContext context)
+        public override bool TryRespond(IHttpContext context)
         {
             if (!IsInitialized)
             {
@@ -435,6 +571,9 @@ namespace Brevitee.Server
 
             IRequest request = context.Request;
             IResponse response = context.Response;
+            Session.Init(context);
+            SecureSession.Init(context);
+
             bool handled = false;
             string path = request.Url.AbsolutePath;
             
@@ -519,10 +658,20 @@ namespace Brevitee.Server
 
         protected internal byte[] SetCacheAndGetBytes(Dictionary<string, byte[]> cache, Dictionary<string, byte[]> minCache, string path, string script)
         {
-            JavaScriptCompressor compressor = new JavaScriptCompressor();
-            string min = compressor.Compress(script);
+            CompressionResult compression;
+            if (!script.TryCompress(out compression))
+            {
+                string message = compression.Exception != null ? compression.Exception.Message: string.Empty;
+                string stack = string.Empty;
+                if (!string.IsNullOrEmpty(compression.Exception.StackTrace))
+                {
+                    stack = compression.Exception.StackTrace;
+                }
+                Logger.AddEntry("Compression of script at path ({0}) failed: {1}\r\n{2}", LogEventType.Warning, path, message, stack);
+            }
+
             byte[] scriptBytes = Encoding.UTF8.GetBytes(script);
-            byte[] minBytes = Encoding.UTF8.GetBytes(min);
+            byte[] minBytes = Encoding.UTF8.GetBytes(compression.MinScript);
             cache[path] = scriptBytes;
             minCache[path] = minBytes;
             minCache["{0}.min"._Format(path)] = minBytes;
@@ -539,7 +688,7 @@ namespace Brevitee.Server
             }
         }
 
-        public void Initialize()
+        public virtual void Initialize()
         {
             if (!IsInitialized)
             {
@@ -547,8 +696,9 @@ namespace Brevitee.Server
                 
                 InitializeFileSystem();
                 InitializeCommonDustRenderer();
+                InitializeAppResponders();
                 InitializeApps();
-                
+
                 OnInitialized();
             }
         }

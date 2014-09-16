@@ -10,6 +10,11 @@ using Brevitee.Configuration;
 
 namespace Brevitee.Distributed
 {
+    /// <summary>
+    /// Provides a mechanism by which one can expose
+    /// on demand DTOs for a given Type by addorning
+    /// properties with this Attribute.
+    /// </summary>
     public class InfoAttribute: Attribute
     {
         public InfoAttribute() { }
@@ -32,7 +37,7 @@ namespace Brevitee.Distributed
         {
             object info = GetInfo(value);
             Dictionary<string, string> result = new Dictionary<string, string>();
-            info.EachProperty((p, i) =>
+            info.EachPropertyInfo((p, i) =>
             {
                 object val = p.GetValue(info, null);
                 result[p.Name] = val == null ? "null" : val.ToString();

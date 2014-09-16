@@ -51,6 +51,18 @@ namespace Brevitee.Data
         }
 
         /// <summary>
+        /// Register the SQLite components with the ServiceProvider 
+        /// of the specified database.  This Register method will
+        /// not call SetInitializerAndConnectionStringResolver
+        /// like the other Register methods do.
+        /// </summary>
+        /// <param name="database"></param>
+        public static void Register(Database database)
+        {
+            Register(database.ServiceProvider);
+        }
+
+        /// <summary>
         /// Registers SQLite as the handler for the specified connection name.
         /// This dao handler will register apropriate DatabaseInitializer and
         /// ConnectionStringResolver.  This behavior is different compared to the
@@ -60,19 +72,19 @@ namespace Brevitee.Data
         public static void Register(string connectionName)
         {
             SetInitializerAndConnectionStringResolver(connectionName);
-            Register(_.Db.For(connectionName).ServiceProvider);
+            Register(Db.For(connectionName).ServiceProvider);
         }
 
         public static void Register(Type daoType)
         {
             SetInitializerAndConnectionStringResolver(daoType);
-            Register(_.Db.For(daoType).ServiceProvider);
+            Register(Db.For(daoType).ServiceProvider);
         }
 
         public static void Register<T>() where T : Dao
         {
             SetInitializerAndConnectionStringResolver(typeof(T));
-            Register(_.Db.For<T>().ServiceProvider);
+            Register(Db.For<T>().ServiceProvider);
         }
 
         private static void SetInitializerAndConnectionStringResolver(Type daoType)
@@ -96,6 +108,20 @@ namespace Brevitee.Data
             incubator.Set<SqlStringBuilder>(() => new SqlStringBuilder());
             incubator.Set<SchemaWriter>(() => new SQLiteSqlStringBuilder());
             incubator.Set<QuerySet>(() => new SQLiteQuerySet());
+        }
+
+        /// <summary>
+        /// Registers SQLite as the fallback initializer for all databases.
+        /// This means that if the default database initializers fail SQLite
+        /// will register itself as the database container and retry database
+        /// initialization.
+        /// </summary>
+        public static void RegisterFallback()
+        {
+            Brevitee.Data.Db.DefaultContainer.FallBack = (connectionName, dbDictionary) =>
+            {
+                Register(connectionName);
+            };
         }
     }
 }

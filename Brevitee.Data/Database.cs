@@ -34,7 +34,7 @@ namespace Brevitee.Data
 
         public DaoTransaction BeginTransaction()
         {
-            return _.BeginTransaction(this);
+            return Db.BeginTransaction(this);
         }
 
         public int MaxConnections { get; set; }
@@ -123,8 +123,13 @@ namespace Brevitee.Data
         /// <param name="builder"></param>
         public virtual void ExecuteSql<T>(SqlStringBuilder builder) where T : Dao
         {
-            Database db = _.Db.For<T>();
+            Database db = Db.For<T>();
             ExecuteSql(builder, db.ServiceProvider.Get<IParameterBuilder>());
+        }
+
+        public virtual void ExecuteSql(SqlStringBuilder builder)
+        {
+            ExecuteSql(builder, ServiceProvider.Get<IParameterBuilder>());
         }
 
         public virtual void ExecuteSql(SqlStringBuilder builder, IParameterBuilder parameterBuilder)

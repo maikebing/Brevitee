@@ -155,7 +155,7 @@ namespace Brevitee.ServiceProxy
         }
 
         /// <summary>
-        /// The action that is executed for all FileExt requests.  This method
+        /// The action that is executed for all ServiceProxy requests.  This method
         /// returns an ActionResult based on the specified file extension.
         /// </summary>
         /// <param name="className"></param>
@@ -178,8 +178,7 @@ namespace Brevitee.ServiceProxy
                 Ext = ext,
                 JsonParams = jsonParams,
                 ViewName = view ?? "Default",
-                Request = new RequestWrapper(Request),
-                Response = new ResponseWrapper(Response)
+                Context = new HttpContextWrapper(ControllerContext.HttpContext)
             };
 
             try
@@ -215,7 +214,7 @@ namespace Brevitee.ServiceProxy
             return GetActionResult(request); ;
         }
 
-        public ActionResult CSharpProxies(string nameSpace = "ServiceProxies", string[] classNames = null, bool interfacePrefix = false)
+        public ActionResult CSharpProxies(string nameSpace = "Services", string[] classNames = null, bool interfacePrefix = false)
         {
             if (classNames == null)
             {

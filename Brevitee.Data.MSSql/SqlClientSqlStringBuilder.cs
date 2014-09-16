@@ -22,7 +22,7 @@ namespace Brevitee.Data
         public override string GetColumnDefinition(ColumnAttribute column)
         {
             string max = string.Format("({0})", column.MaxLength);
-            string type = column.ExtractedType.ToLowerInvariant();            
+            string type = column.DbDataType.ToLowerInvariant();            
 
             if (type.Equals("bigint") ||
                 type.Equals("int") ||
@@ -32,7 +32,7 @@ namespace Brevitee.Data
                 max = string.Empty;
             }
 
-            return string.Format("\"{0}\" {1}{2}{3}", column.Name, column.ExtractedType, max, column.AllowNull ? "" : " NOT NULL");            
+            return string.Format("\"{0}\" {1}{2}{3}", column.Name, column.DbDataType, max, column.AllowNull ? "" : " NOT NULL");            
         }
     }
 }

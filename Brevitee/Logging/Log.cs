@@ -10,6 +10,10 @@ namespace Brevitee.Logging
 {
     public static class Log
     {
+        /// <summary>
+        /// Represents the default logger determined by the configuration 
+        /// file.
+        /// </summary>
         public static ILogger Default
         {
             get

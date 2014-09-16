@@ -84,7 +84,7 @@ namespace Brevitee.Data
                 {
                     if (!_loaded)
                     {
-                        Database db = _.Db.For<L>();
+                        Database db = Db.For<L>();
                         XrefsByListId = new Dictionary<long, X>();
 
                         QuerySet q = Dao.GetQuerySet(db);
@@ -220,7 +220,7 @@ namespace Brevitee.Data
         
         public void Commit()
         {
-            Database db = _.Db.For<L>();
+            Database db = Db.For<L>();
             SqlStringBuilder sql = db.ServiceProvider.Get<SqlStringBuilder>();
             WriteCommit(sql);
 
@@ -254,7 +254,7 @@ namespace Brevitee.Data
                 X result = null;
                 QuerySet q = new QuerySet();
                 q.Select<X>().Where(new QueryFilter(ListColumnName) == item.IdValue.Value && new QueryFilter(ParentColumnName) == Parent.IdValue);
-                Database db = _.Db.For<X>();
+                Database db = Db.For<X>();
 
                 q.Execute(db);
                 if (q.Results[0].DataTable.Rows.Count > 0)
@@ -282,7 +282,7 @@ namespace Brevitee.Data
 
         public void Delete(Database db = null)
         {
-            db = db ?? _.Db.For<L>();
+            db = db ?? Db.For<L>();
             SqlStringBuilder sql = db.ServiceProvider.Get<SqlStringBuilder>();
             WriteDelete(sql);
             sql.Execute(db);

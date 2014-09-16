@@ -13,6 +13,10 @@ using System.IO;
 
 namespace Brevitee.Server
 {
+    /// <summary>
+    /// Class used to initialize dust templates for all 
+    /// Dao components
+    /// </summary>
     public class DustTemplateInitializer: TemplateInitializerBase
     {
         public DustTemplateInitializer(BreviteeServer server) : base(server) { }
@@ -52,12 +56,6 @@ namespace Brevitee.Server
                             OnInitializedAppDaoTemplates(appName, daoProxyReg);
                         });
                     });
-
-                    //  from ServiceProxy
-                    //Server.ServiceProxyResponder.ServiceProvider.ClassNames.Each((className) =>
-                    //{
-
-                    //});
                 }
                 catch (Exception ex)
                 {

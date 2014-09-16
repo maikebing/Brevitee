@@ -38,7 +38,7 @@ namespace Brevitee.Automation.ContinuousIntegration.Data
 
 	// property:Id, columnName:Id	
 	[Exclude]
-	[Brevitee.Data.KeyColumn(Name="Id", ExtractedType="BigInt", MaxLength="8")]
+	[Brevitee.Data.KeyColumn(Name="Id", DbDataType="BigInt", MaxLength="8")]
 	public long? Id
 	{
 		get
@@ -52,7 +52,7 @@ namespace Brevitee.Automation.ContinuousIntegration.Data
 	}
 
 	// property:Name, columnName:Name	
-	[Brevitee.Data.Column(Name="Name", ExtractedType="VarChar", MaxLength="4000", AllowNull=false)]
+	[Brevitee.Data.Column(Name="Name", DbDataType="VarChar", MaxLength="4000", AllowNull=false)]
 	public string Name
 	{
 		get
@@ -66,7 +66,7 @@ namespace Brevitee.Automation.ContinuousIntegration.Data
 	}
 
 	// property:UserName, columnName:UserName	
-	[Brevitee.Data.Column(Name="UserName", ExtractedType="VarChar", MaxLength="4000", AllowNull=false)]
+	[Brevitee.Data.Column(Name="UserName", DbDataType="VarChar", MaxLength="4000", AllowNull=false)]
 	public string UserName
 	{
 		get
@@ -80,7 +80,7 @@ namespace Brevitee.Automation.ContinuousIntegration.Data
 	}
 
 	// property:HostName, columnName:HostName	
-	[Brevitee.Data.Column(Name="HostName", ExtractedType="VarChar", MaxLength="4000", AllowNull=false)]
+	[Brevitee.Data.Column(Name="HostName", DbDataType="VarChar", MaxLength="4000", AllowNull=false)]
 	public string HostName
 	{
 		get
@@ -94,7 +94,7 @@ namespace Brevitee.Automation.ContinuousIntegration.Data
 	}
 
 	// property:OutputPath, columnName:OutputPath	
-	[Brevitee.Data.Column(Name="OutputPath", ExtractedType="VarChar", MaxLength="4000", AllowNull=false)]
+	[Brevitee.Data.Column(Name="OutputPath", DbDataType="VarChar", MaxLength="4000", AllowNull=false)]
 	public string OutputPath
 	{
 		get
@@ -151,7 +151,7 @@ namespace Brevitee.Automation.ContinuousIntegration.Data
 		{
 			SqlStringBuilder sql = new SqlStringBuilder();
 			sql.Select<BuildJob>();
-			Database db = database == null ? _.Db.For<BuildJob>(): database;
+			Database db = database == null ? Db.For<BuildJob>(): database;
 			return new BuildJobCollection(sql.GetDataTable(db));
 		}
 
@@ -315,7 +315,7 @@ namespace Brevitee.Automation.ContinuousIntegration.Data
 			BuildJobColumns c = new BuildJobColumns();
 			IQueryFilter filter = where(c);         
 			
-			Database db = database == null ? _.Db.For<BuildJob>(): database;
+			Database db = database == null ? Db.For<BuildJob>(): database;
 			QuerySet query = GetQuerySet(db); 
 			query.Top<BuildJob>(count);
 			query.Where(filter);
@@ -342,7 +342,7 @@ namespace Brevitee.Automation.ContinuousIntegration.Data
 			BuildJobColumns c = new BuildJobColumns();
 			IQueryFilter filter = where(c) ;
 
-			Database db = database == null ? _.Db.For<BuildJob>(): database;
+			Database db = database == null ? Db.For<BuildJob>(): database;
 			QuerySet query = GetQuerySet(db);	 
 			query.Count<BuildJob>();
 			query.Where(filter);	  

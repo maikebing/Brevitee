@@ -32,7 +32,7 @@ namespace SampleData
 		}
 
 	// property:Id, columnName:Id	
-	[Brevitee.Data.KeyColumn(Name="Id", ExtractedType="BigInt", MaxLength="8")]
+	[Brevitee.Data.KeyColumn(Name="Id", DbDataType="BigInt", MaxLength="8")]
 	public long? Id
 	{
 		get
@@ -46,7 +46,7 @@ namespace SampleData
 	}
 
 	// property:Approved, columnName:Approved	
-	[Brevitee.Data.Column(Name="Approved", ExtractedType="Bit", MaxLength="1", AllowNull=false)]
+	[Brevitee.Data.Column(Name="Approved", DbDataType="Bit", MaxLength="1", AllowNull=false)]
 	public bool? Approved
 	{
 		get
@@ -64,7 +64,7 @@ namespace SampleData
 	[Brevitee.Data.ForeignKey(
         Table="AddressRequest",
 		Name="RequesterId", 
-		ExtractedType="BigInt", 
+		DbDataType="BigInt", 
 		MaxLength="8",
 		AllowNull=false, 
 		ReferencedKey="Id",
@@ -99,7 +99,7 @@ namespace SampleData
 	[Brevitee.Data.ForeignKey(
         Table="AddressRequest",
 		Name="RequesteeId", 
-		ExtractedType="BigInt", 
+		DbDataType="BigInt", 
 		MaxLength="8",
 		AllowNull=false, 
 		ReferencedKey="Id",
@@ -225,7 +225,7 @@ namespace SampleData
             AddressRequestColumns c = new AddressRequestColumns();
             IQueryFilter filter = where(c);         
             
-			Database db = database == null ? _.Db.For<AddressRequest>(): database;
+			Database db = database == null ? Db.For<AddressRequest>(): database;
 			QuerySet query = GetQuerySet(db); 
             query.Top<AddressRequest>(count);
             query.Where(filter);
@@ -244,7 +244,7 @@ namespace SampleData
 			AddressRequestColumns c = new AddressRequestColumns();
 			IQueryFilter filter = where(c) ;
 
-			Database db = database == null ? _.Db.For<AddressRequest>(): database;
+			Database db = database == null ? Db.For<AddressRequest>(): database;
 			QuerySet query = GetQuerySet(db);	 
 			query.Count<AddressRequest>();
 			query.Where(filter);	  

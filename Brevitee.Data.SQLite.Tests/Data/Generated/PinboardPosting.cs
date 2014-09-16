@@ -31,7 +31,7 @@ namespace SampleData
 		}
 
 	// property:Id, columnName:Id	
-	[Brevitee.Data.KeyColumn(Name="Id", ExtractedType="BigInt", MaxLength="8")]
+	[Brevitee.Data.KeyColumn(Name="Id", DbDataType="BigInt", MaxLength="8")]
 	public long? Id
 	{
 		get
@@ -45,7 +45,7 @@ namespace SampleData
 	}
 
 	// property:Content, columnName:Content	
-	[Brevitee.Data.Column(Name="Content", ExtractedType="VarChar", MaxLength="4000", AllowNull=false)]
+	[Brevitee.Data.Column(Name="Content", DbDataType="VarChar", MaxLength="4000", AllowNull=false)]
 	public string Content
 	{
 		get
@@ -59,7 +59,7 @@ namespace SampleData
 	}
 
 	// property:Dimensions, columnName:Dimensions	
-	[Brevitee.Data.Column(Name="Dimensions", ExtractedType="VarChar", MaxLength="4000", AllowNull=false)]
+	[Brevitee.Data.Column(Name="Dimensions", DbDataType="VarChar", MaxLength="4000", AllowNull=false)]
 	public string Dimensions
 	{
 		get
@@ -73,7 +73,7 @@ namespace SampleData
 	}
 
 	// property:Coordinates, columnName:Coordinates	
-	[Brevitee.Data.Column(Name="Coordinates", ExtractedType="VarChar", MaxLength="4000", AllowNull=false)]
+	[Brevitee.Data.Column(Name="Coordinates", DbDataType="VarChar", MaxLength="4000", AllowNull=false)]
 	public string Coordinates
 	{
 		get
@@ -91,7 +91,7 @@ namespace SampleData
 	[Brevitee.Data.ForeignKey(
         Table="PinboardPosting",
 		Name="UserId", 
-		ExtractedType="BigInt", 
+		DbDataType="BigInt", 
 		MaxLength="8",
 		AllowNull=false, 
 		ReferencedKey="Id",
@@ -199,7 +199,7 @@ namespace SampleData
             PinboardPostingColumns c = new PinboardPostingColumns();
             IQueryFilter filter = where(c);         
             
-			Database db = database == null ? _.Db.For<PinboardPosting>(): database;
+			Database db = database == null ? Db.For<PinboardPosting>(): database;
 			QuerySet query = GetQuerySet(db); 
             query.Top<PinboardPosting>(count);
             query.Where(filter);
@@ -218,7 +218,7 @@ namespace SampleData
 			PinboardPostingColumns c = new PinboardPostingColumns();
 			IQueryFilter filter = where(c) ;
 
-			Database db = database == null ? _.Db.For<PinboardPosting>(): database;
+			Database db = database == null ? Db.For<PinboardPosting>(): database;
 			QuerySet query = GetQuerySet(db);	 
 			query.Count<PinboardPosting>();
 			query.Where(filter);	  

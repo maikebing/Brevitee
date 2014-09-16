@@ -70,8 +70,8 @@ namespace masuco
         {
             if (!File.Exists(_configFile))
             {
-                OutFormat("Config file {0} not found.", ConsoleColor.Yellow, _configFile);
-                Out("Starting configuration...", ConsoleColor.Cyan);
+                OutLineFormat("Config file {0} not found.", ConsoleColor.Yellow, _configFile);
+                OutLine("Starting configuration...", ConsoleColor.Cyan);
                 Configure();
             }
             else
@@ -104,7 +104,7 @@ namespace masuco
                                         d.Refresh();
                                     }
 
-                                    OutFormat("Copying {0} -> {1}", ConsoleColor.Yellow, srcFile, destFile);
+                                    OutLineFormat("Copying {0} -> {1}", ConsoleColor.Yellow, srcFile, destFile);
                                 });
                         }
                     }
@@ -132,15 +132,15 @@ namespace masuco
         {
             if (!File.Exists(_configFile))
             {
-                OutFormat("Config file {0} not found.", ConsoleColor.Yellow, _configFile);
-                Out("Starting configuration...", ConsoleColor.Cyan);
+                OutLineFormat("Config file {0} not found.", ConsoleColor.Yellow, _configFile);
+                OutLine("Starting configuration...", ConsoleColor.Cyan);
                 Configure();
             }
             else
             {
                 MasucoConfig config = _configFile.SafeReadFile().FromJson<MasucoConfig>();
-                OutFormat("Source: {0}", ConsoleColor.Cyan, config.Source);
-                OutFormat("Destination: {0}", ConsoleColor.Cyan, config.Destination);
+                OutLineFormat("Source: {0}", ConsoleColor.Cyan, config.Source);
+                OutLineFormat("Destination: {0}", ConsoleColor.Cyan, config.Destination);
             }
         }
 
@@ -149,7 +149,7 @@ namespace masuco
             bool result = dir.Exists;
             if (!result)
             {
-                OutFormat("{0} was not found", ConsoleColor.Red, dir.FullName);
+                OutLineFormat("{0} was not found", ConsoleColor.Red, dir.FullName);
             }
 
             return result;

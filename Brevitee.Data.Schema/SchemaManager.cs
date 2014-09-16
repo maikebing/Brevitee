@@ -20,12 +20,11 @@ namespace Brevitee.Data.Schema
 {
     [Proxy("dbm")]
     public class SchemaManager
-    {
-        JavaScriptSerializer serializer = new JavaScriptSerializer();
-        
+    {        
         public SchemaManager()
         {
-
+            this.PreColumnAugmentations = new List<SchemaManagerAugmentation>();
+            this.PostColumnAugmentations = new List<SchemaManagerAugmentation>();
         }
 
         SchemaDefinition _currentSchema;
@@ -103,14 +102,6 @@ namespace Brevitee.Data.Schema
         public XrefTable GetXref(string tableName)
         {
             return CurrentSchema.GetXref(tableName);
-        }
-
-        private static SchemaDefinition LoadSchema(string schemaName)
-        {
-            string schemaFile = SchemaNameToFilePath(schemaName);
-            SchemaDefinition schema = SchemaDefinition.Load(schemaFile);
-            schema.Name = schemaName;
-            return schema;
         }
 
         public static bool SchemaExists(string schemaName)
@@ -308,9 +299,7 @@ namespace Brevitee.Data.Schema
         {
             lock (_sync)
             {
-                StringBuilder builder = new StringBuilder();
-                serializer.Serialize(CurrentSchema, builder);
-                builder.ToString().SafeWriteToFile(CurrentSchema.File, true);
+                CurrentSchema.ToJsonFile(CurrentSchema.File);
             }
         }
 
@@ -319,17 +308,17 @@ namespace Brevitee.Data.Schema
             CurrentSchema.RemoveTable(tableName);
         }
             
-        public Result Generate(FileInfo databaseDotJs, bool compile = false, bool keepSource = false, string genTo = ".\\tmp")
+        public Result Generate(FileInfo databaseDotJs, bool compile = false, bool keepSource = false, string genTo = ".\\tmp", string partialsDir = null)
         {
-            string result = databaseDotJs.JsonFromJsLiteralFile("database");//JsonFromJsLiteralFile(databaseDotJs);
+            string result = databaseDotJs.JsonFromJsLiteralFile("database");
 
-            return Generate(result, compile ? new DirectoryInfo(BinDir): null, keepSource, genTo);
+            return Generate(result, compile ? new DirectoryInfo(BinDir): null, keepSource, genTo, partialsDir);
         }
 
-        public Result Generate(FileInfo databaseDotJs, DirectoryInfo compileTo, DirectoryInfo temp)
+        public Result Generate(FileInfo databaseDotJs, DirectoryInfo compileTo, DirectoryInfo temp, DirectoryInfo partialsDir)
         {
             string databaseSchemaJson = databaseDotJs.JsonFromJsLiteralFile("database");
-            return Generate(databaseSchemaJson, compileTo, false, temp.FullName);
+            return Generate(databaseSchemaJson, compileTo, false, temp.FullName, partialsDir.FullName);
         }
 
         public Result Generate(string simpleSchemaJson, DirectoryInfo compileTo, DirectoryInfo temp)
@@ -338,12 +327,13 @@ namespace Brevitee.Data.Schema
         }
 
         object _sync = new object();
+        
         /// <summary>
         /// Generate 
         /// </summary>
         /// <param name="simpleSchemaJson"></param>
         /// <returns></returns>
-        public Result Generate(string simpleSchemaJson, DirectoryInfo compileTo = null, bool keepSource = false, string tempDir = ".\\tmp")
+        public Result Generate(string simpleSchemaJson, DirectoryInfo compileTo = null, bool keepSource = false, string tempDir = ".\\tmp", string partialsDir = null)
         {
             try
             {
@@ -401,7 +391,15 @@ namespace Brevitee.Data.Schema
 
                             generator.GenerateComplete += (g, s) =>
                             {
-                                Compile(daoDir, generator, nameSpace, compileTo);
+                                List<DirectoryInfo> daoDirs = new List<DirectoryInfo>();
+                                daoDirs.Add(daoDir);
+                                if (!string.IsNullOrEmpty(partialsDir))
+                                {
+                                    daoDirs.Add(new DirectoryInfo(partialsDir));
+                                }
+
+                                Compile(daoDirs.ToArray(), generator, nameSpace, compileTo);
+
                                 if (CompilerErrors != null)
                                 {
                                     result.Success = false;
@@ -421,11 +419,16 @@ namespace Brevitee.Data.Schema
                                 if (!keepSource)
                                 {
                                     daoDir.Delete(true);
+                                    daoDir.Refresh();
+                                    if (daoDir.Exists)
+                                    {
+                                        daoDir.Delete();
+                                    }
                                 }
                             };
                         }
 
-                        generator.Generate(manager.CurrentSchema, daoDir.FullName);
+                        generator.Generate(manager.CurrentSchema, daoDir.FullName, partialsDir);
                     }
                     return result;
                 }
@@ -439,9 +442,158 @@ namespace Brevitee.Data.Schema
             }
         }
 
+        /// <summary>
+        /// Augmentations that are executed prior to adding columns and 
+        /// foreign keys
+        /// </summary>
+        public List<SchemaManagerAugmentation> PreColumnAugmentations
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Augmentations that are executed after adding columns 
+        /// and foreign keys
+        /// </summary>
+        public List<SchemaManagerAugmentation> PostColumnAugmentations
+        {
+            get;
+            set;
+        }
+
+        public string BinDir
+        {
+            get
+            {
+                return Path.Combine(RootDir, "bin");
+            }
+        }
+
+        string _rootDir;
+        public string RootDir
+        {
+            get
+            {
+                if (HttpContext.Current != null)
+                {
+                    return HttpContext.Current.Server.MapPath("~/");
+                }
+                else
+                {
+                    return _rootDir ?? ".";
+                }
+            }
+
+            set
+            {
+                _rootDir = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets the most recent set of exceptions that occurred during an attempted
+        /// Generate -> Compile
+        /// </summary>
+        public CompilerErrorCollection CompilerErrors
+        {
+            get;
+            private set;
+        }
+
+        public CompilerError[] GetErrors()
+        {
+            if (CompilerErrors == null)
+            {
+                return new CompilerError[] { };
+            }
+
+            CompilerError[] results = new CompilerError[CompilerErrors.Count];
+            for (int i = 0; i < results.Length; i++)
+            {
+                results[i] = CompilerErrors[i];
+            }
+
+            return results;
+        }
+
+        private void ProcessTables(dynamic rehydrated, SchemaManager manager, List<dynamic> foreignKeys)
+        {
+            foreach (dynamic table in rehydrated["tables"])
+            {
+                string tableName = (string)table["name"];
+                Args.ThrowIfNullOrEmpty(tableName, "Table.name");
+                manager.AddTable(tableName);
+
+                ExecutePreColumnAugmentations(tableName, manager);
+
+                AddColumns(manager, table, tableName);
+
+                AddForeignKeys(foreignKeys, table, tableName);
+
+                ExecutePostColumnAugmentations(tableName, manager);
+            }
+        }
+
+        private void ExecutePostColumnAugmentations(string tableName, SchemaManager manager)
+        {
+            foreach (SchemaManagerAugmentation augmentation in PostColumnAugmentations)
+            {
+                augmentation.Execute(tableName, manager);
+            }
+        }
+
+        private void ExecutePreColumnAugmentations(string tableName, SchemaManager manager)
+        {
+            foreach (SchemaManagerAugmentation augmentation in PreColumnAugmentations)
+            {
+                augmentation.Execute(tableName, manager);
+            }
+        }
+
+        private static void AddForeignKeys(List<dynamic> foreignKeys, dynamic table, string tableName)
+        {
+            if (table["fks"] != null)
+            {
+                foreach (dynamic fk in table["fks"])
+                {
+                    PropertyDescriptorCollection fkProperties = TypeDescriptor.GetProperties(fk);
+                    foreach (PropertyDescriptor pd in fkProperties)
+                    {
+                        string referencingColumn = pd.Name;
+                        string primaryTable = (string)pd.GetValue(fk);
+                        string foreignKeyTable = tableName;
+                        AddForeignKey(foreignKeys, primaryTable, foreignKeyTable, referencingColumn);
+                    }
+                }
+            }
+        }
+
+        private static void AddColumns(SchemaManager manager, dynamic table, string tableName)
+        {
+            if (table["cols"] != null)
+            {
+                foreach (dynamic column in table["cols"])
+                {
+                    PropertyDescriptorCollection columnProperties = TypeDescriptor.GetProperties(column);
+                    bool allowNull = column["Null"] == null ? true : (bool)column["Null"];
+                    string maxLength = column["MaxLength"] == null ? "" : (string)column["MaxLength"];
+                    foreach (PropertyDescriptor pd in columnProperties)
+                    {
+                        if (!pd.Name.Equals("Null") && !pd.Name.Equals("MaxLength"))
+                        {
+                            DataTypes type = (DataTypes)Enum.Parse(typeof(DataTypes), (string)pd.GetValue(column));
+                            string name = pd.Name;
+                            manager.AddColumn(tableName, new Column(name, type, allowNull, maxLength));
+                        }
+                    }
+                }
+            }
+        }
+
         private void ProcessXrefs(dynamic rehydrated, SchemaManager manager, List<dynamic> foreignKeys)
         {
-            if(rehydrated["xrefs"] != null)
+            if (rehydrated["xrefs"] != null)
             {
                 foreach (dynamic xref in rehydrated["xrefs"])
                 {
@@ -470,60 +622,17 @@ namespace Brevitee.Data.Schema
             }
         }
 
-        private void ProcessTables(dynamic rehydrated, SchemaManager manager, List<dynamic> foreignKeys)
-        {
-            foreach (dynamic table in rehydrated["tables"])
-            {
-                string tableName = (string)table["name"];
-                Args.ThrowIfNullOrEmpty(tableName, "Table.name");
-
-                manager.AddTable(tableName);
-                manager.AddColumn(tableName, new Column("Id", DataTypes.Long, false));
-                manager.SetKeyColumn(tableName, "Id");
-                manager.AddColumn(tableName, new Column("Uuid", DataTypes.String, false));
-
-                if (table["cols"] != null)
-                {
-                    foreach (dynamic column in table["cols"])
-                    {
-                        PropertyDescriptorCollection columnProperties = TypeDescriptor.GetProperties(column);
-                        bool allowNull = column["Null"] == null ? true : (bool)column["Null"];
-                        string maxLength = column["MaxLength"] == null ? "" : (string)column["MaxLength"];
-                        foreach (PropertyDescriptor pd in columnProperties)
-                        {
-                            if (!pd.Name.Equals("Null") && !pd.Name.Equals("MaxLength"))
-                            {
-                                DataTypes type = (DataTypes)Enum.Parse(typeof(DataTypes), (string)pd.GetValue(column));
-                                string name = pd.Name;
-                                manager.AddColumn(tableName, new Column(name, type, allowNull, maxLength));
-                            }
-                        }
-                    }
-                }
-
-                if (table["fks"] != null)
-                {
-                    foreach (dynamic fk in table["fks"])
-                    {
-                        PropertyDescriptorCollection fkProperties = TypeDescriptor.GetProperties(fk);
-                        foreach (PropertyDescriptor pd in fkProperties)
-                        {
-                            string referencingColumn = pd.Name;
-                            string primaryTable = (string)pd.GetValue(fk);
-                            string foreignKeyTable = tableName;
-                            AddForeignKey(foreignKeys, primaryTable, foreignKeyTable, referencingColumn);
-                        }
-                    }
-                }
-            }
-        }
-
         private static void AddForeignKey(List<dynamic> foreignKeys, string primaryTable, string foreignKeyTable, string referencingColumnName)
         {
             foreignKeys.Add(new { PrimaryTable = primaryTable, ForeignKeyTable = foreignKeyTable, ReferencingColumn = referencingColumnName });
         }
         
         private FileInfo Compile(DirectoryInfo dir, DaoGenerator generator, string nameSpace, DirectoryInfo copyTo)
+        {
+            return Compile(new DirectoryInfo[] { dir }, generator, nameSpace, copyTo);
+        }
+
+        private FileInfo Compile(DirectoryInfo[] dirs, DaoGenerator generator, string nameSpace, DirectoryInfo copyTo)
         {
             string[] referenceAssemblies = DaoGenerator.DefaultReferenceAssemblies.ToArray();
             for (int i = 0; i < referenceAssemblies.Length; i++)
@@ -534,7 +643,7 @@ namespace Brevitee.Data.Schema
                 referenceAssemblies[i] = File.Exists(binPath) ? binPath : assembly;
             }
 
-            CompilerResults results = generator.Compile(dir, string.Format("{0}.dll", nameSpace), referenceAssemblies);
+            CompilerResults results = generator.Compile(dirs, string.Format("{0}.dll", nameSpace), referenceAssemblies);
             if (results.Errors.Count > 0)
             {
                 CompilerErrors = results.Errors;
@@ -587,59 +696,13 @@ namespace Brevitee.Data.Schema
             binFileInfo.MoveTo(backupFile.FullName);
         }
 
-        public string BinDir
+
+        private static SchemaDefinition LoadSchema(string schemaName)
         {
-            get
-            {
-                return Path.Combine(RootDir, "bin");
-            }
-        }
-
-        string _rootDir; 
-        public string RootDir
-        {
-            get
-            {
-                if (HttpContext.Current != null)
-                {
-                    return HttpContext.Current.Server.MapPath("~/");
-                }
-                else
-                {
-                    return _rootDir ?? ".";
-                }
-            }
-
-            set
-            {
-                _rootDir = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets the most recent set of exceptions that occurred during an attempted
-        /// Generate -> Compile
-        /// </summary>
-        public CompilerErrorCollection CompilerErrors
-        {
-            get;
-            private set;
-        }
-
-        public CompilerError[] GetErrors()
-        {
-            if (CompilerErrors == null)
-            {
-                return new CompilerError[] { };
-            }
-
-            CompilerError[] results = new CompilerError[CompilerErrors.Count];
-            for (int i = 0; i < results.Length; i++)
-            {
-                results[i] = CompilerErrors[i];
-            }
-
-            return results;
+            string schemaFile = SchemaNameToFilePath(schemaName);
+            SchemaDefinition schema = SchemaDefinition.Load(schemaFile);
+            schema.Name = schemaName;
+            return schema;
         }
     }
 }

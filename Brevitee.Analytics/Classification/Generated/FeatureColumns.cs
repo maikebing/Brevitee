@@ -20,21 +20,28 @@ namespace Brevitee.Analytics.Classification
 			}
 		}	
 				
-        public FeatureColumns Id
+﻿        public FeatureColumns Id
         {
             get
             {
                 return new FeatureColumns("Id");
             }
         }
-        public FeatureColumns Value
+﻿        public FeatureColumns Uuid
+        {
+            get
+            {
+                return new FeatureColumns("Uuid");
+            }
+        }
+﻿        public FeatureColumns Value
         {
             get
             {
                 return new FeatureColumns("Value");
             }
         }
-        public FeatureColumns FeatureToCategoryCount
+﻿        public FeatureColumns FeatureToCategoryCount
         {
             get
             {
@@ -42,7 +49,7 @@ namespace Brevitee.Analytics.Classification
             }
         }
 
-        public FeatureColumns CategoryId
+﻿        public FeatureColumns CategoryId
         {
             get
             {
@@ -50,11 +57,19 @@ namespace Brevitee.Analytics.Classification
             }
         }
 
+		protected internal Type TableType
+		{
+			get
+			{
+				return typeof(Feature);
+			}
+		}
+
 		public string Operator { get; set; }
 
         public override string ToString()
         {
-            return this.ColumnName;
+            return base.ColumnName;
         }
 	}
 }

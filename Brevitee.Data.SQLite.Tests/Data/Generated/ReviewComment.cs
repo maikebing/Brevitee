@@ -31,7 +31,7 @@ namespace SampleData
 		}
 
 	// property:Id, columnName:Id	
-	[Brevitee.Data.KeyColumn(Name="Id", ExtractedType="BigInt", MaxLength="8")]
+	[Brevitee.Data.KeyColumn(Name="Id", DbDataType="BigInt", MaxLength="8")]
 	public long? Id
 	{
 		get
@@ -49,7 +49,7 @@ namespace SampleData
 	[Brevitee.Data.ForeignKey(
         Table="ReviewComment",
 		Name="ReviewId", 
-		ExtractedType="BigInt", 
+		DbDataType="BigInt", 
 		MaxLength="8",
 		AllowNull=false, 
 		ReferencedKey="Id",
@@ -84,7 +84,7 @@ namespace SampleData
 	[Brevitee.Data.ForeignKey(
         Table="ReviewComment",
 		Name="CommentId", 
-		ExtractedType="BigInt", 
+		DbDataType="BigInt", 
 		MaxLength="8",
 		AllowNull=false, 
 		ReferencedKey="Id",
@@ -119,7 +119,7 @@ namespace SampleData
 	[Brevitee.Data.ForeignKey(
         Table="ReviewComment",
 		Name="UserId", 
-		ExtractedType="BigInt", 
+		DbDataType="BigInt", 
 		MaxLength="8",
 		AllowNull=false, 
 		ReferencedKey="Id",
@@ -227,7 +227,7 @@ namespace SampleData
             ReviewCommentColumns c = new ReviewCommentColumns();
             IQueryFilter filter = where(c);         
             
-			Database db = database == null ? _.Db.For<ReviewComment>(): database;
+			Database db = database == null ? Db.For<ReviewComment>(): database;
 			QuerySet query = GetQuerySet(db); 
             query.Top<ReviewComment>(count);
             query.Where(filter);
@@ -246,7 +246,7 @@ namespace SampleData
 			ReviewCommentColumns c = new ReviewCommentColumns();
 			IQueryFilter filter = where(c) ;
 
-			Database db = database == null ? _.Db.For<ReviewComment>(): database;
+			Database db = database == null ? Db.For<ReviewComment>(): database;
 			QuerySet query = GetQuerySet(db);	 
 			query.Count<ReviewComment>();
 			query.Where(filter);	  

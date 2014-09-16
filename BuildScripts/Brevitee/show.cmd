@@ -1,0 +1,27 @@
+@echo off
+nuver /show:id,version /path:BreviteeToolkit\BreviteeToolkit.nuspec
+nuver /show:id,version /path:Brevitee\Brevitee.nuspec 
+nuver /show:id,version /path:Brevitee.Analytics\Brevitee.Analytics.nuspec
+nuver /show:id,version /path:Brevitee.Automation\Brevitee.Automation.nuspec
+nuver /show:id,version /path:Brevitee.CommandLine\Brevitee.CommandLine.nuspec 
+nuver /show:id,version /path:Brevitee.Data\Brevitee.Data.nuspec
+nuver /show:id,version /path:Brevitee.Distributed\Brevitee.Distributed.nuspec
+nuver /show:id,version /path:Brevitee.Drawing\Brevitee.Drawing.nuspec
+nuver /show:id,version /path:Brevitee.Dust\Brevitee.Dust.nuspec
+nuver /show:id,version /path:Brevitee.Encryption\Brevitee.Encryption.nuspec
+nuver /show:id,version /path:Brevitee.Html\Brevitee.Html.nuspec
+nuver /show:id,version /path:Brevitee.Incubation\Brevitee.Incubation.nuspec 
+nuver /show:id,version /path:Brevitee.Javascript\Brevitee.Javascript.nuspec
+nuver /show:id,version /path:Brevitee.Logging\Brevitee.Logging.nuspec 
+nuver /show:id,version /path:Brevitee.Management\Brevitee.Management.nuspec
+nuver /show:id,version /path:Brevitee.Messaging\Brevitee.Messaging.nuspec
+nuver /show:id,version /path:Brevitee.Net\Brevitee.Net.nuspec
+nuver /show:id,version /path:Brevitee.Profiguration\Brevitee.Profiguration.nuspec
+nuver /show:id,version /path:Brevitee.Schema.Org\Brevitee.Schema.Org.nuspec
+nuver /show:id,version /path:Brevitee.Server\Brevitee.Server.nuspec 
+nuver /show:id,version /path:Brevitee.ServiceProxy\Brevitee.ServiceProxy.nuspec 
+nuver /show:id,version /path:Brevitee.SourceControl\Brevitee.SourceControl.nuspec 
+nuver /show:id,version /path:Brevitee.Syndication\Brevitee.Syndication.nuspec 
+nuver /show:id,version /path:Brevitee.Testing\Brevitee.Testing.nuspec 
+nuver /show:id,version /path:Brevitee.UserAccounts\Brevitee.UserAccounts.nuspec
+nuver /show:id,version /path:Brevitee.Yaml\Brevitee.Yaml.nuspec

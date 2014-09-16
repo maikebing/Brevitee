@@ -16,7 +16,7 @@ namespace Brevitee.Encryption
             PublicKeyXml = initial.ToXmlString(false);
             PrivateKeyXml = initial.ToXmlString(true);
         }
-
+        
         static object _defaultLock = new object();
         static RsaKeyPair _rsaKeyPair;
         public static RsaKeyPair Default
@@ -134,11 +134,11 @@ namespace Brevitee.Encryption
             }
         }
 
-        private static RSACryptoServiceProvider CreateRSACryptoServiceProvider()
+        private static RSACryptoServiceProvider CreateRSACryptoServiceProvider(int keySize = 1024)
         {
             CspParameters RSAParams = new CspParameters();
             RSAParams.Flags = CspProviderFlags.UseMachineKeyStore;
-            RSACryptoServiceProvider publicKey = new RSACryptoServiceProvider(1024, RSAParams);
+            RSACryptoServiceProvider publicKey = new RSACryptoServiceProvider(keySize, RSAParams);
             return publicKey;
         }
 

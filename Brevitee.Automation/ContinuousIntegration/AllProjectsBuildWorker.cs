@@ -34,8 +34,11 @@ namespace Brevitee.Automation.ContinuousIntegration
         {
             List<FileInfo> results = new List<FileInfo>();
             DirectoryInfo sourceDir = new DirectoryInfo(SourceDirectory);
-            results.AddRange(sourceDir.GetFiles("*.csproj", SearchOption.AllDirectories));
-            results.AddRange(sourceDir.GetFiles("*.vbproj", SearchOption.AllDirectories));
+			if (sourceDir.Exists)
+			{
+				results.AddRange(sourceDir.GetFiles("*.csproj", SearchOption.AllDirectories));
+				results.AddRange(sourceDir.GetFiles("*.vbproj", SearchOption.AllDirectories));
+			}
 
             return results.ToArray();
         }

@@ -35,20 +35,22 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>bin\Release\Brevitee.Javascript.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EcmaScript.NET">
       <HintPath>..\packages\EcmaScript.Net.1.0.1.0\lib\net20\EcmaScript.NET.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\Assemblies\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Assemblies\Mvc4\System.Web.Mvc.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.0.0\lib\net45\System.Web.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -65,6 +67,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CliProvider.cs" />
+    <Compile Include="CompressionResult.cs" />
+    <Compile Include="EncryptionAlgorithm.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="JsContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -74,20 +78,26 @@
     <Compile Include="ScriptsController.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Brevitee.Incubation\Brevitee.Incubation.csproj">
-      <Project>{AA186331-A0D0-4F77-BEA2-E7B7650D3FF5}</Project>
-      <Name>Brevitee.Incubation</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Brevitee\Brevitee.csproj">
-      <Project>{8794C09D-D72C-420C-812F-BFDA251B64C9}</Project>
-      <Name>Brevitee</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="json2.js" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="lodash.underscore.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="base64.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Brevitee.Incubation\Brevitee.Incubation.csproj">
+      <Project>{aa186331-a0d0-4f77-bea2-e7b7650d3ff5}</Project>
+      <Name>Brevitee.Incubation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Brevitee\Brevitee.csproj">
+      <Project>{8794c09d-d72c-420c-812f-bfda251b64c9}</Project>
+      <Name>Brevitee</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />

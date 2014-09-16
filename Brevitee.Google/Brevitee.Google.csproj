@@ -32,6 +32,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>bin\Release\Brevitee.Google.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -61,19 +62,15 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Brevitee.Html\Brevitee.Html.csproj">
-      <Project>{795D5552-94D6-4373-B4F1-551B1D5BDAFB}</Project>
+      <Project>{795d5552-94d6-4373-b4f1-551b1d5bdafb}</Project>
       <Name>Brevitee.Html</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Brevitee.Incubation\Brevitee.Incubation.csproj">
-      <Project>{AA186331-A0D0-4F77-BEA2-E7B7650D3FF5}</Project>
-      <Name>Brevitee.Incubation</Name>
     </ProjectReference>
     <ProjectReference Include="..\Brevitee.ServiceProxy\Brevitee.ServiceProxy.csproj">
       <Project>{8987d8c8-033b-4993-99f0-8dd5a4d6dd0d}</Project>
       <Name>Brevitee.ServiceProxy</Name>
     </ProjectReference>
     <ProjectReference Include="..\Brevitee\Brevitee.csproj">
-      <Project>{8794C09D-D72C-420C-812F-BFDA251B64C9}</Project>
+      <Project>{8794c09d-d72c-420c-812f-bfda251b64c9}</Project>
       <Name>Brevitee</Name>
     </ProjectReference>
   </ItemGroup>

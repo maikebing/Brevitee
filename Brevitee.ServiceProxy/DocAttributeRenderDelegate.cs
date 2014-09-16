@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 
 namespace Brevitee.ServiceProxy
 {
-    public delegate void DocAttributeRenderDelegate(Dictionary<Type, DocInfo[]> docInfosByType, StringBuilder renderInto);
+    public delegate void DocRenderDelegate(Dictionary<string, List<DocInfo>> docInfosByType, StringBuilder renderInto);
     
 }

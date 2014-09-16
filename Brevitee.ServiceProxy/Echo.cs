@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Brevitee.ServiceProxy.Secure;
 
 namespace Brevitee.ServiceProxy
 {
@@ -15,15 +16,33 @@ namespace Brevitee.ServiceProxy
         public int IntProperty { get; set; }
     }
 
+    [ApiKeyRequired]
+    public class ApiKeyRequiredEcho : Echo
+    {
+
+    }
+
+
+    [Proxy]
+    [Encrypt]
+    public class EncryptedEcho: Echo
+    {
+    }
+
     /// <summary>
     /// Used specifically for testing ServiceProxy calls
     /// </summary>
     [Proxy("srvrEcho")]
     public class Echo
     {
+        public string Send(string value)
+        {
+            return TestStringParameter(value);
+        }
+
         public string TestStringParameter(string value)
         {
-            return string.Format(value);
+            return value;
         }
 
         public string TestObjectParameter(EchoData data, string more)

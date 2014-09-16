@@ -32,7 +32,7 @@ namespace Brevitee.DaoRef
 
         // property:Id, columnName:Id	
         [Exclude]
-        [Brevitee.Data.KeyColumn(Name = "Id", ExtractedType = "BigInt", MaxLength = "8")]
+        [Brevitee.Data.KeyColumn(Name = "Id", DbDataType = "BigInt", MaxLength = "8")]
         public long? Id
         {
             get
@@ -46,7 +46,7 @@ namespace Brevitee.DaoRef
         }
 
         // property:Name, columnName:Name	
-        [Brevitee.Data.Column(Name = "Name", ExtractedType = "NVarChar", MaxLength = "255", AllowNull = false)]
+        [Brevitee.Data.Column(Name = "Name", DbDataType = "NVarChar", MaxLength = "255", AllowNull = false)]
         public string Name
         {
             get
@@ -60,7 +60,7 @@ namespace Brevitee.DaoRef
         }
 
         // property:Description, columnName:Description	
-        [Brevitee.Data.Column(Name = "Description", ExtractedType = "NVarChar", MaxLength = "MAX", AllowNull = true)]
+        [Brevitee.Data.Column(Name = "Description", DbDataType = "NVarChar", MaxLength = "MAX", AllowNull = true)]
         public string Description
         {
             get
@@ -169,7 +169,7 @@ namespace Brevitee.DaoRef
             TestTableColumns c = new TestTableColumns();
             IQueryFilter filter = where(c);
 
-            Database db = database == null ? _.Db.For<TestTable>() : database;
+            Database db = database == null ? Db.For<TestTable>() : database;
             QuerySet query = GetQuerySet(db);
             query.Top<TestTable>(count);
             query.Where(filter);
@@ -188,7 +188,7 @@ namespace Brevitee.DaoRef
             TestTableColumns c = new TestTableColumns();
             IQueryFilter filter = where(c);
 
-            Database db = database == null ? _.Db.For<TestTable>() : database;
+            Database db = database == null ? Db.For<TestTable>() : database;
             QuerySet query = GetQuerySet(db);
             query.Count<TestTable>();
             query.Where(filter);

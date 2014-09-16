@@ -7,12 +7,28 @@ using Newtonsoft.Json;
 using System.Web.Mvc;
 using System.Web;
 using Brevitee.Html;
+using Yahoo.Yui.Compressor;
 
 namespace Brevitee.Javascript
 {
     public static class Extensions
     {
-        
+        public static bool TryCompress(this string script, out CompressionResult result)
+        {
+            result = new CompressionResult(script);
+            return result.Success;
+        }
+
+        /// <summary>
+        /// Use YuiCompressor to compress the specified javascript
+        /// </summary>
+        /// <param name="script"></param>
+        /// <returns></returns>
+        public static string Compress(this string script)
+        {
+            JavaScriptCompressor compressor = new JavaScriptCompressor();
+            return compressor.Compress(script);
+        }
 
         public static JsContext RunJavascript(this string javascriptSource, params CliProvider[] cliProviders)
         {

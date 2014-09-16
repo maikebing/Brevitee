@@ -93,7 +93,7 @@ namespace Brevitee.Distributed
             RepositoryProvider.Update(value);
         }
 
-        public virtual T[] Search<T>(object query)
+        public virtual IEnumerable<T> Search<T>(object query)
         {
             EnsureProvider();
             return RepositoryProvider.Search<T>(query);

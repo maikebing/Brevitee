@@ -76,7 +76,7 @@ public partial class bam
                         {                            
                             doneConnectionNames.Add(conx);
                             OutFormat("Writing schema for {0}", ConsoleColor.Yellow, conx);
-                            _.EnsureSchema(type);
+                            Db.EnsureSchema(type);
                         }
                     }
                 }

@@ -90,7 +90,7 @@ namespace Brevitee.Data.Tests
         {
             SchemaDefinition schema = ExtractTestSchemaFromDaoRefConfig();
             schema = SchemaDefinition.Load(schema.File);
-            OutFormat("file = {0}", schema.File);
+            OutLineFormat("file = {0}", schema.File);
             bool tested = false;
             foreach (Table table in schema.Tables)
             {
@@ -98,7 +98,7 @@ namespace Brevitee.Data.Tests
                 {
                     Expect.IsNotNullOrEmpty(column.DbDataType);
                     Expect.IsFalse(column.DbDataType.ToLowerInvariant().Equals("null"));
-                    OutFormat("DbDataType={0}", column.DbDataType);
+                    OutLineFormat("DbDataType={0}", column.DbDataType);
                     tested = true;
                 }
             }
@@ -112,7 +112,7 @@ namespace Brevitee.Data.Tests
             DeleteDaoRefSchemaFile();
             SchemaDefinition schema = ExtractTestSchemaFromDaoRefConfig();
             schema = SchemaDefinition.Load(schema.File);
-            OutFormat("file = {0}", schema.File);
+            OutLineFormat("file = {0}", schema.File);
             
             List<Table> tables = schema.Tables.Where<Table>(t => t.Name.Equals("DaoReferenceObjectWithForeignKey")).ToList();
             Expect.IsTrue(tables.Count == 1);
@@ -125,7 +125,7 @@ namespace Brevitee.Data.Tests
             DeleteDaoRefSchemaFile();
             SchemaDefinition schema = ExtractTestSchemaFromDaoRefConfig();
             schema = SchemaDefinition.Load(schema.File);
-            OutFormat("file = {0}", schema.File);
+            OutLineFormat("file = {0}", schema.File);
 
             List<Table> tables = schema.Tables.Where(t => t.ForeignKeys.Length > 0).ToList();
             Expect.IsTrue(tables.Count == 1);
@@ -133,8 +133,8 @@ namespace Brevitee.Data.Tests
             string tableName = tables[0].ForeignKeys[0].TableName;
             Expect.IsNotNullOrEmpty(tableName);
             Expect.IsNotNullOrEmpty(referencedClass);
-            OutFormat("Table: {0}", tableName);
-            OutFormat("ReferencedClass: {0}", referencedClass);
+            OutLineFormat("Table: {0}", tableName);
+            OutLineFormat("ReferencedClass: {0}", referencedClass);
         }
 
         internal static void DeleteDaoRefSchemaFile()
@@ -169,9 +169,9 @@ namespace Brevitee.Data.Tests
                 {
                     foreach (DataColumn column in data.Columns)
                     {
-                        OutFormat("Name: {0}\r\nValue: {1}", column.ColumnName, row[column].ToString());
+                        OutLineFormat("Name: {0}\r\nValue: {1}", column.ColumnName, row[column].ToString());
                     }
-                    Out();
+                    OutLine();
                 }
             }
             catch (Exception ex)
@@ -190,7 +190,7 @@ namespace Brevitee.Data.Tests
             
             foreach (ForeignKeyColumn fk in fks)
             {
-                Out(fk.PropertiesToString(), ConsoleColor.Cyan);
+                OutLine(fk.PropertiesToString(), ConsoleColor.Cyan);
                 Expect.IsNotNullOrEmpty(fk.ReferencedKey);
             }
         }

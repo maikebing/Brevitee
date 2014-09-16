@@ -13,7 +13,7 @@ namespace Brevitee.Data.Qi
 
         public static DataTable Where(QiQuery query)
         {
-            Database db = _.Db.For(query.cxName);
+            Database db = Db.For(query.cxName);
             SqlStringBuilder sql = new SqlStringBuilder();
             sql
                 .Select(query.table, query.columns)

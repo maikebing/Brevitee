@@ -10,7 +10,13 @@ using System.Web.Mvc;
 namespace Brevitee.Server
 {
     public class Includes
-    {
+    {        
+        public Includes()
+        {
+            this._scripts = new List<string>();
+            this._css = new List<string>();
+        }
+
         List<string> _scripts;
         public string[] Scripts
         {

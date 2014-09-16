@@ -21,6 +21,8 @@
     <SccProvider>
     </SccProvider>
     <TargetFrameworkProfile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -41,15 +43,16 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>bin\Release\Brevitee.Html.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CsQuery, Version=1.3.1.1, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="CsQuery, Version=1.3.3.249, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Assemblies\CsQuery.dll</HintPath>
+      <HintPath>..\packages\CsQuery.1.3.4\lib\net40\CsQuery.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Assemblies\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -86,7 +89,6 @@
     <Compile Include="Attributes\StringInput.cs" />
     <Compile Include="Attributes\TextArea.cs" />
     <Compile Include="Css.cs" />
-    <Compile Include="CssClass.cs" />
     <Compile Include="CustomInputBuilder.cs" />
     <Compile Include="DeferredView.cs" />
     <Compile Include="DeferredViewController.cs" />
@@ -95,6 +97,9 @@
     <Compile Include="HtmlHelperExtensions.cs" />
     <Compile Include="Img.cs" />
     <Compile Include="MethodFormResult.cs" />
+    <Compile Include="Pdf.cs" />
+    <Compile Include="PdfOrientation.cs" />
+    <Compile Include="PdfOutput.cs" />
     <Compile Include="TagBuilderDelegate.cs" />
     <Compile Include="JsTag.cs" />
     <Compile Include="Js\DataSet.cs" />
@@ -114,9 +119,9 @@
     <EmbeddedResource Include="Js\DataSet.js" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Brevitee.Analytics\Brevitee.Analytics.csproj">
-      <Project>{67cca5a4-9b97-444c-9f4b-f464b2e04d6b}</Project>
-      <Name>Brevitee.Analytics</Name>
+    <ProjectReference Include="..\Brevitee.CommandLine\Brevitee.CommandLine.csproj">
+      <Project>{ea9863a9-8e0b-4497-b7fd-abf450a3e468}</Project>
+      <Name>Brevitee.CommandLine</Name>
     </ProjectReference>
     <ProjectReference Include="..\Brevitee.Data\Brevitee.Data.csproj">
       <Project>{3b52b739-58fd-4b49-b815-6b317e701520}</Project>
@@ -146,7 +151,11 @@
   <ItemGroup>
     <Content Include="Js\spin.js" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

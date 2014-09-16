@@ -78,7 +78,7 @@ namespace Brevitee.Distributed
             provider.Delete(value);
         }
 
-        public T[] Search<T>(object query)
+        public IEnumerable<T> Search<T>(object query)
         {
             List<T> results = new List<T>();
             Parallel.ForEach<Slot>(Slots, (s) =>

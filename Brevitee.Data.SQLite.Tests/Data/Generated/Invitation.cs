@@ -31,7 +31,7 @@ namespace SampleData
 		}
 
 	// property:Id, columnName:Id	
-	[Brevitee.Data.KeyColumn(Name="Id", ExtractedType="BigInt", MaxLength="8")]
+	[Brevitee.Data.KeyColumn(Name="Id", DbDataType="BigInt", MaxLength="8")]
 	public long? Id
 	{
 		get
@@ -45,7 +45,7 @@ namespace SampleData
 	}
 
 	// property:LastModifiedBy, columnName:LastModifiedBy	
-	[Brevitee.Data.Column(Name="LastModifiedBy", ExtractedType="VarChar", MaxLength="50", AllowNull=false)]
+	[Brevitee.Data.Column(Name="LastModifiedBy", DbDataType="VarChar", MaxLength="50", AllowNull=false)]
 	public string LastModifiedBy
 	{
 		get
@@ -59,7 +59,7 @@ namespace SampleData
 	}
 
 	// property:LastModifiedDate, columnName:LastModifiedDate	
-	[Brevitee.Data.Column(Name="LastModifiedDate", ExtractedType="DateTime", MaxLength="8", AllowNull=false)]
+	[Brevitee.Data.Column(Name="LastModifiedDate", DbDataType="DateTime", MaxLength="8", AllowNull=false)]
 	public DateTime LastModifiedDate
 	{
 		get
@@ -73,7 +73,7 @@ namespace SampleData
 	}
 
 	// property:Sent, columnName:Sent	
-	[Brevitee.Data.Column(Name="Sent", ExtractedType="DateTime", MaxLength="8", AllowNull=true)]
+	[Brevitee.Data.Column(Name="Sent", DbDataType="DateTime", MaxLength="8", AllowNull=true)]
 	public DateTime Sent
 	{
 		get
@@ -91,7 +91,7 @@ namespace SampleData
 	[Brevitee.Data.ForeignKey(
         Table="Invitation",
 		Name="InviterId", 
-		ExtractedType="BigInt", 
+		DbDataType="BigInt", 
 		MaxLength="8",
 		AllowNull=false, 
 		ReferencedKey="Id",
@@ -126,7 +126,7 @@ namespace SampleData
 	[Brevitee.Data.ForeignKey(
         Table="Invitation",
 		Name="InviteeId", 
-		ExtractedType="BigInt", 
+		DbDataType="BigInt", 
 		MaxLength="8",
 		AllowNull=false, 
 		ReferencedKey="Id",
@@ -234,7 +234,7 @@ namespace SampleData
             InvitationColumns c = new InvitationColumns();
             IQueryFilter filter = where(c);         
             
-			Database db = database == null ? _.Db.For<Invitation>(): database;
+			Database db = database == null ? Db.For<Invitation>(): database;
 			QuerySet query = GetQuerySet(db); 
             query.Top<Invitation>(count);
             query.Where(filter);
@@ -253,7 +253,7 @@ namespace SampleData
 			InvitationColumns c = new InvitationColumns();
 			IQueryFilter filter = where(c) ;
 
-			Database db = database == null ? _.Db.For<Invitation>(): database;
+			Database db = database == null ? Db.For<Invitation>(): database;
 			QuerySet query = GetQuerySet(db);	 
 			query.Count<Invitation>();
 			query.Where(filter);	  

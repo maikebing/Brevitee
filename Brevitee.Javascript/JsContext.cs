@@ -17,6 +17,11 @@ namespace Brevitee.Javascript
 
         public JsContext()
         {
+            Refresh();
+        }
+
+        public void Refresh()
+        {
             this._context = Context.Enter();
             this._scope = _context.InitStandardObjects();
             this._loaded = new StringBuilder();
@@ -33,7 +38,9 @@ namespace Brevitee.Javascript
         /// <param name="script"></param>
         public void Load(string script)
         {
+            _loaded.AppendLine(";");
             _loaded.Append(script);
+            _loaded.AppendLine(";");
         }
 
         public T GetCliValue<T>(string varName)
@@ -47,6 +54,14 @@ namespace Brevitee.Javascript
             return (T)ScriptableObject.GetProperty(_scope, varName);            
         }
         
+        public string Script(string add)
+        {
+            StringBuilder script = new StringBuilder(_loaded.ToString());
+            script.AppendLine(";");
+            script.Append(add);
+            return script.ToString();
+        }
+
         public void Run(string script, string name = "")
         {
             if (string.IsNullOrEmpty(name))

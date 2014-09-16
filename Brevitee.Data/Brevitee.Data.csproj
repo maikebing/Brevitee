@@ -41,6 +41,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>bin\Release\Brevitee.Data.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -53,14 +54,15 @@
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Assemblies\Mvc4\System.Web.Mvc.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.0.0\lib\net45\System.Web.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Yahoo.Yui.Compressor">
-      <HintPath>..\Assemblies\Yahoo.Yui.Compressor.dll</HintPath>
+    <Reference Include="Yahoo.Yui.Compressor, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\YUICompressor.NET.2.3.0.0\lib\NET20\Yahoo.Yui.Compressor.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -69,12 +71,15 @@
     <Compile Include="ColumnAttribute.cs" />
     <Compile Include="CommitDelegate.cs" />
     <Compile Include="Comparison.cs" />
+    <Compile Include="ConfiguredDatabaseFactory.cs" />
+    <Compile Include="ConnectionStringInfo.cs" />
     <Compile Include="ContainsComparison.cs" />
     <Compile Include="CountResult.cs" />
     <Compile Include="DaoController.cs" />
     <Compile Include="DaoProxyRegistration.cs" />
     <Compile Include="DaoProxySystem.cs" />
     <Compile Include="DaoTransaction.cs" />
+    <Compile Include="Db.cs" />
     <Compile Include="DoesntContainComparison.cs" />
     <Compile Include="DoesntEndWithComparison.cs" />
     <Compile Include="DoesntStartWithComparison.cs" />
@@ -84,6 +89,7 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="DaoProxyResult.cs" />
     <Compile Include="FilterToken.cs" />
+    <Compile Include="IRegistrarCaller.cs" />
     <Compile Include="Query.cs" />
     <Compile Include="IHasDataRow.cs" />
     <Compile Include="InComparison.cs" />
@@ -98,6 +104,8 @@
     <Compile Include="Qi\QiQuery.cs" />
     <Compile Include="QueryFilter.cs" />
     <Compile Include="Registrar.cs" />
+    <Compile Include="RegistrarCallerFactory.cs" />
+    <Compile Include="SchemaInitializer.cs" />
     <Compile Include="Select.cs" />
     <Compile Include="SelectColumn.cs" />
     <Compile Include="SortOrder.cs" />
@@ -153,6 +161,7 @@
     <Compile Include="WhereDelegate.cs" />
     <Compile Include="WhereFormat.cs" />
     <Compile Include="XrefDaoCollection.cs" />
+    <Compile Include="_.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Js\AES.js" />

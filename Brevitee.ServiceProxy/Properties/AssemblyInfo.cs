@@ -39,3 +39,4 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Brevitee.Automation.Tests")]
 [assembly: InternalsVisibleTo("Brevitee.Server")]
 [assembly: InternalsVisibleTo("Brevitee.Server.Tests")]
+[assembly: InternalsVisibleTo("Brevitee.ServiceProxy.Tests")]

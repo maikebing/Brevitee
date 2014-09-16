@@ -5,8 +5,9 @@ using Brevitee;
 using System.Web.Mvc;
 using Brevitee.Data;
 using Brevitee.Data.Qi;
+using Brevitee.Analytics.Classification;
 
-namespace Brevitee.Analytics.Classification.Qi
+namespace Qi
 {
     public class FeatureController : DaoController
     {	

@@ -23,7 +23,7 @@ namespace Brevitee.Logging.Data
 		}
 
 	// property:Id, columnName:Id	
-	[Brevitee.Data.KeyColumn(Name="Id", ExtractedType="BigInt", MaxLength="8")]
+	[Brevitee.Data.KeyColumn(Name="Id", DbDataType="BigInt", MaxLength="8")]
 	public long? Id
 	{
 		get
@@ -37,7 +37,7 @@ namespace Brevitee.Logging.Data
 	}
 
 	// property:Source, columnName:Source	
-	[Brevitee.Data.Column(Name="Source", ExtractedType="NVarChar", MaxLength="4000", AllowNull=false)]
+	[Brevitee.Data.Column(Name="Source", DbDataType="NVarChar", MaxLength="4000", AllowNull=false)]
 	public string Source
 	{
 		get
@@ -51,7 +51,7 @@ namespace Brevitee.Logging.Data
 	}
 
 	// property:Category, columnName:Category	
-	[Brevitee.Data.Column(Name="Category", ExtractedType="NVarChar", MaxLength="255", AllowNull=false)]
+	[Brevitee.Data.Column(Name="Category", DbDataType="NVarChar", MaxLength="255", AllowNull=false)]
 	public string Category
 	{
 		get
@@ -65,7 +65,7 @@ namespace Brevitee.Logging.Data
 	}
 
 	// property:EventID, columnName:EventID	
-	[Brevitee.Data.Column(Name="EventID", ExtractedType="Int", MaxLength="4", AllowNull=true)]
+	[Brevitee.Data.Column(Name="EventID", DbDataType="Int", MaxLength="4", AllowNull=true)]
 	public int? EventID
 	{
 		get
@@ -79,7 +79,7 @@ namespace Brevitee.Logging.Data
 	}
 
 	// property:User, columnName:User	
-	[Brevitee.Data.Column(Name="User", ExtractedType="NVarChar", MaxLength="255", AllowNull=true)]
+	[Brevitee.Data.Column(Name="User", DbDataType="NVarChar", MaxLength="255", AllowNull=true)]
 	public string User
 	{
 		get
@@ -93,7 +93,7 @@ namespace Brevitee.Logging.Data
 	}
 
 	// property:Time, columnName:Time	
-	[Brevitee.Data.Column(Name="Time", ExtractedType="DateTime", MaxLength="8", AllowNull=false)]
+	[Brevitee.Data.Column(Name="Time", DbDataType="DateTime", MaxLength="8", AllowNull=false)]
 	public DateTime Time
 	{
 		get
@@ -107,7 +107,7 @@ namespace Brevitee.Logging.Data
 	}
 
 	// property:MessageSignature, columnName:MessageSignature	
-	[Brevitee.Data.Column(Name="MessageSignature", ExtractedType="NVarChar", MaxLength="4000", AllowNull=false)]
+	[Brevitee.Data.Column(Name="MessageSignature", DbDataType="NVarChar", MaxLength="4000", AllowNull=false)]
 	public string MessageSignature
 	{
 		get
@@ -121,7 +121,7 @@ namespace Brevitee.Logging.Data
 	}
 
 	// property:MessageVariableValues, columnName:MessageVariableValues	
-	[Brevitee.Data.Column(Name="MessageVariableValues", ExtractedType="NVarChar", MaxLength="4000", AllowNull=false)]
+	[Brevitee.Data.Column(Name="MessageVariableValues", DbDataType="NVarChar", MaxLength="4000", AllowNull=false)]
 	public string MessageVariableValues
 	{
 		get
@@ -135,7 +135,7 @@ namespace Brevitee.Logging.Data
 	}
 
 	// property:Message, columnName:Message	
-	[Brevitee.Data.Column(Name="Message", ExtractedType="NVarChar", MaxLength="4000", AllowNull=false)]
+	[Brevitee.Data.Column(Name="Message", DbDataType="NVarChar", MaxLength="4000", AllowNull=false)]
 	public string Message
 	{
 		get
@@ -149,7 +149,7 @@ namespace Brevitee.Logging.Data
 	}
 
 	// property:Computer, columnName:Computer	
-	[Brevitee.Data.Column(Name="Computer", ExtractedType="NVarChar", MaxLength="255", AllowNull=false)]
+	[Brevitee.Data.Column(Name="Computer", DbDataType="NVarChar", MaxLength="255", AllowNull=false)]
 	public string Computer
 	{
 		get
@@ -163,7 +163,7 @@ namespace Brevitee.Logging.Data
 	}
 
 	// property:Severity, columnName:Severity	
-	[Brevitee.Data.Column(Name="Severity", ExtractedType="NVarChar", MaxLength="50", AllowNull=false)]
+	[Brevitee.Data.Column(Name="Severity", DbDataType="NVarChar", MaxLength="50", AllowNull=false)]
 	public string Severity
 	{
 		get
@@ -282,7 +282,7 @@ namespace Brevitee.Logging.Data
 
             if (db == null)
             {
-                db = _.Db.For<LogEvent>();
+                db = Db.For<LogEvent>();
             }
 
             query.Execute(db);
@@ -299,7 +299,7 @@ namespace Brevitee.Logging.Data
 
 			if(db == null)
 			{
-				db = _.Db.For<LogEvent>();
+				db = Db.For<LogEvent>();
 			}
 			query.Execute(db);
 			return query.Results.As<CountResult>(0).Value;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Brevitee;
 using Brevitee.Html;
 using System.Web.Mvc;
 using System.IO;
@@ -41,10 +42,14 @@ namespace Brevitee.Server.Renderers
             lock (_renderLock)
             {
                 string fileName = "{0}.dust"._Format(toRender.GetType().Name);
-                using (FileStream fs = File.Create(Path.Combine(dustDir.FullName, fileName), (int)OutputStream.Length))
+                string dustFilePath = Path.Combine(dustDir.FullName, fileName);
+                if (!File.Exists(dustFilePath))
                 {
-                    OutputStream.Seek(0, SeekOrigin.Begin);
-                    OutputStream.CopyTo(fs);
+                    using (FileStream fs = File.Create(dustFilePath, (int)OutputStream.Length))
+                    {
+                        OutputStream.Seek(0, SeekOrigin.Begin);
+                        OutputStream.CopyTo(fs);
+                    }
                 }
             }
         }
@@ -62,7 +67,7 @@ namespace Brevitee.Server.Renderers
         /// <param name="output"></param>
         public override void Render(object toRender, Stream output)
         {
-            string fieldSet = FieldSetFor(toRender.GetType()).ToString();            
+            string fieldSet = FieldSetFor(toRender.GetType()).ToString().XmlToHumanReadable();            
             byte[] data = Encoding.UTF8.GetBytes(fieldSet);
             output.Write(data, 0, data.Length);
         }

@@ -1,8 +1,8 @@
-﻿	// start @Model.PropertyName -> @Model.Name
-	[Bryan.Apellanes.Data.ForeignKey(
+	// start @Model.PropertyName -> @Model.Name
+	[Brevitee.Data.ForeignKey(
         Table="@(Model.TableName)",
 		Name="@(Model.Name)", 
-		ExtractedType="@(Model.DbDataType)", 
+		DbDataType="@(Model.DbDataType)", 
 		MaxLength="@(Model.MaxLength)",
 		AllowNull=@(Model.AllowNull.ToString().ToLower()), 
 		ReferencedKey="@(Model.ReferencedKey)",
@@ -27,7 +27,7 @@
 		{
 			if(_@(Model.ReferencedClass.CamelCase())Of@(Model.PropertyName) == null)
 			{
-				_@(Model.ReferencedClass.CamelCase())Of@(Model.PropertyName) = @(Namespace).@(Model.ReferencedClass).OneWhere(f => f.@(Model.ReferencedKey) == this.@(Model.PropertyName));
+				_@(Model.ReferencedClass.CamelCase())Of@(Model.PropertyName) = @(Namespace).@(Model.ReferencedClass).OneWhere(c => c.KeyColumn == this.@(Model.PropertyName));
 			}
 			return _@(Model.ReferencedClass.CamelCase())Of@(Model.PropertyName);
 		}

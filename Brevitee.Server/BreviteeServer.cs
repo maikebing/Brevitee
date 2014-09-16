@@ -10,10 +10,12 @@ using Brevitee.Incubation;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Net;
+using Brevitee.Data;
 using Brevitee.Configuration;
 using Brevitee.ServiceProxy;
 using Brevitee.Web;
 using System.IO;
+using Brevitee.UserAccounts;
 
 namespace Brevitee.Server
 {
@@ -22,26 +24,26 @@ namespace Brevitee.Server
         HttpServer _server;
         
         #region configurable ctors
-        public BreviteeServer()
-        {
-            this.EnableDao = true;
-            this.EnableServiceProxy = true;
-            this.Initialized += InitializeHandler;
-            LoadConf();
-        }
-
         public BreviteeServer(BreviteeConf conf)
         {
             this.EnableDao = true;
             this.EnableServiceProxy = true;
             this.Initialized += InitializeHandler;
             this.SetConf(conf);
+
+            SQLiteRegistrar.RegisterFallback();
+
+            AppDomain.CurrentDomain.DomainUnload += (s, a) =>
+            {
+                this.Stop();
+            };
         }
 
         private void InitializeHandler(BreviteeServer server)
         {
             if (server.InitializeTemplates)
             {
+                TemplateInitializer.Subscribe(Logger);
                 TemplateInitializer.Initialize();
             }
 
@@ -50,6 +52,8 @@ namespace Brevitee.Server
 
         TemplateInitializerBase _templateInitializer;
         object _templateInitializerLock = new object();
+        // The initializer used to initialize templates 
+        // after full server initialization
         public TemplateInitializerBase TemplateInitializer
         {
             get
@@ -68,6 +72,12 @@ namespace Brevitee.Server
         {
             get;
             private set;
+        }
+
+        public SchemaInitializer[] SchemaInitializers // gets set by CopyProperties in SetConf
+        {
+            get;
+            set;
         }
 
         public event Action<BreviteeServer> Initializing;
@@ -89,6 +99,43 @@ namespace Brevitee.Server
             }
         }
 
+        public event Action<BreviteeServer> SchemasInitializing;
+        public event Action<BreviteeServer> SchemasInitialized;
+
+        protected void OnSchemasInitializing()
+        {
+            if (SchemasInitializing != null)
+            {
+                SchemasInitializing(this);
+            }
+        }
+
+        protected void OnSchemasInitialized()
+        {
+            if (SchemasInitialized != null)
+            {
+                SchemasInitialized(this);
+            }
+        }
+
+        public event Action<BreviteeServer, SchemaInitializer> SchemaInitializing;
+        public event Action<BreviteeServer, SchemaInitializer> SchemaInitialized;
+
+        protected void OnSchemaInitializing(SchemaInitializer initializer)
+        {
+            if (SchemaInitializing != null)
+            {
+                SchemaInitializing(this, initializer);
+            }
+        }
+        protected void OnSchemaInitialized(SchemaInitializer initializer)
+        {
+            if (SchemaInitialized != null)
+            {
+                SchemaInitialized(this, initializer);
+            }
+        }
+
         public virtual void Initialize()
         {
             if (!this.IsInitialized)
@@ -100,17 +147,58 @@ namespace Brevitee.Server
                 SubscribeResponders(Logger);
 
                 EnsureDefaults();
-                Logger.AddEntry("{0} initializing: {1}", this.GetType().Name, this.PropertiesToString());
+                Logger.AddEntry("{0} initializing: \r\n{1}", this.GetType().Name, this.PropertiesToString());
                 ConfigureHttpServer();
+                
+                InitializeCommonSchemas();
 
                 InitializeResponders();
-                
+
+                InitializeUserManagers();
+
                 OnInitialized();
             }
             else
             {
                 Logger.AddEntry("Initialize called but the {0} was already initialized", LogEventType.Warning, this.GetType().Name);
             }
+        }
+
+        /// <summary>
+        /// Initialize server level schemas
+        /// </summary>
+        protected virtual void InitializeCommonSchemas()
+        {
+            OnSchemasInitializing();
+            SchemaInitializers.Each(schemaInitializer =>
+            {
+                OnSchemaInitializing(schemaInitializer);
+                Exception ex;
+                if (!schemaInitializer.Initialize(Logger, out ex))
+                {
+                    Logger.AddEntry("An error occurred initializing schema ({0}): {1}", ex, schemaInitializer.SchemaName, ex.Message);
+                }
+                OnSchemaInitialized(schemaInitializer);
+            });
+            OnSchemasInitialized();
+        }
+
+        protected virtual void InitializeUserManagers()
+        {
+            ContentResponder.AppConfigs.Each(appConfig =>
+            {
+                try
+                {
+                    UserManager mgr = appConfig.UserManager.Create(Logger);
+					// TODO: Use service locator (incubator) here
+                    mgr.ApplicationNameResolver = new AppConfApplicationNameProvider(appConfig);
+                    AddAppService<UserManager>(appConfig.Name, mgr);
+                }
+                catch (Exception ex)
+                {
+                    Logger.AddEntry("An error occurred initializing user manager for app ({0}): {1}", ex, appConfig.Name, ex.Message);
+                }
+            });
         }
 
         protected virtual void InitializeResponders()
@@ -125,7 +213,7 @@ namespace Brevitee.Server
                 ServiceProxyResponder.Initialize();
             }
         }
-
+        
         protected virtual void SubscribeResponders(ILogger logger)
         {
             ContentResponder.Subscribe(logger);
@@ -141,29 +229,23 @@ namespace Brevitee.Server
 
         private void ConfigureHttpServer()
         {
-            int maxThreads = int.Parse(this.MaxThreads);
+            int maxThreads = this.MaxThreads;
             if (maxThreads < 5)
             {
                 maxThreads = 5;
             }
-            int port = int.Parse(this.Port);
-            _server = new HttpServer(maxThreads, Logger, port);
-            _server.HostName = "+";
+
+            _server = new HttpServer(maxThreads, Logger);
+            _server.HostPrefixes = GetHostPrefixes();
             _server.ProcessRequest += ProcessRequest;
         }
 
         private void EnsureDefaults()
         {
-            if (string.IsNullOrEmpty(this.MaxThreads))
+            if(this.MaxThreads <= 0)
             {
-                this.MaxThreads = "25";
+                this.MaxThreads = 50;
                 Logger.AddEntry("Set MaxThreads to default value {0}", this.MaxThreads);
-            }
-
-            if (string.IsNullOrEmpty(this.Port) || this.Port.Equals("true"))
-            {
-                this.Port = "8080";
-                Logger.AddEntry("Set port to default value {0}", this.Port);
             }
         }
 
@@ -225,9 +307,17 @@ namespace Brevitee.Server
                 {
                     logger.AddEntry("{0}::Sett(ED) configuration, current config: \r\n{1}", className, c.PropertiesToString());
                 };
+                this.SchemasInitializing += (s) =>
+                {
+                    logger.AddEntry("{0}::Initializ(ING) schemas", className);
+                };
+                this.SchemasInitialized += (s) =>
+                {
+                    logger.AddEntry("{0}::Initializ(ED) schemas", className);
+                };
                 this.Starting += (s) =>
                 {
-                    logger.AddEntry("{0}::Start(ING) on port {1}", className, _server.Port.ToString());
+                    logger.AddEntry("{0}::Start(ING)", className);
                 };
 
                 this.Started += (s) =>
@@ -275,6 +365,18 @@ namespace Brevitee.Server
             }
         }
 
+        public HostPrefix[] GetHostPrefixes()
+        {
+            BreviteeConf serverConfig = GetCurrentConf(false);
+            List<HostPrefix> results = new List<HostPrefix>();
+            serverConfig.AppConfigs.Each(appConf =>
+            {
+                results.AddRange(appConf.Bindings);
+            });
+
+            return results.ToArray();
+        }
+
         public ProxyAlias[] ProxyAliases
         {
             get;
@@ -293,8 +395,8 @@ namespace Brevitee.Server
             set;
         }
 
-        string _maxThreads;
-        public string MaxThreads
+        int _maxThreads;
+        public int MaxThreads
         {
             get
             {
@@ -305,43 +407,20 @@ namespace Brevitee.Server
                 _maxThreads = value;
             }
         }
-
-        string _port;
-        public string Port
-        {
-            get
-            {
-                return _port;
-            }
-            set
-            {
-                _port = value;
-            }
-        }
-
-
+        
+        string _contentRoot;
         public string ContentRoot
         {
             get
             {
-                return Fs.Root;
+                return _contentRoot;
             }
             set
             {
-                Fs.Root = value;
+                _contentRoot = new Fs(value).Root;
             }
         }
-
-        Fs _fs;
-        object _fsLock = new object();
-        protected internal Fs Fs
-        {
-            get
-            {
-                return _fsLock.DoubleCheckLock(ref _fs, () => new Fs("."));
-            }
-        }
-
+        
         public event Action<BreviteeServer, BreviteeConf> LoadingConf;
         public event Action<BreviteeServer, BreviteeConf> LoadedConf;
 
@@ -369,10 +448,44 @@ namespace Brevitee.Server
         public BreviteeConf LoadConf()
         {
             OnLoadingConf();
-            BreviteeConf conf = BreviteeConf.Load();
+            BreviteeConf conf = BreviteeConf.Load(ContentRoot);
             SetConf(conf);
             OnLoadedConf(conf);
             return conf;
+        }
+
+        public event Action<BreviteeServer, AppConf> CreatingApp;
+        public event Action<BreviteeServer, AppConf> CreatedApp;
+
+        protected void OnCreatingApp(AppConf conf)
+        {
+            if (CreatingApp != null)
+            {
+                CreatingApp(this, conf);
+            }
+        }
+
+        protected void OnCreatedApp(AppConf conf)
+        {
+            if (CreatedApp != null)
+            {
+                CreatedApp(this, conf);
+            }
+        }
+
+        public void CreateApp(string appName, string defaultLayout = null)
+        {
+            AppConf conf = new AppConf(appName);
+            if (!string.IsNullOrEmpty(defaultLayout))
+            {
+                conf.DefaultLayout = defaultLayout;
+            }
+            OnCreatingApp(conf);
+
+            AppContentResponder responder = new AppContentResponder(ContentResponder, conf);
+            responder.Initialize();
+
+            OnCreatedApp(conf);
         }
 
         public event Action<BreviteeServer, BreviteeConf> SettingConf;
@@ -429,7 +542,7 @@ namespace Brevitee.Server
         public BreviteeConf SaveConf(bool overwrite = false, ConfFormat format = ConfFormat.Json)
         {
             BreviteeConf conf = GetCurrentConf();
-            conf.Save(overwrite, format);
+            conf.Save(ContentRoot, overwrite, format);
             OnSavedConf(conf);
             return conf;
         }
@@ -688,8 +801,53 @@ namespace Brevitee.Server
             }
             Start();
         }
-
         
+        public Incubator CommonServiceProvider
+        {
+            get
+            {
+                return ServiceProxyResponder.CommonServiceProvider;
+            }
+        }
+
+        public Dictionary<string, Incubator> AppServiceProviders
+        {
+            get
+            {
+                return ServiceProxyResponder.AppServiceProviders;
+            }
+        }
+
+        public void AddCommonService<T>()
+        {
+            ServiceProxyResponder.AddCommonService<T>((T)typeof(T).Construct());
+        }
+
+        public void AddCommonService<T>(T instance)
+        {
+            ServiceProxyResponder.AddCommonService<T>(instance);
+        }
+
+        public void AddAppService<T>(string appName)
+        {
+            ServiceProxyResponder.AddAppService<T>(appName, (T)typeof(T).Construct());
+        }
+
+        public void AddAppService<T>(string appName, T instance)
+        {
+            ServiceProxyResponder.AddAppService<T>(appName, instance);
+        }
+
+        public void AddAppService<T>(string appName, Func<T> instanciator)
+        {
+            ServiceProxyResponder.AddAppService<T>(appName, instanciator);
+        }
+
+        public void AddAppService<T>(string appName, Func<Type, T> instanciator)
+        {
+            ServiceProxyResponder.AddAppService<T>(appName, instanciator);
+        }
+
         public void AddLogger(ILogger logger)
         {
             MultiTargetLogger mtl = new MultiTargetLogger();
@@ -714,7 +872,7 @@ namespace Brevitee.Server
             HttpListenerRequest request = context.Request;
             HttpListenerResponse response = context.Response;
 
-            RequestHandler.HandleRequest(new Context(new RequestWrapper(request), new ResponseWrapper(response)));
+            RequestHandler.HandleRequest(new HttpContextWrapper(new RequestWrapper(request), new ResponseWrapper(response)));
         }
     }
 

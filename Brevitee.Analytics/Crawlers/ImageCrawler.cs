@@ -96,7 +96,7 @@ namespace Brevitee.Analytics.Crawlers
                     Image img = Image.OneWhere(c => c.UrlId == image.Id);
                     if (img == null)
                     {
-                        Data.ImageCrawler cr = Data.ImageCrawler.OneWhere(c => c.Name == this.Name);
+                        Crawler cr = Crawler.OneWhere(c => c.Name == this.Name);
                         cr.RootUrl = target;
                         img = new Image();
                         img.UrlId = image.Id;

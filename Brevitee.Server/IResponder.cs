@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Brevitee.ServiceProxy;
 
 namespace Brevitee.Server
 {
@@ -9,7 +10,7 @@ namespace Brevitee.Server
     {
         event ResponderEventHandler Responded;
         event ResponderEventHandler NotResponded;
-        bool Respond(IContext context);
-        bool TryRespond(IContext context);
+        bool Respond(IHttpContext context);
+        bool TryRespond(IHttpContext context);
     }
 }

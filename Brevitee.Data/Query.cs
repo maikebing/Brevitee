@@ -93,16 +93,20 @@ namespace Brevitee.Data
             
             if (db == null)
             {
-                db = _.Db.For(query.cxName);
+                db = Db.For(query.cxName);
             }
 
             return GetDataTable(db, sql);
         }
-
         public DataTable GetDataTable()
         {
+            return GetDataTable(Database);
+        }
+
+        public DataTable GetDataTable(Database database)
+        {
             SqlStringBuilder sql = GetFilteredQuery();
-            Database db = EstablishOrderAndDb(OrderBy, Database, sql);
+            Database db = EstablishOrderAndDb(OrderBy, database, sql);
             return GetDataTable(db, sql);
         }
 
@@ -116,7 +120,7 @@ namespace Brevitee.Data
 
             if (db == null)
             {
-                db = _.Db.For<T>();
+                db = Db.For<T>();
                 Database = db;
             }
             return db;

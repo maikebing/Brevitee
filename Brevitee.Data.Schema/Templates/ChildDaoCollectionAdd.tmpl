@@ -1,2 +1,2 @@
-﻿
+
             this.ChildCollections.Add("@(Model.TableName)_@(Model.Name)", new @(Model.ReferencingClass)Collection(new Query<@(Model.ReferencingClass)Columns, @(Model.ReferencingClass)>((c) => c.@(Model.PropertyName) == this.@(Model.ReferencedKey)), this, "@(Model.Name)"));	

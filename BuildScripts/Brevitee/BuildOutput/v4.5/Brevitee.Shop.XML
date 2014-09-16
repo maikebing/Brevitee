@@ -1,0 +1,594 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Brevitee.Shop</name>
+    </assembly>
+    <members>
+        <member name="M:Brevitee.Shop.Cart.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Shop.Cart.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the Cart table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Shop.Cart.Where(System.Func{Brevitee.Shop.CartColumns,Brevitee.Data.QueryFilter{Brevitee.Shop.CartColumns}},Brevitee.Data.OrderBy{Brevitee.Shop.CartColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a CartColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between CartColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Shop.Cart.Where(Brevitee.Data.WhereDelegate{Brevitee.Shop.CartColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a CartColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CartColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Shop.Cart.Where(Brevitee.Data.WhereDelegate{Brevitee.Shop.CartColumns},Brevitee.Data.OrderBy{Brevitee.Shop.CartColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a CartColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CartColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Shop.Cart.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Shop.Cart.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Shop.CartColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single Cart instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a CartColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CartColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Shop.Cart.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Shop.Cart.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Shop.CartColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a CartColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CartColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Shop.Cart.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Shop.CartColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a CartColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CartColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Shop.Cart.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Shop.CartColumns},Brevitee.Data.OrderBy{Brevitee.Shop.CartColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a CartColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CartColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Shop.Cart.Count(Brevitee.Data.WhereDelegate{Brevitee.Shop.CartColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a CartColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CartColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Shop.CartItem.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Shop.CartItem.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the CartItem table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Shop.CartItem.Where(System.Func{Brevitee.Shop.CartItemColumns,Brevitee.Data.QueryFilter{Brevitee.Shop.CartItemColumns}},Brevitee.Data.OrderBy{Brevitee.Shop.CartItemColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a CartItemColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between CartItemColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Shop.CartItem.Where(Brevitee.Data.WhereDelegate{Brevitee.Shop.CartItemColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a CartItemColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CartItemColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Shop.CartItem.Where(Brevitee.Data.WhereDelegate{Brevitee.Shop.CartItemColumns},Brevitee.Data.OrderBy{Brevitee.Shop.CartItemColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a CartItemColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CartItemColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Shop.CartItem.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Shop.CartItem.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Shop.CartItemColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single CartItem instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a CartItemColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CartItemColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Shop.CartItem.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Shop.CartItem.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Shop.CartItemColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a CartItemColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CartItemColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Shop.CartItem.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Shop.CartItemColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a CartItemColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CartItemColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Shop.CartItem.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Shop.CartItemColumns},Brevitee.Data.OrderBy{Brevitee.Shop.CartItemColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a CartItemColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CartItemColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Shop.CartItem.Count(Brevitee.Data.WhereDelegate{Brevitee.Shop.CartItemColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a CartItemColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CartItemColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Shop.Item.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Shop.Item.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the Item table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Shop.Item.Where(System.Func{Brevitee.Shop.ItemColumns,Brevitee.Data.QueryFilter{Brevitee.Shop.ItemColumns}},Brevitee.Data.OrderBy{Brevitee.Shop.ItemColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a ItemColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between ItemColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Shop.Item.Where(Brevitee.Data.WhereDelegate{Brevitee.Shop.ItemColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a ItemColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ItemColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Shop.Item.Where(Brevitee.Data.WhereDelegate{Brevitee.Shop.ItemColumns},Brevitee.Data.OrderBy{Brevitee.Shop.ItemColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a ItemColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ItemColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Shop.Item.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Shop.Item.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Shop.ItemColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single Item instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a ItemColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ItemColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Shop.Item.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Shop.Item.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Shop.ItemColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a ItemColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ItemColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Shop.Item.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Shop.ItemColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a ItemColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ItemColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Shop.Item.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Shop.ItemColumns},Brevitee.Data.OrderBy{Brevitee.Shop.ItemColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a ItemColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ItemColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Shop.Item.Count(Brevitee.Data.WhereDelegate{Brevitee.Shop.ItemColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a ItemColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ItemColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Shop.List.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Shop.List.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the List table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Shop.List.Where(System.Func{Brevitee.Shop.ListColumns,Brevitee.Data.QueryFilter{Brevitee.Shop.ListColumns}},Brevitee.Data.OrderBy{Brevitee.Shop.ListColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a ListColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between ListColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Shop.List.Where(Brevitee.Data.WhereDelegate{Brevitee.Shop.ListColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a ListColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ListColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Shop.List.Where(Brevitee.Data.WhereDelegate{Brevitee.Shop.ListColumns},Brevitee.Data.OrderBy{Brevitee.Shop.ListColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a ListColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ListColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Shop.List.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Shop.List.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Shop.ListColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single List instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a ListColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ListColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Shop.List.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Shop.List.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Shop.ListColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a ListColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ListColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Shop.List.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Shop.ListColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a ListColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ListColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Shop.List.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Shop.ListColumns},Brevitee.Data.OrderBy{Brevitee.Shop.ListColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a ListColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ListColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Shop.List.Count(Brevitee.Data.WhereDelegate{Brevitee.Shop.ListColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a ListColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ListColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Shop.ListItem.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Shop.ListItem.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the ListItem table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Shop.ListItem.Where(System.Func{Brevitee.Shop.ListItemColumns,Brevitee.Data.QueryFilter{Brevitee.Shop.ListItemColumns}},Brevitee.Data.OrderBy{Brevitee.Shop.ListItemColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a ListItemColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between ListItemColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Shop.ListItem.Where(Brevitee.Data.WhereDelegate{Brevitee.Shop.ListItemColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a ListItemColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ListItemColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Shop.ListItem.Where(Brevitee.Data.WhereDelegate{Brevitee.Shop.ListItemColumns},Brevitee.Data.OrderBy{Brevitee.Shop.ListItemColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a ListItemColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ListItemColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Shop.ListItem.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Shop.ListItem.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Shop.ListItemColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single ListItem instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a ListItemColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ListItemColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Shop.ListItem.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Shop.ListItem.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Shop.ListItemColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a ListItemColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ListItemColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Shop.ListItem.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Shop.ListItemColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a ListItemColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ListItemColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Shop.ListItem.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Shop.ListItemColumns},Brevitee.Data.OrderBy{Brevitee.Shop.ListItemColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a ListItemColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ListItemColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Shop.ListItem.Count(Brevitee.Data.WhereDelegate{Brevitee.Shop.ListItemColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a ListItemColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ListItemColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Shop.Shopper.GetCurrent">
+            <summary>
+            Get a Shopper instance representing the current user
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

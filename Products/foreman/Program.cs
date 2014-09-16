@@ -51,7 +51,7 @@ namespace foreman
 
         public static void Start()
         {
-            MainMenu("Overseer");
+            MainMenu("Foreman");
         }
         
         [ConsoleAction("Create Job")]
@@ -62,19 +62,16 @@ namespace foreman
 
             Assembly automationAssembly = typeof(Job).Assembly;
             Type[] allTypes = automationAssembly.GetTypes();
-            List<Type> workTypes = new List<Type>();
+            List<Type> workerTypes = new List<Type>();
             allTypes.Each((type) =>
             {
                 if (type.ImplementsInterface<IWorker>())
                 {
-                    workTypes.Add(type);
+                    workerTypes.Add(type);
                 }
             });
 
-            workTypes.Each((wt, i) =>
-            {
-                OutFormat("{0}. {1}", ConsoleColor.Cyan, i + 1, wt.Name);
-            });
+            workerTypes.Each((wt, i) => OutLineFormat("{0}. {1}", ConsoleColor.Cyan, i + 1, wt.Name));
 
             int workTypeIndex = NumberPrompt("Select work to add");
             if(workTypeIndex <= 0)
@@ -82,7 +79,7 @@ namespace foreman
                 Out("Invalid selection", ConsoleColor.Red);
             }
             string workName = Prompt("Enter a name for the work");
-            Type workToAdd = workTypes[workTypeIndex - 1];
+            Type workToAdd = workerTypes[workTypeIndex - 1];
             object work = workToAdd.Construct(workName);
             job.AddWorker((IWorker)work);
         }

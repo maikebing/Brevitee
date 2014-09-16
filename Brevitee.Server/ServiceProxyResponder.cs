@@ -10,6 +10,7 @@ using Brevitee.Yaml;
 using System.IO;
 using System.Reflection;
 using Brevitee.ServiceProxy;
+using Brevitee.ServiceProxy.Secure;
 using Brevitee.Web;
 using Brevitee.Server.Renderers;
 
@@ -17,7 +18,6 @@ namespace Brevitee.Server
 {
     public class ServiceProxyResponder: ResponderBase, IInitialize<ServiceProxyResponder>
     {
-        Incubator _commonServiceProvider;
         static Dictionary<string, IRenderer> _renderers;
 
         static ServiceProxyResponder()
@@ -30,20 +30,55 @@ namespace Brevitee.Server
         {
             this._commonServiceProvider = new Incubator();
             this._appServiceProviders = new Dictionary<string, Incubator>();
+            this._appSecureChannels = new Dictionary<string, SecureChannel>();
+            this._commonSecureChannel = new SecureChannel();
             this.SmartRenderer = new SmartRenderer(logger);
+
+            AddCommonService(this._commonSecureChannel);            
+
+            CommonServiceAdded += (type, obj) =>
+            {
+                CommonSecureChannel.ServiceProvider.Set(type, obj);
+            };
+            CommonServiceRemoved += (type) =>
+            {
+                CommonSecureChannel.ServiceProvider.Remove(type);
+            };
+            AppServiceAdded += (appName, type, instance) =>
+            {
+                if (!AppSecureChannels.ContainsKey(appName))
+                {
+                    SecureChannel channel = new SecureChannel();
+                    channel.ServiceProvider.CopyFrom(CommonServiceProvider, true);
+                    AppSecureChannels.Add(appName, channel);
+                }
+
+                AppSecureChannels[appName].ServiceProvider.Set(type, instance, false);
+            };            
         }
 
+        
         protected SmartRenderer SmartRenderer
         {
             get;
             private set;
         }
 
+        Incubator _commonServiceProvider;
         public Incubator CommonServiceProvider
         {
             get
             {
                 return _commonServiceProvider;
+            }
+        }
+
+        SecureChannel _commonSecureChannel;
+        public SecureChannel CommonSecureChannel
+        {
+            get
+            {
+                return _commonSecureChannel;
             }
         }
 
@@ -56,79 +91,141 @@ namespace Brevitee.Server
             }
         }
 
-        public void AddAppExecutor<T>(string appName, T instance)
+        Dictionary<string, SecureChannel> _appSecureChannels;
+        public Dictionary<string, SecureChannel> AppSecureChannels
         {
-            if (_appServiceProviders.ContainsKey(appName))
+            get
             {
-                _appServiceProviders[appName].Set<T>(instance);
+                return _appSecureChannels;
             }
         }
 
         /// <summary>
-        /// Add the specified instance as an executor
+        /// Add the specified instance to the specified appName
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="appName"></param>
+        /// <param name="instance"></param>
+        public void AddAppService<T>(string appName, T instance)
+        {
+            AddAppService(appName, typeof(T), instance);
+        }
+
+        /// <summary>
+        /// Add the specified instance as a service
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="instance"></param>
-        public void AddCommonExecutor<T>(T instance)
+        public void AddCommonService<T>(T instance)
         {
-            _commonServiceProvider.Set<T>(instance);
+            AddCommonService(typeof(T), instance);
         }
 
-        public void AddAppExecutor(string appName, object instance)
+        public void AddAppService(string appName, object instance)
         {
-            AddAppExecutor(appName, instance.GetType(), instance);
+            AddAppService(appName, instance.GetType(), instance);
         }
 
-        public void AddAppExecutor(string appName, Type type, object instance)
+        public event Action<string, Type, object> AppServiceAdded;
+        protected void OnAppServiceAdded(string appName, Type type, object instance)
+        {
+            if (AppServiceAdded != null)
+            {
+                AppServiceAdded(appName, type, instance);
+            }
+        }
+        public void AddAppService<T>(string appName, Func<T> instanciator, bool throwIfSet = false)
+        {
+            if (_appServiceProviders.ContainsKey(appName))
+            {
+                _appServiceProviders[appName].Set(instanciator, throwIfSet);
+                OnAppServiceAdded(appName, typeof(T), null);
+            }
+        }
+
+        public void AddAppService<T>(string appName, Func<Type, T> instanciator, bool throwIfSet = false)
+        {
+            if (_appServiceProviders.ContainsKey(appName))
+            {
+                _appServiceProviders[appName].Set(instanciator, throwIfSet);
+                OnAppServiceAdded(appName, typeof(T), null);
+            }
+        }
+
+        public void AddAppService(string appName, Type type, object instance)
         {
             if (_appServiceProviders.ContainsKey(appName))
             {
                 _appServiceProviders[appName].Set(type, instance);
+                OnAppServiceAdded(appName, type, instance);
             }
         }
+        
         /// <summary>
         /// Add the specified instance as an executor
         /// </summary>
-        public void AddCommonExecutor(object instance)
+        public void AddCommonService(object instance)
         {
-            AddCommonExecutor(instance.GetType(), instance);
+            AddCommonService(instance.GetType(), instance);
         }
 
+        public event Action<Type, object> CommonServiceAdded;
+        protected void OnCommonServiceAdded(Type type, object instance)
+        {
+            if (CommonServiceAdded != null)
+            {
+                CommonServiceAdded(type, instance);
+            }
+        }
         /// <summary>
         /// Add the specified instance as an executor
         /// </summary>
         /// <param name="type"></param>
         /// <param name="instance"></param>
-        public void AddCommonExecutor(Type type, object instance)
+        public void AddCommonService(Type type, object instance)
         {
             _commonServiceProvider.Set(type, instance);
+            OnCommonServiceAdded(type, instance);
+        }
+
+        public event Action<Type> CommonServiceRemoved;
+        protected void OnCommonServiceRemoved(Type type)
+        {
+            if (CommonServiceRemoved != null)
+            {
+                CommonServiceRemoved(type);
+            }
         }
 
         /// <summary>
         /// Remove the executor of the specified generic type
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        public void RemoveCommonExecutor<T>()
+        public void RemoveCommonService<T>()
         {
             _commonServiceProvider.Remove<T>();
+            OnCommonServiceRemoved(typeof(T));
         }
 
         /// <summary>
         /// Remove the executor of the specified type
         /// </summary>
         /// <param name="type"></param>
-        public void RemoveCommonExecutor(Type type)
+        public void RemoveCommonService(Type type)
         {
             _commonServiceProvider.Remove(type);
+            OnCommonServiceRemoved(type);
         }
 
         /// <summary>
         /// Remove the executor with the specified className
         /// </summary>
         /// <param name="className"></param>
-        public void RemoveCommonExecutor(string className)
+        public void RemoveCommonService(string className)
         {
-            _commonServiceProvider.Remove(className);
+            Type type;
+            _commonServiceProvider.Remove(className, out type);
+            OnCommonServiceRemoved(type);
         }
 
         /// <summary>
@@ -154,9 +251,9 @@ namespace Brevitee.Server
         }
 
         /// <summary>
-        /// List of executor class names
+        /// List of service class names
         /// </summary>
-        public string[] Executors
+        public string[] Services
         {
             get
             {
@@ -170,7 +267,7 @@ namespace Brevitee.Server
         /// </summary>
         /// <param name="context"></param>
         ///// <returns></returns>
-        public override bool MayRespond(IContext context)
+        public override bool MayRespond(IHttpContext context)
         {
             return true;
         }
@@ -178,42 +275,49 @@ namespace Brevitee.Server
 
         public void RegisterProxiedClasses()
         {
-            string serviceProxyRelativePath = "~/ServiceProxies";
+            string serviceProxyRelativePath = "~/bin";
             List<string> registered = new List<string>();
             ForEachProxiedClass((type) =>
             {
-                this.AddCommonExecutor(type, type.Construct());
+                this.AddCommonService(type, type.Construct());
             });
 
             BreviteeConf.AppConfigs.Each(appConf =>
             {
-                AppServiceProviders[appConf.Name] = new Incubator();
-                DirectoryInfo appServiceProxiesDir = new DirectoryInfo(appConf.AppRoot.GetAbsolutePath(serviceProxyRelativePath));
-                ForEachProxiedClass(appServiceProxiesDir, (type) =>
+                string name = appConf.Name.ToLowerInvariant();
+                Incubator serviceProvider = new Incubator();
+                
+                AppServiceProviders[name] = new Incubator();
+                
+                DirectoryInfo appServicesDir = new DirectoryInfo(appConf.AppRoot.GetAbsolutePath(serviceProxyRelativePath));
+                ForEachProxiedClass(appServicesDir, (type) =>
                 {
-                    this.AddAppExecutor(appConf.Name, type.Construct());
+                    this.AddAppService(appConf.Name, type.Construct());
                 });
-            });
 
-            if (BreviteeConf.ServiceProxyPaths != null)
+                AddConfiguredServiceProxyTypes(appConf);
+            });
+        }
+
+        private void AddConfiguredServiceProxyTypes(AppConf appConf)
+        {
+            appConf.ServiceProxyTypeNames.Each(typeName =>
             {
-                BreviteeConf.ServiceProxyPaths.Each(path =>
+                Type type = Type.GetType(typeName);
+                if (type != null)
                 {
-                    DirectoryInfo serviceProxyDir = new DirectoryInfo(path);
-                    if (serviceProxyDir.Exists)
+                    object instance = null;
+                    if (type.TryConstruct(out instance))
                     {
-                        ForEachProxiedClass(serviceProxyDir, (type) =>
-                        {
-                            this.AddCommonExecutor(type, type.Construct());
-                        });
+                        this.AddAppService(appConf.Name, instance);
                     }
-                });
-            }
+                }
+            });
         }
 
         private void ForEachProxiedClass(Action<Type> doForEachProxiedType)
         {   
-            string serviceProxyRelativePath = "~/ServiceProxies";
+            string serviceProxyRelativePath = "~/bin";
             DirectoryInfo ctrlrDir = new DirectoryInfo(Fs.GetAbsolutePath(serviceProxyRelativePath));
             if(ctrlrDir.Exists)
             {
@@ -229,7 +333,7 @@ namespace Brevitee.Server
         {
             if (ctrlrDir.Exists)
             {
-                FileInfo[] files = ctrlrDir.GetFiles("*.dll");
+                FileInfo[] files = ctrlrDir.GetFiles(BreviteeConf.ServiceSearchPattern);
                 int ol = files.Length;
                 for (int i = 0; i < ol; i++)
                 {
@@ -297,7 +401,7 @@ namespace Brevitee.Server
             }
         }
         
-        public override bool TryRespond(IContext context)
+        public override bool TryRespond(IHttpContext context)
         {
             try
             {
@@ -332,15 +436,22 @@ namespace Brevitee.Server
                     }
                     else
                     {
-                        ProxyAlias[] aliases = GetProxyAliases(CommonServiceProvider);
-                        ExecutionRequest execRequest = new ExecutionRequest(request, response, aliases, CommonServiceProvider);
-                        ValidationResult validation = execRequest.Validate();
-                        if (!validation.Success && AppServiceProviders.ContainsKey(appName))
+                        Incubator temp = new Incubator();
+                        
+                        List<ProxyAlias> aliases = new List<ProxyAlias>(GetProxyAliases(ServiceProxySystem.Incubator));
+                        temp.CopyFrom(ServiceProxySystem.Incubator, true);
+
+                        aliases.AddRange(GetProxyAliases(CommonServiceProvider));                        
+                        temp.CopyFrom(CommonServiceProvider, true);
+
+                        if (AppServiceProviders.ContainsKey(appName))
                         {
                             Incubator appIncubator = AppServiceProviders[appName];
-                            aliases = GetProxyAliases(appIncubator);
-                            execRequest = new ExecutionRequest(request, response, aliases, appIncubator);
+                            aliases.AddRange(GetProxyAliases(appIncubator));
+                            temp.CopyFrom(appIncubator, true);
                         }
+
+                        ExecutionRequest execRequest = new ExecutionRequest(context, aliases.ToArray(), temp);                        
 
                         returnValue = execRequest.Execute();
                         if (returnValue)
@@ -389,7 +500,27 @@ namespace Brevitee.Server
 
         protected void SendCsProxyCode(IRequest request, IResponse response)
         {
-            throw new NotImplementedException();
+            string appName = AppConf.AppNameFromUri(request.Url);
+            string defaultBaseAddress = ServiceProxySystem.GetBaseAddress(request.Url);
+            string nameSpace = request.QueryString["namespace"] ?? "ServiceProxyClients";
+            string contractNameSpace = "{0}.Contracts"._Format(nameSpace);
+            Incubator combined = new Incubator();
+            combined.CopyFrom(CommonServiceProvider);
+
+            if (AppServiceProviders.ContainsKey(appName))
+            {
+                Incubator appProviders = AppServiceProviders[appName];
+                combined.CopyFrom(appProviders, true);
+            }
+
+            string[] classNames = request.QueryString["classes"]  == null ? combined.ClassNames: request.QueryString["classes"].DelimitSplit(",", ";");
+
+            StringBuilder csharpCode = ServiceProxySystem.GenerateCSharpProxyCode(defaultBaseAddress, classNames, nameSpace, contractNameSpace, combined);
+
+            response.Headers.Add("Content-Disposition", "attachment;filename=" + nameSpace + ".cs");
+            response.Headers.Add("Content-Type", "text/plain");
+            byte[] data = Encoding.UTF8.GetBytes(csharpCode.ToString());
+            response.OutputStream.Write(data, 0, data.Length);
         }
 
         public event Action<ServiceProxyResponder> Initializing;
@@ -422,7 +553,7 @@ namespace Brevitee.Server
             OnInitializing();
             lock (_initializeLock)
             {
-                AddCommonExecutor(new BreviteeApplicationManager(BreviteeConf));
+                AddCommonService(new BreviteeApplicationManager(BreviteeConf));                               
                 RegisterProxiedClasses();
             }
             OnInitialized();

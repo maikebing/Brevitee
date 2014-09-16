@@ -1,0 +1,569 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Brevitee.Automation</name>
+    </assembly>
+    <members>
+        <member name="M:Brevitee.Automation.Worker.State``1(Brevitee.Automation.WorkState{``0})">
+            <summary>
+            Gets or sets the current WorkState of this Worker
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="state"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brevitee.Automation.Worker.ConfigureFromWorkstate">
+            <summary>
+            Sets all the properties of the current
+            worker from the properties of the current
+            WorkState.  All writable string properties that
+            match in name will be copied to the 
+            current worker
+            </summary>
+        </member>
+        <member name="P:Brevitee.Automation.Worker.StepNumber">
+            <summary>
+            Used by the job to sort this worker into its proper
+            place in order relative to other workers
+            </summary>
+        </member>
+        <member name="P:Brevitee.Automation.NotificationWorker.Recipients">
+            <summary>
+            A comma/or semi-colon separated list of
+            recipients (typically email addresses, but depends on 
+            the implementation)
+            </summary>
+        </member>
+        <member name="M:Brevitee.Automation.SuspendedJob.#ctor(Brevitee.IpcMessageRoot,Brevitee.Automation.Job)">
+            <summary>
+            Instantiate a new SuspendedJob instance saving
+            the specified job as an IpcMessage to the 
+            specified IpcMessageRoot.  A new InstanceId
+            will be assigned.
+            </summary>
+            <param name="messageRoot"></param>
+            <param name="job"></param>
+        </member>
+        <member name="M:Brevitee.Automation.SuspendedJob.#ctor(Brevitee.IpcMessageRoot,System.String)">
+            <summary>
+            Instantiate a new Suspended job instance which can 
+            be reinstantiated from the specified messageRoot 
+            using the specified instanceId
+            </summary>
+            <param name="messageRoot"></param>
+            <param name="instanceId"></param>
+        </member>
+        <member name="T:Brevitee.Automation.ProcessWorker">
+            <summary>
+            Work done as a command line process
+            </summary>
+        </member>
+        <member name="P:Brevitee.Automation.ContinuousIntegration.DeploymentWorker.ProjectNames">
+            <summary>
+            A comma and/or semi-color separated list of project names
+            </summary>
+        </member>
+        <member name="M:Brevitee.Automation.ContinuousIntegration.Loggers.BuildLogger`1.SetLoggerProperties(System.Collections.Generic.Dictionary{System.String,System.Object})">
+            <summary>
+            Set properties on the underlying Brevitee.Logging.ILogger where names match
+            the keys in the specified properties dictionary
+            </summary>
+            <param name="properties"></param>
+        </member>
+        <member name="M:Brevitee.Automation.JobConf.GetWorker``1(System.String)">
+            <summary>
+            Gets a worker of the specified generic type 
+            loading it from a file if the worker file exists
+            creating it otherwise.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="workerName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brevitee.Automation.JobConf.GetFilePath">
+            <summary>
+            Returns the save to path for the current
+            JobConf.  In the form {JobDirectory}\\{Name}.job
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Brevitee.Automation.JobConf.CurrentIndex">
+            <summary>
+            Represents the "Order" that will be assigned to the next
+            worker added
+            </summary>
+        </member>
+        <member name="P:Brevitee.Automation.JobConf.WorkerFiles">
+            <summary>
+            An array of worker config file paths to
+            load
+            </summary>
+        </member>
+        <member name="P:Brevitee.Automation.JobConf.JobDirectory">
+            <summary>
+            The root of the Job
+            </summary>
+        </member>
+        <member name="M:Brevitee.Automation.ContinuousIntegration.Data.BuildJob.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Automation.ContinuousIntegration.Data.BuildJob.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the BuildJob table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Automation.ContinuousIntegration.Data.BuildJob.Where(System.Func{Brevitee.Automation.ContinuousIntegration.Data.BuildJobColumns,Brevitee.Data.QueryFilter{Brevitee.Automation.ContinuousIntegration.Data.BuildJobColumns}},Brevitee.Data.OrderBy{Brevitee.Automation.ContinuousIntegration.Data.BuildJobColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a BuildJobColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between BuildJobColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Automation.ContinuousIntegration.Data.BuildJob.Where(Brevitee.Data.WhereDelegate{Brevitee.Automation.ContinuousIntegration.Data.BuildJobColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a BuildJobColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between BuildJobColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Automation.ContinuousIntegration.Data.BuildJob.Where(Brevitee.Data.WhereDelegate{Brevitee.Automation.ContinuousIntegration.Data.BuildJobColumns},Brevitee.Data.OrderBy{Brevitee.Automation.ContinuousIntegration.Data.BuildJobColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a BuildJobColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between BuildJobColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Automation.ContinuousIntegration.Data.BuildJob.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Automation.ContinuousIntegration.Data.BuildJob.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Automation.ContinuousIntegration.Data.BuildJobColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single BuildJob instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a BuildJobColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between BuildJobColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Automation.ContinuousIntegration.Data.BuildJob.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Automation.ContinuousIntegration.Data.BuildJob.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Automation.ContinuousIntegration.Data.BuildJobColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a BuildJobColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between BuildJobColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Automation.ContinuousIntegration.Data.BuildJob.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Automation.ContinuousIntegration.Data.BuildJobColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a BuildJobColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between BuildJobColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Automation.ContinuousIntegration.Data.BuildJob.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Automation.ContinuousIntegration.Data.BuildJobColumns},Brevitee.Data.OrderBy{Brevitee.Automation.ContinuousIntegration.Data.BuildJobColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a BuildJobColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between BuildJobColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Automation.ContinuousIntegration.Data.BuildJob.Count(Brevitee.Data.WhereDelegate{Brevitee.Automation.ContinuousIntegration.Data.BuildJobColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a BuildJobColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between BuildJobColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Automation.ContinuousIntegration.Data.BuildResult.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Automation.ContinuousIntegration.Data.BuildResult.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the BuildResult table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Automation.ContinuousIntegration.Data.BuildResult.Where(System.Func{Brevitee.Automation.ContinuousIntegration.Data.BuildResultColumns,Brevitee.Data.QueryFilter{Brevitee.Automation.ContinuousIntegration.Data.BuildResultColumns}},Brevitee.Data.OrderBy{Brevitee.Automation.ContinuousIntegration.Data.BuildResultColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a BuildResultColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between BuildResultColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Automation.ContinuousIntegration.Data.BuildResult.Where(Brevitee.Data.WhereDelegate{Brevitee.Automation.ContinuousIntegration.Data.BuildResultColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a BuildResultColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between BuildResultColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Automation.ContinuousIntegration.Data.BuildResult.Where(Brevitee.Data.WhereDelegate{Brevitee.Automation.ContinuousIntegration.Data.BuildResultColumns},Brevitee.Data.OrderBy{Brevitee.Automation.ContinuousIntegration.Data.BuildResultColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a BuildResultColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between BuildResultColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Automation.ContinuousIntegration.Data.BuildResult.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Automation.ContinuousIntegration.Data.BuildResult.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Automation.ContinuousIntegration.Data.BuildResultColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single BuildResult instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a BuildResultColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between BuildResultColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Automation.ContinuousIntegration.Data.BuildResult.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Automation.ContinuousIntegration.Data.BuildResult.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Automation.ContinuousIntegration.Data.BuildResultColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a BuildResultColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between BuildResultColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Automation.ContinuousIntegration.Data.BuildResult.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Automation.ContinuousIntegration.Data.BuildResultColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a BuildResultColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between BuildResultColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Automation.ContinuousIntegration.Data.BuildResult.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Automation.ContinuousIntegration.Data.BuildResultColumns},Brevitee.Data.OrderBy{Brevitee.Automation.ContinuousIntegration.Data.BuildResultColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a BuildResultColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between BuildResultColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Automation.ContinuousIntegration.Data.BuildResult.Count(Brevitee.Data.WhereDelegate{Brevitee.Automation.ContinuousIntegration.Data.BuildResultColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a BuildResultColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between BuildResultColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="P:Brevitee.Automation.ContinuousIntegration.GetSourceWorker.TagName">
+            <summary>
+            Gets or sets the name of the source control 
+            Tag to retrieve
+            </summary>
+        </member>
+        <member name="P:Brevitee.Automation.ContinuousIntegration.GetSourceWorker.ServerSourcePath">
+            <summary>
+            Gets or sets the path on the server where source 
+            should be retrieved from.  For Git this is the
+            repository path, for Tfs this is the team project
+            branch path
+            </summary>
+        </member>
+        <member name="P:Brevitee.Automation.ContinuousIntegration.GetSourceWorker.GetLatest">
+            <summary>
+            Returns true if the TagName is latest
+            </summary>
+        </member>
+        <member name="T:Brevitee.Automation.ContinuousIntegration.ProjectBuildWorker">
+            <summary>
+            A Worker that will attempt to build only the specified
+            ProjectFileName.  A recursive search will be done
+            to find it, it may be either a .csproj file, .vbproj file or
+            .sln file.
+            </summary>
+        </member>
+        <member name="T:Brevitee.Automation.ContinuousIntegration.AllProjectsBuildWorker">
+            <summary>
+            A Worker that will attempt to build all the projects 
+            that it finds in the specified SourceDirectory.
+            A recursive search will be done for all .csproj 
+            and .vbproj files.
+            </summary>
+        </member>
+        <member name="M:Brevitee.Automation.ContinuousIntegration.AllProjectsBuildWorker.GetBuildFiles">
+            <summary>
+            Gets the solution files to build
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Brevitee.Automation.Foreman">
+            <summary>
+            The master orchestrator for 
+            all jobs.
+            </summary>
+        </member>
+        <member name="M:Brevitee.Automation.Foreman.AddWorker(System.String,System.String,System.String)">
+            <summary>
+            Add a worker of the specified type assigning the
+            specified workerName to the job with the specified
+            jobName.
+            </summary>
+            <param name="workerTypeName"></param>
+            <param name="workerName"></param>
+            <param name="jobName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brevitee.Automation.Foreman.AddWorker``1(System.String,Brevitee.Automation.JobConf)">
+            <summary>
+            Adds a worker of generic type T to the
+            specified JobConf.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="conf"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brevitee.Automation.Foreman.JobExists(System.String)">
+            <summary>
+            Returns true is a job with the specified name
+            exists under the current Foreman.  Determined
+            by looking in the current Foreman's JobsDirectory.
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brevitee.Automation.Foreman.StartJobRunnerThread">
+            <summary>
+            Starts the JobRunner thread.  This method
+            must be called prior to queueing up jobs
+            or the jobs will not be run.
+            </summary>
+        </member>
+        <member name="T:Brevitee.Automation.Job">
+            <summary>
+            A set of workers that are run in sequence
+            </summary>
+        </member>
+        <member name="M:Brevitee.Automation.Job.GetWorkStateData``1">
+            <summary>
+            Tries to cast CurrentWorkState to WorkState&lt;T&gt;
+            and returns WorkState.Data if it exists, otherwise 
+            returns null;
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="P:Brevitee.Automation.Job.CurrentWorkerName">
+            <summary>
+            Represents the name of the currently running worker
+            </summary>
+        </member>
+        <member name="P:Brevitee.Automation.Job.WorkStateMessage">
+            <summary>
+            The Message property of the CurrentWorkState
+            </summary>
+        </member>
+        <member name="T:Brevitee.Automation.Nuget.conventionbasedpackage">
+            <remarks/>
+        </member>
+        <member name="P:Brevitee.Automation.Nuget.conventionbasedpackage.metadata">
+            <remarks/>
+        </member>
+        <member name="T:Brevitee.Automation.Nuget.package">
+            <remarks/>
+        </member>
+        <member name="P:Brevitee.Automation.Nuget.package.metadata">
+            <remarks/>
+        </member>
+        <member name="P:Brevitee.Automation.Nuget.package.files">
+            <remarks/>
+        </member>
+        <member name="T:Brevitee.Automation.Nuget.packageMetadata">
+            <remarks/>
+        </member>
+        <member name="P:Brevitee.Automation.Nuget.packageMetadata.id">
+            <remarks/>
+        </member>
+        <member name="P:Brevitee.Automation.Nuget.packageMetadata.version">
+            <remarks/>
+        </member>
+        <member name="P:Brevitee.Automation.Nuget.packageMetadata.title">
+            <remarks/>
+        </member>
+        <member name="P:Brevitee.Automation.Nuget.packageMetadata.authors">
+            <remarks/>
+        </member>
+        <member name="P:Brevitee.Automation.Nuget.packageMetadata.owners">
+            <remarks/>
+        </member>
+        <member name="P:Brevitee.Automation.Nuget.packageMetadata.licenseUrl">
+            <remarks/>
+        </member>
+        <member name="P:Brevitee.Automation.Nuget.packageMetadata.projectUrl">
+            <remarks/>
+        </member>
+        <member name="P:Brevitee.Automation.Nuget.packageMetadata.iconUrl">
+            <remarks/>
+        </member>
+        <member name="P:Brevitee.Automation.Nuget.packageMetadata.requireLicenseAcceptance">
+            <remarks/>
+        </member>
+        <member name="P:Brevitee.Automation.Nuget.packageMetadata.requireLicenseAcceptanceSpecified">
+            <remarks/>
+        </member>
+        <member name="P:Brevitee.Automation.Nuget.packageMetadata.description">
+            <remarks/>
+        </member>
+        <member name="P:Brevitee.Automation.Nuget.packageMetadata.summary">
+            <remarks/>
+        </member>
+        <member name="P:Brevitee.Automation.Nuget.packageMetadata.releaseNotes">
+            <remarks/>
+        </member>
+        <member name="P:Brevitee.Automation.Nuget.packageMetadata.copyright">
+            <remarks/>
+        </member>
+        <member name="P:Brevitee.Automation.Nuget.packageMetadata.language">
+            <remarks/>
+        </member>
+        <member name="P:Brevitee.Automation.Nuget.packageMetadata.tags">
+            <remarks/>
+        </member>
+        <member name="P:Brevitee.Automation.Nuget.packageMetadata.dependencies">
+            <remarks/>
+        </member>
+        <member name="P:Brevitee.Automation.Nuget.packageMetadata.frameworkAssemblies">
+            <remarks/>
+        </member>
+        <member name="P:Brevitee.Automation.Nuget.packageMetadata.references">
+            <remarks/>
+        </member>
+        <member name="T:Brevitee.Automation.Nuget.packageMetadataDependency">
+            <remarks/>
+        </member>
+        <member name="P:Brevitee.Automation.Nuget.packageMetadataDependency.id">
+            <remarks/>
+        </member>
+        <member name="P:Brevitee.Automation.Nuget.packageMetadataDependency.version">
+            <remarks/>
+        </member>
+        <member name="T:Brevitee.Automation.Nuget.packageMetadataFrameworkAssembly">
+            <remarks/>
+        </member>
+        <member name="P:Brevitee.Automation.Nuget.packageMetadataFrameworkAssembly.assemblyName">
+            <remarks/>
+        </member>
+        <member name="P:Brevitee.Automation.Nuget.packageMetadataFrameworkAssembly.targetFramework">
+            <remarks/>
+        </member>
+        <member name="T:Brevitee.Automation.Nuget.packageMetadataReference">
+            <remarks/>
+        </member>
+        <member name="P:Brevitee.Automation.Nuget.packageMetadataReference.file">
+            <remarks/>
+        </member>
+        <member name="T:Brevitee.Automation.Nuget.packageFile">
+            <remarks/>
+        </member>
+        <member name="P:Brevitee.Automation.Nuget.packageFile.src">
+            <remarks/>
+        </member>
+        <member name="P:Brevitee.Automation.Nuget.packageFile.target">
+            <remarks/>
+        </member>
+        <member name="P:Brevitee.Automation.Nuget.packageFile.exclude">
+            <remarks/>
+        </member>
+        <member name="P:Brevitee.Automation.ZipFolderWorker.SourceDirectory">
+            <summary>
+            The directory to zip
+            </summary>
+        </member>
+        <member name="P:Brevitee.Automation.ZipFolderWorker.TargetPath">
+            <summary>
+            The full path or job relative path to the
+            final zip file including the desired extension
+            </summary>
+        </member>
+    </members>
+</doc>

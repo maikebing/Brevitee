@@ -32,7 +32,7 @@ namespace SampleData
 		}
 
 	// property:Id, columnName:Id	
-	[Brevitee.Data.KeyColumn(Name="Id", ExtractedType="BigInt", MaxLength="8")]
+	[Brevitee.Data.KeyColumn(Name="Id", DbDataType="BigInt", MaxLength="8")]
 	public long? Id
 	{
 		get
@@ -46,7 +46,7 @@ namespace SampleData
 	}
 
 	// property:Value, columnName:Value	
-	[Brevitee.Data.Column(Name="Value", ExtractedType="Int", MaxLength="4", AllowNull=false)]
+	[Brevitee.Data.Column(Name="Value", DbDataType="Int", MaxLength="4", AllowNull=false)]
 	public int? Value
 	{
 		get
@@ -60,7 +60,7 @@ namespace SampleData
 	}
 
 	// property:Status, columnName:Status	
-	[Brevitee.Data.Column(Name="Status", ExtractedType="VarChar", MaxLength="4000", AllowNull=false)]
+	[Brevitee.Data.Column(Name="Status", DbDataType="VarChar", MaxLength="4000", AllowNull=false)]
 	public string Status
 	{
 		get
@@ -169,7 +169,7 @@ namespace SampleData
             GiveStatusColumns c = new GiveStatusColumns();
             IQueryFilter filter = where(c);         
             
-			Database db = database == null ? _.Db.For<GiveStatus>(): database;
+			Database db = database == null ? Db.For<GiveStatus>(): database;
 			QuerySet query = GetQuerySet(db); 
             query.Top<GiveStatus>(count);
             query.Where(filter);
@@ -188,7 +188,7 @@ namespace SampleData
 			GiveStatusColumns c = new GiveStatusColumns();
 			IQueryFilter filter = where(c) ;
 
-			Database db = database == null ? _.Db.For<GiveStatus>(): database;
+			Database db = database == null ? Db.For<GiveStatus>(): database;
 			QuerySet query = GetQuerySet(db);	 
 			query.Count<GiveStatus>();
 			query.Where(filter);	  

@@ -37,7 +37,7 @@ namespace Brevitee.Automation.ContinuousIntegration.Data
 
 	// property:Id, columnName:Id	
 	[Exclude]
-	[Brevitee.Data.KeyColumn(Name="Id", ExtractedType="BigInt", MaxLength="8")]
+	[Brevitee.Data.KeyColumn(Name="Id", DbDataType="BigInt", MaxLength="8")]
 	public long? Id
 	{
 		get
@@ -51,7 +51,7 @@ namespace Brevitee.Automation.ContinuousIntegration.Data
 	}
 
 	// property:Success, columnName:Success	
-	[Brevitee.Data.Column(Name="Success", ExtractedType="Bit", MaxLength="1", AllowNull=false)]
+	[Brevitee.Data.Column(Name="Success", DbDataType="Bit", MaxLength="1", AllowNull=false)]
 	public bool? Success
 	{
 		get
@@ -65,7 +65,7 @@ namespace Brevitee.Automation.ContinuousIntegration.Data
 	}
 
 	// property:Message, columnName:Message	
-	[Brevitee.Data.Column(Name="Message", ExtractedType="VarChar", MaxLength="4000", AllowNull=true)]
+	[Brevitee.Data.Column(Name="Message", DbDataType="VarChar", MaxLength="4000", AllowNull=true)]
 	public string Message
 	{
 		get
@@ -84,7 +84,7 @@ namespace Brevitee.Automation.ContinuousIntegration.Data
 	[Brevitee.Data.ForeignKey(
         Table="BuildResult",
 		Name="BuildJobId", 
-		ExtractedType="BigInt", 
+		DbDataType="BigInt", 
 		MaxLength="",
 		AllowNull=true, 
 		ReferencedKey="Id",
@@ -138,7 +138,7 @@ namespace Brevitee.Automation.ContinuousIntegration.Data
 		{
 			SqlStringBuilder sql = new SqlStringBuilder();
 			sql.Select<BuildResult>();
-			Database db = database == null ? _.Db.For<BuildResult>(): database;
+			Database db = database == null ? Db.For<BuildResult>(): database;
 			return new BuildResultCollection(sql.GetDataTable(db));
 		}
 
@@ -302,7 +302,7 @@ namespace Brevitee.Automation.ContinuousIntegration.Data
 			BuildResultColumns c = new BuildResultColumns();
 			IQueryFilter filter = where(c);         
 			
-			Database db = database == null ? _.Db.For<BuildResult>(): database;
+			Database db = database == null ? Db.For<BuildResult>(): database;
 			QuerySet query = GetQuerySet(db); 
 			query.Top<BuildResult>(count);
 			query.Where(filter);
@@ -329,7 +329,7 @@ namespace Brevitee.Automation.ContinuousIntegration.Data
 			BuildResultColumns c = new BuildResultColumns();
 			IQueryFilter filter = where(c) ;
 
-			Database db = database == null ? _.Db.For<BuildResult>(): database;
+			Database db = database == null ? Db.For<BuildResult>(): database;
 			QuerySet query = GetQuerySet(db);	 
 			query.Count<BuildResult>();
 			query.Where(filter);	  

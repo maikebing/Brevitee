@@ -35,7 +35,7 @@ namespace Brevitee.Server.Renderers
                     StringBuilder templates = new StringBuilder();
                     DirectoryInfo commonDust = new DirectoryInfo(Path.Combine(ContentResponder.Root, "dust"));
 
-                    string commonCompiledTemplates = DustScript.CompileDirectory(commonDust);
+                    string commonCompiledTemplates = DustScript.CompileDirectory(commonDust, "*.dust");
                     
                     templates.Append(commonCompiledTemplates);   
                     return templates.ToString();
@@ -58,9 +58,32 @@ namespace Brevitee.Server.Renderers
                     StringBuilder templates = new StringBuilder();
                     DirectoryInfo layouts = new DirectoryInfo(Path.Combine(ContentResponder.Root, "dust", "layouts"));
 
-                    string compiledLayouts = DustScript.CompileDirectory(layouts);
+                    string compiledLayouts = DustScript.CompileDirectory(layouts, "*.dust");
 
                     templates.Append(compiledLayouts);
+                    return templates.ToString();
+                });
+            }
+        }
+
+        string _compiledCommonTemplates;
+        object _compiledCommonTemplatesLock = new object();
+        /// <summary>
+        /// Represents the compiled javascript result of doing dust.compile
+        /// against all the files found in ~s:/dust/layouts.
+        /// </summary>
+        public virtual string CompiledCommonTemplates
+        {
+            get
+            {
+                return _compiledCommonTemplatesLock.DoubleCheckLock(ref _compiledCommonTemplates, () =>
+                {
+                    StringBuilder templates = new StringBuilder();
+                    DirectoryInfo common = new DirectoryInfo(Path.Combine(ContentResponder.Root, "dust"));
+
+                    string compiledCommon = DustScript.CompileDirectory(common, "*.dust");
+
+                    templates.Append(compiledCommon);
                     return templates.ToString();
                 });
             }
@@ -86,6 +109,11 @@ namespace Brevitee.Server.Renderers
             output.Write(data, 0, data.Length);
         }
 
+		/// <summary>
+		/// Render the specified LayoutModel to the specifie output Stream
+		/// </summary>
+		/// <param name="toRender"></param>
+		/// <param name="output"></param>
         public virtual void RenderLayout(LayoutModel toRender, Stream output)
         {
             string result = DustScript.Render(CompiledLayoutTemplates, toRender.LayoutName, toRender);

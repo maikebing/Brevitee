@@ -23,14 +23,20 @@ namespace Brevitee.Server.Renderers
 
         protected override DirectoryInfo GetDustRoot()
         {
-            DirectoryInfo dustDir = new DirectoryInfo(Path.Combine(AppContentResponder.Root, "dust"));
+            DirectoryInfo dustDir = new DirectoryInfo(Path.Combine(AppContentResponder.AppRoot.Root, "dust"));
             return dustDir;
+        }
+
+        public bool Overwrite
+        {
+            get;
+            set;
         }
 
         object _renderLock = new object();
         public override void Render(object toRender)
         {
-            base.Render(toRender);
+            Render(toRender, OutputStream);
             DirectoryInfo dustDir = GetDustRoot();
             if (!dustDir.Exists)
             {
@@ -41,10 +47,19 @@ namespace Brevitee.Server.Renderers
             {
                 string typeName = toRender.GetType().Name;
                 string fileName = "default.dust";
-                using (FileStream fs = File.Create(Path.Combine(dustDir.FullName, typeName, fileName), (int)OutputStream.Length))
+                FileInfo file = new FileInfo(Path.Combine(dustDir.FullName, typeName, fileName));
+                if (!file.Directory.Exists)
                 {
-                    OutputStream.Seek(0, SeekOrigin.Begin);
-                    OutputStream.CopyTo(fs);
+                    file.Directory.Create();
+                }
+
+                if(!file.Exists || Overwrite)
+                {
+                    using (FileStream fs = File.Create(file.FullName, (int)OutputStream.Length))
+                    {
+                        OutputStream.Seek(0, SeekOrigin.Begin);
+                        OutputStream.CopyTo(fs);
+                    }
                 }
             }
         }

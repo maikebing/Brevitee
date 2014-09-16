@@ -103,6 +103,11 @@ namespace Brevitee.Server
             set;
         }
 
+        /// <summary>
+        /// Add an IResponder implementation to this
+        /// request handler
+        /// </summary>
+        /// <param name="responder"></param>
         public void AddResponder(IResponder responder)
         {
             this._responders.Add(responder);
@@ -130,12 +135,12 @@ namespace Brevitee.Server
 
         public void AddExecutor(object instance)
         {
-            _serviceProxy.AddCommonExecutor(instance);
+            _serviceProxy.AddCommonService(instance);
         }
 
         public void RemoveExecutor(object instance)
         {
-            _serviceProxy.RemoveCommonExecutor(instance.GetType());
+            _serviceProxy.RemoveCommonService(instance.GetType());
         }
 
         Action<IRequest, IResponse> _responderNotFoundHandler;
@@ -180,7 +185,7 @@ namespace Brevitee.Server
         
         #region IRequestHandler Members
 
-        public void HandleRequest(IContext context)
+        public void HandleRequest(IHttpContext context)
         {            
             IRequest request = context.Request;
             IResponse response = context.Response;
@@ -193,6 +198,7 @@ namespace Brevitee.Server
                 }
                 else
                 {
+                    response.StatusCode = (int)HttpStatusCode.OK;
                     response.OutputStream.Flush();
                     response.OutputStream.Close();                    
                 }

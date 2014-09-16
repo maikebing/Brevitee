@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>nuver</name>
+    </assembly>
+    <members>
+        <member name="T:nuver.Nuget.conventionbasedpackage">
+            <remarks/>
+        </member>
+        <member name="P:nuver.Nuget.conventionbasedpackage.metadata">
+            <remarks/>
+        </member>
+        <member name="T:nuver.Nuget.package">
+            <remarks/>
+        </member>
+        <member name="P:nuver.Nuget.package.metadata">
+            <remarks/>
+        </member>
+        <member name="P:nuver.Nuget.package.files">
+            <remarks/>
+        </member>
+        <member name="T:nuver.Nuget.packageMetadata">
+            <remarks/>
+        </member>
+        <member name="P:nuver.Nuget.packageMetadata.id">
+            <remarks/>
+        </member>
+        <member name="P:nuver.Nuget.packageMetadata.version">
+            <remarks/>
+        </member>
+        <member name="P:nuver.Nuget.packageMetadata.title">
+            <remarks/>
+        </member>
+        <member name="P:nuver.Nuget.packageMetadata.authors">
+            <remarks/>
+        </member>
+        <member name="P:nuver.Nuget.packageMetadata.owners">
+            <remarks/>
+        </member>
+        <member name="P:nuver.Nuget.packageMetadata.licenseUrl">
+            <remarks/>
+        </member>
+        <member name="P:nuver.Nuget.packageMetadata.projectUrl">
+            <remarks/>
+        </member>
+        <member name="P:nuver.Nuget.packageMetadata.iconUrl">
+            <remarks/>
+        </member>
+        <member name="P:nuver.Nuget.packageMetadata.requireLicenseAcceptance">
+            <remarks/>
+        </member>
+        <member name="P:nuver.Nuget.packageMetadata.requireLicenseAcceptanceSpecified">
+            <remarks/>
+        </member>
+        <member name="P:nuver.Nuget.packageMetadata.description">
+            <remarks/>
+        </member>
+        <member name="P:nuver.Nuget.packageMetadata.summary">
+            <remarks/>
+        </member>
+        <member name="P:nuver.Nuget.packageMetadata.releaseNotes">
+            <remarks/>
+        </member>
+        <member name="P:nuver.Nuget.packageMetadata.copyright">
+            <remarks/>
+        </member>
+        <member name="P:nuver.Nuget.packageMetadata.language">
+            <remarks/>
+        </member>
+        <member name="P:nuver.Nuget.packageMetadata.tags">
+            <remarks/>
+        </member>
+        <member name="P:nuver.Nuget.packageMetadata.dependencies">
+            <remarks/>
+        </member>
+        <member name="P:nuver.Nuget.packageMetadata.frameworkAssemblies">
+            <remarks/>
+        </member>
+        <member name="P:nuver.Nuget.packageMetadata.references">
+            <remarks/>
+        </member>
+        <member name="T:nuver.Nuget.packageMetadataDependency">
+            <remarks/>
+        </member>
+        <member name="P:nuver.Nuget.packageMetadataDependency.id">
+            <remarks/>
+        </member>
+        <member name="P:nuver.Nuget.packageMetadataDependency.version">
+            <remarks/>
+        </member>
+        <member name="T:nuver.Nuget.packageMetadataFrameworkAssembly">
+            <remarks/>
+        </member>
+        <member name="P:nuver.Nuget.packageMetadataFrameworkAssembly.assemblyName">
+            <remarks/>
+        </member>
+        <member name="P:nuver.Nuget.packageMetadataFrameworkAssembly.targetFramework">
+            <remarks/>
+        </member>
+        <member name="T:nuver.Nuget.packageMetadataReference">
+            <remarks/>
+        </member>
+        <member name="P:nuver.Nuget.packageMetadataReference.file">
+            <remarks/>
+        </member>
+        <member name="T:nuver.Nuget.packageFile">
+            <remarks/>
+        </member>
+        <member name="P:nuver.Nuget.packageFile.src">
+            <remarks/>
+        </member>
+        <member name="P:nuver.Nuget.packageFile.target">
+            <remarks/>
+        </member>
+        <member name="P:nuver.Nuget.packageFile.exclude">
+            <remarks/>
+        </member>
+    </members>
+</doc>

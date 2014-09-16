@@ -91,7 +91,7 @@ namespace Brevitee.Analytics.Crawlers.Tests
 
             string startUrl = Prompt("Enter the starting url");
             crawler.Name = startUrl;
-            Data.ImageCrawler data = new Data.ImageCrawler();
+            Crawler data = new Crawler();
             data.Name = startUrl;
             data.RootUrl = startUrl;
             data.Save();
@@ -113,7 +113,7 @@ namespace Brevitee.Analytics.Crawlers.Tests
         public void UrlShouldToStringCorrectly()
         {
             SQLiteRegistrar.Register<Url>();
-            _.TryEnsureSchema<Url>();
+            Db.TryEnsureSchema<Url>();
 
             Url test = Url.FromUri("http://twitter.github.com/bootstrap/base-css.html#tables");
             Out(test.ToString());
@@ -128,7 +128,7 @@ namespace Brevitee.Analytics.Crawlers.Tests
             testSettings.Add("ApplicationName", setAppNameTo);
             DefaultConfiguration.SetAppSettings(testSettings);
             SQLiteRegistrar.Register(Dao.ConnectionName(typeof(Url)));
-            _.TryEnsureSchema<Url>();
+            Db.TryEnsureSchema<Url>();
 
             string appName = DefaultConfiguration.GetAppSetting("ApplicationName", "BAD");
             string rootUrl = "http://www.flickr.com/galleries/";
@@ -145,7 +145,7 @@ namespace Brevitee.Analytics.Crawlers.Tests
         public void ShouldNotCreateDupeUrl()
         {
             SQLiteRegistrar.Register(Dao.ConnectionName(typeof(Url)));
-            _.TryEnsureSchema<Url>();
+            Db.TryEnsureSchema<Url>();
 
             Url funnycatpix = Url.FromUri("http://www.funnycatpix.com/");
 
@@ -171,7 +171,7 @@ namespace Brevitee.Analytics.Crawlers.Tests
         {
             Init();
             _srcs = new List<string>();
-            string connectionString = _.Db.For<Image>().ConnectionString;
+            string connectionString = Db.For<Image>().ConnectionString;
             OutFormat("Connection String: {0}", ConsoleColor.Cyan, connectionString);
 
             try
@@ -197,7 +197,7 @@ namespace Brevitee.Analytics.Crawlers.Tests
         private static void Init()
         {
             SQLiteRegistrar.Register<Url>();
-            _.TryEnsureSchema<Url>();
+            Db.TryEnsureSchema<Url>();
             //SqlClientRegistrar.Register<Url>();
             //_.TryEnsureSchema<Url>();
         }

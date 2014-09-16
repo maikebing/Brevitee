@@ -81,7 +81,7 @@ namespace Brevitee.Data
 
         public override string GetColumnDefinition(ColumnAttribute column)
         {
-            string type = column.ExtractedType;
+            string type = column.DbDataType;
             if (type.Equals("Bit"))
             {
                 type = "INTEGER"; // sqlite doesn't have a separate Bit/bool

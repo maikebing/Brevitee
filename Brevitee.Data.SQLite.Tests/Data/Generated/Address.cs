@@ -32,7 +32,7 @@ namespace SampleData
 		}
 
 	// property:Id, columnName:Id	
-	[Brevitee.Data.KeyColumn(Name="Id", ExtractedType="BigInt", MaxLength="8")]
+	[Brevitee.Data.KeyColumn(Name="Id", DbDataType="BigInt", MaxLength="8")]
 	public long? Id
 	{
 		get
@@ -46,7 +46,7 @@ namespace SampleData
 	}
 
 	// property:Line1, columnName:Line1	
-	[Brevitee.Data.Column(Name="Line1", ExtractedType="VarChar", MaxLength="255", AllowNull=false)]
+	[Brevitee.Data.Column(Name="Line1", DbDataType="VarChar", MaxLength="255", AllowNull=false)]
 	public string Line1
 	{
 		get
@@ -60,7 +60,7 @@ namespace SampleData
 	}
 
 	// property:Line2, columnName:Line2	
-	[Brevitee.Data.Column(Name="Line2", ExtractedType="VarChar", MaxLength="255", AllowNull=true)]
+	[Brevitee.Data.Column(Name="Line2", DbDataType="VarChar", MaxLength="255", AllowNull=true)]
 	public string Line2
 	{
 		get
@@ -74,7 +74,7 @@ namespace SampleData
 	}
 
 	// property:City, columnName:City	
-	[Brevitee.Data.Column(Name="City", ExtractedType="VarChar", MaxLength="255", AllowNull=true)]
+	[Brevitee.Data.Column(Name="City", DbDataType="VarChar", MaxLength="255", AllowNull=true)]
 	public string City
 	{
 		get
@@ -88,7 +88,7 @@ namespace SampleData
 	}
 
 	// property:StateOrProvince, columnName:StateOrProvince	
-	[Brevitee.Data.Column(Name="StateOrProvince", ExtractedType="VarChar", MaxLength="255", AllowNull=true)]
+	[Brevitee.Data.Column(Name="StateOrProvince", DbDataType="VarChar", MaxLength="255", AllowNull=true)]
 	public string StateOrProvince
 	{
 		get
@@ -102,7 +102,7 @@ namespace SampleData
 	}
 
 	// property:PostalCode, columnName:PostalCode	
-	[Brevitee.Data.Column(Name="PostalCode", ExtractedType="VarChar", MaxLength="100", AllowNull=true)]
+	[Brevitee.Data.Column(Name="PostalCode", DbDataType="VarChar", MaxLength="100", AllowNull=true)]
 	public string PostalCode
 	{
 		get
@@ -211,7 +211,7 @@ namespace SampleData
             AddressColumns c = new AddressColumns();
             IQueryFilter filter = where(c);         
             
-			Database db = database == null ? _.Db.For<Address>(): database;
+			Database db = database == null ? Db.For<Address>(): database;
 			QuerySet query = GetQuerySet(db); 
             query.Top<Address>(count);
             query.Where(filter);
@@ -230,7 +230,7 @@ namespace SampleData
 			AddressColumns c = new AddressColumns();
 			IQueryFilter filter = where(c) ;
 
-			Database db = database == null ? _.Db.For<Address>(): database;
+			Database db = database == null ? Db.For<Address>(): database;
 			QuerySet query = GetQuerySet(db);	 
 			query.Count<Address>();
 			query.Where(filter);	  

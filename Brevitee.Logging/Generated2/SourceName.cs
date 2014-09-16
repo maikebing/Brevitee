@@ -37,7 +37,7 @@ namespace Brevitee.Logging
 
 	// property:Id, columnName:Id	
 	[Exclude]
-	[Brevitee.Data.KeyColumn(Name="Id", ExtractedType="BigInt", MaxLength="8")]
+	[Brevitee.Data.KeyColumn(Name="Id", DbDataType="BigInt", MaxLength="8")]
 	public long? Id
 	{
 		get
@@ -51,7 +51,7 @@ namespace Brevitee.Logging
 	}
 
 	// property:Value, columnName:Value	
-	[Brevitee.Data.Column(Name="Value", ExtractedType="VarChar", MaxLength="4000", AllowNull=true)]
+	[Brevitee.Data.Column(Name="Value", DbDataType="VarChar", MaxLength="4000", AllowNull=true)]
 	public string Value
 	{
 		get
@@ -89,7 +89,7 @@ namespace Brevitee.Logging
 		{
 			SqlStringBuilder sql = new SqlStringBuilder();
 			sql.Select<SourceName>();
-			Database db = database == null ? _.Db.For<SourceName>(): database;
+			Database db = database == null ? Db.For<SourceName>(): database;
 			return new SourceNameCollection(sql.GetDataTable(db));
 		}
 
@@ -253,7 +253,7 @@ namespace Brevitee.Logging
 			SourceNameColumns c = new SourceNameColumns();
 			IQueryFilter filter = where(c);         
 			
-			Database db = database == null ? _.Db.For<SourceName>(): database;
+			Database db = database == null ? Db.For<SourceName>(): database;
 			QuerySet query = GetQuerySet(db); 
 			query.Top<SourceName>(count);
 			query.Where(filter);
@@ -280,7 +280,7 @@ namespace Brevitee.Logging
 			SourceNameColumns c = new SourceNameColumns();
 			IQueryFilter filter = where(c) ;
 
-			Database db = database == null ? _.Db.For<SourceName>(): database;
+			Database db = database == null ? Db.For<SourceName>(): database;
 			QuerySet query = GetQuerySet(db);	 
 			query.Count<SourceName>();
 			query.Where(filter);	  

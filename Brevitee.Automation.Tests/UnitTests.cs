@@ -213,7 +213,7 @@ namespace Brevitee.Automation.Tests
         {
             StringBuilder tabs = new StringBuilder();
             tabCount.Times(i => tabs.Append("\t"));
-            OutFormat("{0}{1}", color, tabs, format._Format(args));
+            OutLineFormat("{0}{1}", color, tabs, format._Format(args));
         }
 
         [UnitTest]
@@ -222,7 +222,7 @@ namespace Brevitee.Automation.Tests
             Dictionary<string, List<DocInfo>> infos = DocInfo.FromXmlFile("./TestBuildProject.xml");
             infos.Keys.Each(s =>
             {
-                Out(s, ConsoleColor.Cyan);
+                OutLine(s, ConsoleColor.Cyan);
 
                 infos[s].Each(info =>
                 {
@@ -231,6 +231,9 @@ namespace Brevitee.Automation.Tests
             });
         }
 
+        /// <summary>
+        /// This is the xml summary
+        /// </summary>
         [Doc(@"This class is for testing documentation
 and whatever")]
         class DocumentedClassTest
@@ -259,11 +262,44 @@ an empty string")]
         [UnitTest]
         public void DocInfoFromAttributeShouldHaveDeclaringTypeName()
         {
-            Dictionary<Type, DocInfo[]> infos = DocInfo.FromDocAttributes(typeof(DocumentedClassTest));
+            Dictionary<string, List<DocInfo>> infos = DocInfo.FromDocAttributes(typeof(DocumentedClassTest));
+            Expect.IsGreaterThan(infos.Count, 0);
+
             infos.Keys.Each(type =>
             {
                 infos[type].Each(info =>
                 {
+                    Out("From: ");
+                    OutLine(info.From.ToString(), ConsoleColor.Cyan);
+
+                    if (info.From == DocFrom.Reflection)
+                    {
+                        Expect.IsFalse(string.IsNullOrEmpty(info.DeclaringTypeName));
+                    }
+                    OutputInfo(info);
+                });
+            });
+        }
+
+        [UnitTest]
+        public void ShouldBeAbleToInferDocs()
+        {
+            Dictionary<string, List<DocInfo>> infos = DocInfo.Infer(Assembly.GetExecutingAssembly());
+            Expect.IsGreaterThan(infos.Count, 0);
+
+            infos.Keys.Each(type =>
+            {
+                infos[type].Each(info =>
+                {
+                    Out("From: ", ConsoleColor.Cyan);
+                    ConsoleColor fromColor = info.From == DocFrom.Reflection ? ConsoleColor.Blue : ConsoleColor.Yellow;
+                    OutLine(info.From.ToString(), fromColor);
+
+                    if (info.From == DocFrom.Reflection)
+                    {
+                        Expect.IsFalse(string.IsNullOrEmpty(info.DeclaringTypeName));
+                    }
+
                     OutputInfo(info);
                 });
             });
@@ -271,27 +307,27 @@ an empty string")]
 
         private static void OutputInfo(DocInfo info)
         {
-            OutFormat("Summary:\r\n{0}", ConsoleColor.Blue, info.Summary);
-            OutFormat("DeclaringTypName: {0}", ConsoleColor.Yellow, info.DeclaringTypeName);
-            OutFormat("MemberType: {0}", ConsoleColor.Magenta, info.MemberType.ToString());
-            OutFormat("MemberName: {0}", ConsoleColor.Yellow, info.MemberName);
+            OutLineFormat("Summary:\r\n{0}", ConsoleColor.Blue, info.Summary);
+            OutLineFormat("DeclaringTypName: {0}", ConsoleColor.Yellow, info.DeclaringTypeName);
+            OutLineFormat("MemberType: {0}", ConsoleColor.Magenta, info.MemberType.ToString());
+            OutLineFormat("MemberName: {0}", ConsoleColor.Yellow, info.MemberName);
 
             if (info.MemberType == MemberType.Method)
             {
                 info.ParamInfos.Each(p =>
                 {
-                    OutFormat("Parameter: {0}, Description: {1}", p.Name, p.Description);
+                    OutLineFormat("Parameter: {0}, Description: {1}", p.Name, p.Description);
                 });
             }
             if (info.HasExtraItems)
             {
-                Out("Extra Items", ConsoleColor.Yellow);
+                OutLine("Extra Items", ConsoleColor.Yellow);
                 info.Items().Each(o =>
                 {
                     if (o != null)
                     {
-                        OutFormat("\tType: {0}", ConsoleColor.Yellow, o.GetType());
-                        OutFormat("\t{0}", o.ValuePropertiesToDynamicInstance().PropertiesToString());
+                        OutLineFormat("\tType: {0}", ConsoleColor.Yellow, o.GetType());
+                        OutLineFormat("\t{0}", o.ValuePropertiesToDynamicInstance().PropertiesToString());
                     }
                 });
             }
@@ -412,7 +448,7 @@ an empty string")]
             OutLine("It worked!", ConsoleColor.Green);
         }
 
-        [UnitTest(PreInvokeMethodName="Test")]
+        [UnitTest(Before="Test")]
         public void BuildConfShouldSave()
         {
             WorkerConf conf = CreateTestConf();

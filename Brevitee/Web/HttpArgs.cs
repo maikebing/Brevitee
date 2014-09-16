@@ -17,10 +17,15 @@ namespace Brevitee.Web
     public class HttpArgs
     {
         Dictionary<string, string> _pairs;
-        public HttpArgs(string inputString, string contentType = null)
+        public HttpArgs()
         {
             this._pairs = new Dictionary<string, string>();
             this._ordered = new List<string>();
+        }
+
+        public HttpArgs(string inputString, string contentType = null)
+            : this()
+        {
             this.ContentType = contentType;
             ParseInput(inputString);
         }
@@ -44,36 +49,46 @@ namespace Brevitee.Web
         {
             if (ContentType.Contains("application/json;") || ContentType.Equals("application/json"))
             {
-                if (!string.IsNullOrEmpty(inputString))
-                {
-                    JObject obj = (JObject)JsonConvert.DeserializeObject(inputString);
-
-                    obj.Children().Each(jtoken =>
-                    {
-                        JProperty prop = jtoken as JProperty;
-                        if (prop != null)
-                        {
-                            this.Add(prop.Name, prop.Value.ToString());//this._pairs.Add(prop.Name, prop.Value.ToString());
-                        }
-                    });
-                }                
+                ParseJson(inputString);               
             }
             else if(ContentType.Contains("application/x-www-form-urlencoded") || ContentType.Equals("application/x-www-form-urlencoded"))
             {
-                string[] pairs = inputString.DelimitSplit("?", "&");
-                foreach (string pair in pairs)
+                ParseForm(inputString);
+            }
+        }
+
+        public void ParseForm(string inputString)
+        {
+            string[] pairs = inputString.DelimitSplit("?", "&");
+            foreach (string pair in pairs)
+            {
+                string[] keyVal = pair.DelimitSplit("=");
+                if (keyVal.Length == 2)
                 {
-                    string[] keyVal = pair.DelimitSplit("=");
-                    if (keyVal.Length == 2)
-                    {
-                        string val = Uri.UnescapeDataString(keyVal[1]);
-                        this.Add(keyVal[0], val);//this._pairs.Add(keyVal[0], val);
-                    }
-                    else
-                    {
-                        this.Add(keyVal[0], "");//this._pairs.Add(keyVal[0], "");
-                    }
+                    string val = Uri.UnescapeDataString(keyVal[1]);
+                    this.Add(keyVal[0], val);//this._pairs.Add(keyVal[0], val);
                 }
+                else
+                {
+                    this.Add(keyVal[0], "");//this._pairs.Add(keyVal[0], "");
+                }
+            }
+        }
+
+        public void ParseJson(string inputString)
+        {
+            if (!string.IsNullOrEmpty(inputString))
+            {
+                JObject obj = (JObject)JsonConvert.DeserializeObject(inputString);
+
+                obj.Children().Each(jtoken =>
+                {
+                    JProperty prop = jtoken as JProperty;
+                    if (prop != null)
+                    {
+                        this.Add(prop.Name, prop.Value.ToString());//this._pairs.Add(prop.Name, prop.Value.ToString());
+                    }
+                });
             }
         }
 
@@ -106,6 +121,12 @@ namespace Brevitee.Web
             {
                 return _pairs.Values.Count;
             }
+        }
+
+        public bool Has(string key)
+        {
+            string ignore;
+            return Has(key, out ignore);
         }
 
         /// <summary>

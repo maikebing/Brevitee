@@ -562,13 +562,13 @@ public partial class bam
 
     private void EnsureSchemas()
     {
-        _.TryEnsureSchema<Brevitee.Logging.Data.LogEvent>();
+        Db.TryEnsureSchema<Brevitee.Logging.Data.LogEvent>();
         ForEachDaoType((t) =>
         {
             int l = t.Length;
             for (int i = 0; i < l; i++)
             {
-                _.TryEnsureSchema(t[i]);
+                Db.TryEnsureSchema(t[i]);
             }
         });
     }

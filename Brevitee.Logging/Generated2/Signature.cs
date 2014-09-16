@@ -38,7 +38,7 @@ namespace Brevitee.Logging
 
 	// property:Id, columnName:Id	
 	[Exclude]
-	[Brevitee.Data.KeyColumn(Name="Id", ExtractedType="BigInt", MaxLength="8")]
+	[Brevitee.Data.KeyColumn(Name="Id", DbDataType="BigInt", MaxLength="8")]
 	public long? Id
 	{
 		get
@@ -52,7 +52,7 @@ namespace Brevitee.Logging
 	}
 
 	// property:Value, columnName:Value	
-	[Brevitee.Data.Column(Name="Value", ExtractedType="VarChar", MaxLength="4000", AllowNull=false)]
+	[Brevitee.Data.Column(Name="Value", DbDataType="VarChar", MaxLength="4000", AllowNull=false)]
 	public string Value
 	{
 		get
@@ -109,7 +109,7 @@ namespace Brevitee.Logging
 		{
 			SqlStringBuilder sql = new SqlStringBuilder();
 			sql.Select<Signature>();
-			Database db = database == null ? _.Db.For<Signature>(): database;
+			Database db = database == null ? Db.For<Signature>(): database;
 			return new SignatureCollection(sql.GetDataTable(db));
 		}
 
@@ -273,7 +273,7 @@ namespace Brevitee.Logging
 			SignatureColumns c = new SignatureColumns();
 			IQueryFilter filter = where(c);         
 			
-			Database db = database == null ? _.Db.For<Signature>(): database;
+			Database db = database == null ? Db.For<Signature>(): database;
 			QuerySet query = GetQuerySet(db); 
 			query.Top<Signature>(count);
 			query.Where(filter);
@@ -300,7 +300,7 @@ namespace Brevitee.Logging
 			SignatureColumns c = new SignatureColumns();
 			IQueryFilter filter = where(c) ;
 
-			Database db = database == null ? _.Db.For<Signature>(): database;
+			Database db = database == null ? Db.For<Signature>(): database;
 			QuerySet query = GetQuerySet(db);	 
 			query.Count<Signature>();
 			query.Where(filter);	  

@@ -21,6 +21,8 @@
     <SccProvider>
     </SccProvider>
     <TargetFrameworkProfile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -41,13 +43,15 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>bin\Release\Brevitee.Data.Schema.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Ionic.Zip">
       <HintPath>..\Assemblies\Ionic.Zip.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\Assemblies\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -68,6 +72,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddAuditColumnsAugmentation.cs" />
+    <Compile Include="AddColumnAugmentation.cs" />
+    <Compile Include="AddCreatedAugmentation.cs" />
+    <Compile Include="AddIdKeyColumnAugmentation.cs" />
+    <Compile Include="AddModifiedAugmentation.cs" />
+    <Compile Include="AutoIdSchemaManager.cs" />
     <Compile Include="Column.cs" />
     <Compile Include="DaoRazorTemplate.cs" />
     <Compile Include="DataTypes.cs" />
@@ -85,10 +95,12 @@
     <Compile Include="ResultStreamEventDelegate.cs" />
     <Compile Include="SchemaDefinition.cs" />
     <Compile Include="SchemaManager.cs" />
+    <Compile Include="SchemaManagerAugmentation.cs" />
     <Compile Include="SchemaTemplate.cs" />
     <Compile Include="Table.cs" />
     <Compile Include="TableTemplate.cs" />
     <Compile Include="TargetTableEventDelegate.cs" />
+    <Compile Include="UuidSchemaManager.cs" />
     <Compile Include="XrefInfo.cs" />
     <Compile Include="XrefTable.cs">
       <SubType>Code</SubType>
@@ -154,7 +166,14 @@
   <ItemGroup>
     <EmbeddedResource Include="Templates\ContextMethods.tmpl" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Templates\Partial.tmpl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

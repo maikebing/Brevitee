@@ -1,0 +1,493 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Brevitee.Server</name>
+    </assembly>
+    <members>
+        <member name="M:Brevitee.Server.AppConf.DomApplicationIdFromAppName(System.String)">
+            <summary>
+            Get the application id used in the dom by parsing the appName.
+            </summary>
+            <param name="appName"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Brevitee.Server.AppConf.Name">
+            <summary>
+            The name of the application.  This will be the name of the 
+            folder being served from the "apps" folder of the root
+            of the BreviteeServer
+            </summary>
+        </member>
+        <member name="P:Brevitee.Server.AppConf.DefaultLayout">
+            <summary>
+            The name of the default layout 
+            </summary>
+        </member>
+        <member name="P:Brevitee.Server.AppConf.DefaultPage">
+            <summary>
+            The name of the page to serve when the 
+            root is requested "/".
+            </summary>
+        </member>
+        <member name="T:Brevitee.Server.ContentResponder">
+            <summary>
+            The primary responder for all content files found in ~s:/ (defined as BreviteeServer.ContentRoot)
+            </summary>
+        </member>
+        <member name="M:Brevitee.Server.ResponderBase.MayRespond(Brevitee.ServiceProxy.IHttpContext)">
+            <summary>
+            Returns true if the AbsolutePath of the requested
+            Url starts with the name of the current class.  Extenders
+            will provide different implementations based on their
+            requirements
+            </summary>
+            <param name="context"></param>
+            <returns></returns>
+        </member>
+        <member name="E:Brevitee.Server.ResponderBase.Responded">
+            <summary>
+            The event that fires when a response is sent
+            </summary>
+        </member>
+        <member name="E:Brevitee.Server.ResponderBase.NotResponded">
+            <summary>
+            The event that fires when a response is not sent
+            </summary>
+        </member>
+        <member name="M:Brevitee.Server.ContentResponder.InitializeAppResponders">
+            <summary>
+            Initialize all the AppContentResponders for the 
+            apps found in the ~s:/apps folder
+            </summary>
+        </member>
+        <member name="M:Brevitee.Server.ContentResponder.InitializeFileSystem">
+            <summary>
+            Creates the default files in the path specified by
+            BreviteeConf.ContentRoot.  Existing files will NOT be
+            overwritten.  The source of the initial content will be retrieved
+            either from the compiled resource zip file or
+            the zip file specified in BreviteeConf.ZipPath
+            overwritten depending on the value specified in
+            BreviteeConf.InitializeFileSystemFrom.  Valid 
+            values are "Resource" or "ZipPath"
+            </summary>
+        </member>
+        <member name="M:Brevitee.Server.ContentResponder.GetAppIncludes(Brevitee.Server.AppConf)">
+            <summary>
+            Gets the Includes for the specified AppConf prefixing each
+            path with /bam/apps/[appName] before returning.  Also adds
+            the init.js and all viewModel .js files.  Adding the prefix
+            /bam/apps/[appName] will ensure that the AppContentResponder
+            picks the scripts from the correct location.
+            </summary>
+            <param name="appConf"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Brevitee.Server.ContentResponder.Root">
+            <summary>
+            The server content root path, not to be confused with the 
+            application root which should be [Root]\apps\[appName]
+            </summary>
+        </member>
+        <member name="E:Brevitee.Server.ContentResponder.CommonDustRendererInitializing">
+            <summary>
+            The event that fires when templates are being initialized.
+            This occurs after file system initialization
+            </summary>
+        </member>
+        <member name="M:Brevitee.Server.AppContentResponder.Initialize">
+            <summary>
+            Initializes the file system from the embedded zip resource
+            that represents a bare bones app.
+            </summary>
+        </member>
+        <member name="P:Brevitee.Server.AppContentResponder.ContentResponder">
+            <summary>
+            Gets the main ContentResponder, which is the content responder
+            for the server level of the current BreviteeServer
+            </summary>
+        </member>
+        <member name="P:Brevitee.Server.AppContentResponder.ContentRoot">
+            <summary>
+            The server content root
+            </summary>
+        </member>
+        <member name="P:Brevitee.Server.AppContentResponder.AppRoot">
+            <summary>
+            The application content root
+            </summary>
+        </member>
+        <member name="M:Brevitee.Server.BreviteeApplicationManager.GetPages(System.String)">
+            <summary>
+            Called by client code
+            </summary>
+            <param name="appName"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Brevitee.Server.BreviteeDaoServer">
+            <summary>
+            A specialized server that serves
+            content and responds to dao requests
+            </summary>
+        </member>
+        <member name="M:Brevitee.Server.BreviteeServer.InitializeCommonSchemas">
+            <summary>
+            Initialize server level schemas
+            </summary>
+        </member>
+        <member name="M:Brevitee.Server.BreviteeServer.LoadConf">
+            <summary>
+            Loads the server configuration from either a json file, yaml file
+            or the default config depending on which is found first in that 
+            order.
+            </summary>
+        </member>
+        <member name="M:Brevitee.Server.BreviteeServer.SaveConf(System.Boolean,Brevitee.Server.ConfFormat)">
+            <summary>
+            Saves the current configuration if the config 
+            file doesn't currently exist
+            </summary>
+            <param name="format"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brevitee.Server.BreviteeServer.GetCurrentConf(System.Boolean)">
+            <summary>
+            Get a BreviteeConf instance which represents the current
+            state of the BreviteeServer
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Brevitee.Server.BreviteeServer.EnableDao">
+            <summary>
+            If true will cause the initialization of the 
+            DaoResponder which will process all *.db.js
+            and *.db.json files.  See http://breviteedocs.wordpress.com/dao/
+            for information about the expected format 
+            of a *.db.js file.  The format of *db.json 
+            would be the json equivalent of the referenced
+            database object (see link).  See
+            Brevitee.Data.Schema.DataTypes for valid
+            data types.
+            </summary>
+        </member>
+        <member name="P:Brevitee.Server.BreviteeServer.EnableServiceProxy">
+            <summary>
+            If true will cause the initialization of the
+            ServiceProxyResponder which will register
+            all classes addorned with the Proxy attribute
+            as service proxy executors
+            </summary>
+        </member>
+        <member name="T:Brevitee.Server.BreviteeServiceProxyServer">
+            <summary>
+            BreviteeServer where EnableDao is false
+            and EnableServiceProxy is true
+            </summary>
+        </member>
+        <member name="T:Brevitee.Server.FileContentHash">
+            <summary>
+            Data Access Object DataBase JavaScript Hash
+            </summary>
+        </member>
+        <member name="T:Brevitee.Server.DustTemplateInitializer">
+            <summary>
+            Class used to initialize dust templates for all 
+            Dao components
+            </summary>
+        </member>
+        <member name="T:Brevitee.Server.Renderers.CompiledDustTemplate">
+            <summary>
+            Represents the compiled result of a dust tempalte.  Dust.js will 
+            compile dust templates to javascript.  The compilation process
+            can take time depending on the size of the template.  This class
+            saves the result in a json file along with a hash of the original
+            source to determine if compilation is necessary.
+            </summary>
+        </member>
+        <member name="M:Brevitee.Server.Includes.GetScriptTags">
+            <summary>
+            Renders the Scripts as a series of html script tags
+            with the src attributes set to the value of each 
+            Script string and the type attribute set to 
+            "text/javascript"
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Brevitee.Server.Includes.GetStyleSheetLinkTags">
+            <summary>
+            Renders the Css as a series of link tags
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="F:Brevitee.Server.InitializeFrom.Resource">
+            <summary>
+            Initialize from the embedded resource file 
+            that comes with the Brevitee system
+            </summary>
+        </member>
+        <member name="F:Brevitee.Server.InitializeFrom.ZipPath">
+            <summary>
+            Initialize from a zip file
+            specified path
+            </summary>
+        </member>
+        <member name="M:Brevitee.Server.LayoutConf.#ctor">
+            <summary>
+            Required for deserialization
+            </summary>
+        </member>
+        <member name="T:Brevitee.Server.Renderers.CommonDustRenderer">
+            <summary>
+            The renderer used to render the results of a 
+            common (server level) dust template provided a given object
+            </summary>
+        </member>
+        <member name="M:Brevitee.Server.Renderers.RendererBase.Respond(Brevitee.ServiceProxy.ExecutionRequest)">
+            <summary>
+            Sets the content type then calls Render(request.Result, request.Response.OutputStream);
+            </summary>
+            <param name="request"></param>
+        </member>
+        <member name="M:Brevitee.Server.Renderers.CommonDustRenderer.RenderLayout(Brevitee.Server.LayoutModel,System.IO.Stream)">
+            <summary>
+            Render the specified LayoutModel to the specifie output Stream
+            </summary>
+            <param name="toRender"></param>
+            <param name="output"></param>
+        </member>
+        <member name="P:Brevitee.Server.Renderers.CommonDustRenderer.CompiledDustTemplates">
+            <summary>
+            Represents the compiled javascript result of doing dust.compile
+            against all the files found in ~s:/dust.
+            </summary>
+        </member>
+        <member name="P:Brevitee.Server.Renderers.CommonDustRenderer.CompiledLayoutTemplates">
+            <summary>
+            Represents the compiled javascript result of doing dust.compile
+            against all the files found in ~s:/dust/layouts.
+            </summary>
+        </member>
+        <member name="P:Brevitee.Server.Renderers.CommonDustRenderer.CompiledCommonTemplates">
+            <summary>
+            Represents the compiled javascript result of doing dust.compile
+            against all the files found in ~s:/dust/layouts.
+            </summary>
+        </member>
+        <member name="P:Brevitee.Server.Renderers.AppDustRenderer.CompiledDustTemplates">
+            <summary>
+            All application compiled dust templates including Server level
+            layouts, templates and app custom and type templates
+            </summary>
+        </member>
+        <member name="T:Brevitee.Server.Renderers.CommonDustTemplateRenderer">
+            <summary>
+            The renderer used to render a template for 
+            a given object.  In other words writes
+            the default template for an object.
+            </summary>
+        </member>
+        <member name="M:Brevitee.Server.Renderers.CommonDustTemplateRenderer.Render(System.Object,System.IO.Stream)">
+            <summary>
+            Writes a FieldSet for the specified object toRender.
+            </summary>
+            <param name="toRender"></param>
+            <param name="output"></param>
+        </member>
+        <member name="M:Brevitee.Server.Renderers.HtmlRenderer.Render">
+            <summary>
+            Render the response to the output stream of ExecutionRequest.Response
+            </summary>
+        </member>
+        <member name="T:Brevitee.Server.LayoutModel">
+            <summary>
+            Model used to write the default application layout
+            for an application
+            </summary>
+        </member>
+        <member name="P:Brevitee.Server.LayoutModel.DomApplicationId">
+            <summary>
+            Used to sanitize the app name
+            </summary>
+        </member>
+        <member name="T:Brevitee.Server.BreviteeConf">
+            <summary>
+            Configuratoin for the BreviteeServer
+            </summary>
+        </member>
+        <member name="M:Brevitee.Server.BreviteeConf.InitializeAppConfigs">
+            <summary>
+            Deserializes each appConf found in subdirectories of
+            the ~s:/apps folder.  For example, if there is a subfolder named
+            Monkey in ~s:/apps then this method will search for ~s:/apps/Monkey/appConf.json
+            then ~s:/apps/Monkey/appConf.yaml if the json file isn't found.  If neither
+            is found a new AppConf is created and and serialized to the json file
+            specified above.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Brevitee.Server.BreviteeConf.Load(System.String)">
+            <summary>
+            Load the BreviteeConf from one of BreviteeConf.json, BreviteeConf.yaml or
+            the Default configuration file whichever is found first.  Default 
+            will always be provided and will never return null.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Brevitee.Server.BreviteeConf.Fs">
+            <summary>
+            Server content fs root
+            </summary>
+        </member>
+        <member name="P:Brevitee.Server.BreviteeConf.DaoSearchPattern">
+            <summary>
+            The file search pattern used to filter 
+            assemblies for Dao registration
+            </summary>
+        </member>
+        <member name="P:Brevitee.Server.BreviteeConf.LoggerPaths">
+            <summary>
+            Directory paths to search for ILogger implementations
+            </summary>
+        </member>
+        <member name="P:Brevitee.Server.BreviteeConf.LoggerSearchPattern">
+            <summary>
+            The file search pattern used to 
+            load assemblies that contain ILogger implementations
+            </summary>
+        </member>
+        <member name="P:Brevitee.Server.BreviteeConf.AppConfigs">
+            <summary>
+            Represents the configs for each application found in ~s:/apps 
+            (where each subdirectory is assumed to be a Brevitee application)
+            </summary>
+        </member>
+        <member name="M:Brevitee.Server.ServiceProxyResponder.AddAppService``1(System.String,``0)">
+            <summary>
+            Add the specified instance to the specified appName
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="appName"></param>
+            <param name="instance"></param>
+        </member>
+        <member name="M:Brevitee.Server.ServiceProxyResponder.AddCommonService``1(``0)">
+            <summary>
+            Add the specified instance as a service
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="instance"></param>
+        </member>
+        <member name="M:Brevitee.Server.ServiceProxyResponder.AddCommonService(System.Object)">
+            <summary>
+            Add the specified instance as an executor
+            </summary>
+        </member>
+        <member name="M:Brevitee.Server.ServiceProxyResponder.AddCommonService(System.Type,System.Object)">
+            <summary>
+            Add the specified instance as an executor
+            </summary>
+            <param name="type"></param>
+            <param name="instance"></param>
+        </member>
+        <member name="M:Brevitee.Server.ServiceProxyResponder.RemoveCommonService``1">
+            <summary>
+            Remove the executor of the specified generic type
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Brevitee.Server.ServiceProxyResponder.RemoveCommonService(System.Type)">
+            <summary>
+            Remove the executor of the specified type
+            </summary>
+            <param name="type"></param>
+        </member>
+        <member name="M:Brevitee.Server.ServiceProxyResponder.RemoveCommonService(System.String)">
+            <summary>
+            Remove the executor with the specified className
+            </summary>
+            <param name="className"></param>
+        </member>
+        <member name="M:Brevitee.Server.ServiceProxyResponder.Contains``1">
+            <summary>
+            Returns true if the specified generic type has 
+            been added as an executor
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Brevitee.Server.ServiceProxyResponder.Contains(System.Type)">
+            <summary>
+            Returns true if the specified type has been 
+            added as an executor
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brevitee.Server.ServiceProxyResponder.MayRespond(Brevitee.ServiceProxy.IHttpContext)">
+            <summary>
+            Always returns true for a ServiceProxyResponder as
+            this responder is last in line.
+            </summary>
+            <param name="context"></param>
+        </member>
+        <member name="P:Brevitee.Server.ServiceProxyResponder.Services">
+            <summary>
+            List of service class names
+            </summary>
+        </member>
+        <member name="M:Brevitee.Server.Fs.FileExists(System.String)">
+            <summary>
+            Determines if the specified relativePath exists
+            in the current Fs.  If the specified path is not
+            prefixed by a ~ it will be adjusted prior to 
+            checking for the existence of the file
+            </summary>
+            <param name="relativePath"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Brevitee.Server.Fs.Root">
+            <summary>
+            The full physical path to the root of the current Fs (FileSystem)
+            </summary>
+        </member>
+        <member name="M:Brevitee.Server.RequestHandler.AddResponder(Brevitee.Server.IResponder)">
+            <summary>
+            Add an IResponder implementation to this
+            request handler
+            </summary>
+            <param name="responder"></param>
+        </member>
+        <member name="P:Brevitee.Server.RequestHandler.ResponderNotFoundHandler">
+            <summary>
+            Get or set the default handler used when no appropriate
+            responder is found for a given request.  This is the 
+            Action responsible for responding with a 404 status code
+            and supplying any additional information to the client.
+            </summary>
+        </member>
+        <member name="P:Brevitee.Server.RequestHandler.ExceptionHandler">
+            <summary>
+            Get or set the default exception handler.  This is the
+            Action responsible for responding with a 500 status code
+            and supplying any additional information to the client
+            pertaining to exceptions that may occur on the server.
+            </summary>
+        </member>
+        <member name="T:Brevitee.Server.DaoResponder">
+            <summary>
+            The responder responsible for generating dynamic 
+            proxy javascripts that enable client side code to
+            execute server side .Net Dao methods over Ajax.
+            </summary>
+        </member>
+        <member name="P:Brevitee.Server.DaoResponder.CommonDaoProxyRegistrations">
+            <summary>
+            The DaoProxyRegistrations keyed by connectionName/contextName
+            </summary>
+        </member>
+        <member name="P:Brevitee.Server.DaoResponder.AppDaoProxyRegistrations">
+            <summary>
+            The DaoProxyRegistrations keyed by application name
+            </summary>
+        </member>
+    </members>
+</doc>

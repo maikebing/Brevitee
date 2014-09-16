@@ -17,7 +17,8 @@ namespace Brevitee.Server.Tests
 {
     [Serializable]
     class Program : CommandLineTestInterface
-    {
+	{
+	    private const string _exitOnFailure = "exitOnFailure";
         static void Main(string[] args)
         {
             PreInit();
@@ -47,6 +48,7 @@ namespace Brevitee.Server.Tests
             #endregion
             AddValidArgument("search", false, "The search pattern to use to locate test assemblies");
             AddValidArgument("dir", false, "The directory to look for test assemblies in");
+			AddValidArgument(_exitOnFailure, true);
             DefaultMethod = typeof(Program).GetMethod("Start");
         }
 
@@ -83,7 +85,6 @@ namespace Brevitee.Server.Tests
                 {
                     Assembly assembly = Assembly.LoadFrom(fi.FullName);
                     RunAllTests(assembly);
-                    Exit(0);
                 }
                 catch (Exception ex)
                 {
@@ -91,11 +92,16 @@ namespace Brevitee.Server.Tests
                     Exit(1);
                 }
             });
+
+			Exit(0);
         }
 
         static void Program_TestFailed(object sender, TestExceptionEventArgs e)
         {
-            Exit(1);
+	        if (Arguments.Contains(_exitOnFailure)) 
+			{
+				Exit(1);
+	        }
         }
         #endregion
     }

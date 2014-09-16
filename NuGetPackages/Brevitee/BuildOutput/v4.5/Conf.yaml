@@ -1,9 +1,0 @@
-%YAML 1.2
----
-!Bam.core.Conf
-HostName: localhost
-MaxThreads: null
-Port: "8080"
-ConnectionName: Default
-ApplicationName: Test
-...

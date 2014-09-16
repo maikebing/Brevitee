@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>rencopy</name>
+    </assembly>
+    <members>
+        <member name="M:rencopy.Program.CopyAndRename(System.IO.FileInfo)">
+            <summary>
+            Performs the copy and rename operation using the specified config file
+            </summary>
+            <param name="configFile"></param>
+        </member>
+        <member name="P:rencopy.RenCopyConfig.TextReplacementFileExtensions">
+            <summary>
+            The file extensions to do text replacements on
+            </summary>
+        </member>
+        <member name="P:rencopy.RenCopyConfig.CopyAllFiles">
+            <summary>
+            Indicates whether to copy all files or just those specified by the 
+            TextReplacementFileExtensions and CopyExtensions properties
+            </summary>
+        </member>
+        <member name="P:rencopy.RenCopyConfig.CopyExtensions">
+            <summary>
+            The file extenions to copy without doing text replacements
+            </summary>
+        </member>
+        <member name="P:rencopy.RenCopyConfig.SourceFolder">
+            <summary>
+            The source folder
+            </summary>
+        </member>
+        <member name="P:rencopy.RenCopyConfig.TargetFolder">
+            <summary>
+            The target folder
+            </summary>
+        </member>
+        <member name="P:rencopy.RenCopyConfig.Ignore">
+            <summary>
+            The names or patterns of file names or folder names to ignore
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,2893 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Brevitee.Analytics</name>
+    </assembly>
+    <members>
+        <member name="M:Brevitee.Analytics.Classification.Category.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Analytics.Classification.Category.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the Category table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Analytics.Classification.Category.Where(System.Func{Brevitee.Analytics.Classification.CategoryColumns,Brevitee.Data.QueryFilter{Brevitee.Analytics.Classification.CategoryColumns}},Brevitee.Data.OrderBy{Brevitee.Analytics.Classification.CategoryColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a CategoryColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between CategoryColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Classification.Category.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Classification.CategoryColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a CategoryColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CategoryColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Classification.Category.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Classification.CategoryColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Classification.CategoryColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a CategoryColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CategoryColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Classification.Category.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Classification.Category.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Classification.CategoryColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single Category instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a CategoryColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CategoryColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Classification.Category.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Classification.Category.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Classification.CategoryColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a CategoryColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CategoryColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Classification.Category.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Classification.CategoryColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a CategoryColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CategoryColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Classification.Category.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Classification.CategoryColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Classification.CategoryColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a CategoryColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CategoryColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Classification.Category.Count(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Classification.CategoryColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a CategoryColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CategoryColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Classification.Feature.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Analytics.Classification.Feature.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the Feature table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Analytics.Classification.Feature.Where(System.Func{Brevitee.Analytics.Classification.FeatureColumns,Brevitee.Data.QueryFilter{Brevitee.Analytics.Classification.FeatureColumns}},Brevitee.Data.OrderBy{Brevitee.Analytics.Classification.FeatureColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a FeatureColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between FeatureColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Classification.Feature.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Classification.FeatureColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a FeatureColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between FeatureColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Classification.Feature.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Classification.FeatureColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Classification.FeatureColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a FeatureColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between FeatureColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Classification.Feature.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Classification.Feature.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Classification.FeatureColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single Feature instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a FeatureColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between FeatureColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Classification.Feature.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Classification.Feature.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Classification.FeatureColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a FeatureColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between FeatureColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Classification.Feature.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Classification.FeatureColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a FeatureColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between FeatureColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Classification.Feature.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Classification.FeatureColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Classification.FeatureColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a FeatureColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between FeatureColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Classification.Feature.Count(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Classification.FeatureColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a FeatureColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between FeatureColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Classification.Classifier.Probability(System.String,System.String)">
+            <summary>
+            When implemented, should return the probablity that the specified
+            document is in the specified category
+            </summary>
+            <param name="documentString"></param>
+            <param name="category"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brevitee.Analytics.Classification.Classifier.Train(System.String,System.String)">
+            <summary>
+            Train the classifier assigning the specified doc to the 
+            specified category
+            </summary>
+            <param name="doc"></param>
+            <param name="category"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Classification.Classifier.DocumentCount">
+            <summary>
+            Total number of documents (corresponds to totalcount in Collective Intelligence chapter 6)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Brevitee.Analytics.Classification.Classifier.DocumentsInCategoryCount(System.String)">
+            <summary>
+            Total number of documents in a category (corresponds to catcount in Collective Intelligence chapter 6)
+            </summary>
+            <param name="category"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brevitee.Analytics.Classification.Classifier.IncreaseFeature(System.String,System.String)">
+            <summary>
+            Increase the count of a feature/category pair
+            </summary>
+            <param name="feature"></param>
+            <param name="category"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Classification.Classifier.GetCategory(System.String)">
+            <summary>
+            Get a Category entry for the specified category, creating it if necessary
+            </summary>
+            <param name="category"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brevitee.Analytics.Classification.Classifier.ExtractWords(System.String)">
+            <summary>
+            The default implementation of GetFeatures
+            </summary>
+            <param name="docContent"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Brevitee.Analytics.Classification.Classifier.FeatureExtractor">
+            <summary>
+            The delegate used for extracting features from a
+            given string.  Default is ExtractWords.
+            </summary>
+        </member>
+        <member name="M:Brevitee.Analytics.Classification.FisherClassifier.SetMinimum(System.String,System.Single)">
+            <summary>
+            Sets the minimum probability score for the specified
+            category.  The probablity score for a document must
+            be greater than the specified minimum for the category
+            for the document to be classified as being in 
+            the category.
+            </summary>
+            <param name="category"></param>
+            <param name="min"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Classification.NaiveBayesClassifier.Classify(System.String,System.String)">
+            <summary>
+            Attempts to classify the specified document taking into 
+            consideration the threshold set by SetThreshold, default is 1.
+            </summary>
+            <param name="documentString"></param>
+            <param name="defaultCategory"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brevitee.Analytics.Classification.NaiveBayesClassifier.SetThreshold(System.String,System.Single)">
+            <summary>
+            For a new document to be classified into a particular category, its 
+            probability must be a specified amount larget than the probablity
+            for any other category.  This specified amount is the threshold.
+            </summary>
+            <param name="category"></param>
+            <param name="threshold"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Crawlers.BaseCrawler.ExtractTargets(System.String)">
+            <summary>
+            When implemented by a derived class will extract
+            more targets to be processed from the specified target.  
+            (Think filepath or url)
+            </summary>
+            <param name="target"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Crawler.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Crawler.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the Crawler table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Crawler.Where(System.Func{Brevitee.Analytics.Data.CrawlerColumns,Brevitee.Data.QueryFilter{Brevitee.Analytics.Data.CrawlerColumns}},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.CrawlerColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a CrawlerColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between CrawlerColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Crawler.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.CrawlerColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a CrawlerColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CrawlerColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Crawler.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.CrawlerColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.CrawlerColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a CrawlerColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CrawlerColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Data.Crawler.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Data.Crawler.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.CrawlerColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single Crawler instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a CrawlerColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CrawlerColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Data.Crawler.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Data.Crawler.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.CrawlerColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a CrawlerColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CrawlerColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Crawler.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.CrawlerColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a CrawlerColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CrawlerColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Crawler.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.CrawlerColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.CrawlerColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a CrawlerColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CrawlerColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Crawler.Count(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.CrawlerColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a CrawlerColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CrawlerColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Domain.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Domain.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the Domain table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Domain.Where(System.Func{Brevitee.Analytics.Data.DomainColumns,Brevitee.Data.QueryFilter{Brevitee.Analytics.Data.DomainColumns}},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.DomainColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a DomainColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between DomainColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Domain.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.DomainColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a DomainColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between DomainColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Domain.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.DomainColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.DomainColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a DomainColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between DomainColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Data.Domain.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Data.Domain.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.DomainColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single Domain instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a DomainColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between DomainColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Data.Domain.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Data.Domain.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.DomainColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a DomainColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between DomainColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Domain.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.DomainColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a DomainColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between DomainColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Domain.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.DomainColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.DomainColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a DomainColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between DomainColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Domain.Count(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.DomainColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a DomainColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between DomainColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Fragment.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Fragment.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the Fragment table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Fragment.Where(System.Func{Brevitee.Analytics.Data.FragmentColumns,Brevitee.Data.QueryFilter{Brevitee.Analytics.Data.FragmentColumns}},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.FragmentColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a FragmentColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between FragmentColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Fragment.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.FragmentColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a FragmentColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between FragmentColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Fragment.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.FragmentColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.FragmentColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a FragmentColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between FragmentColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Data.Fragment.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Data.Fragment.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.FragmentColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single Fragment instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a FragmentColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between FragmentColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Data.Fragment.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Data.Fragment.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.FragmentColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a FragmentColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between FragmentColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Fragment.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.FragmentColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a FragmentColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between FragmentColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Fragment.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.FragmentColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.FragmentColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a FragmentColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between FragmentColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Fragment.Count(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.FragmentColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a FragmentColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between FragmentColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Image.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Image.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the Image table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Image.Where(System.Func{Brevitee.Analytics.Data.ImageColumns,Brevitee.Data.QueryFilter{Brevitee.Analytics.Data.ImageColumns}},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.ImageColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a ImageColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between ImageColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Image.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.ImageColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a ImageColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ImageColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Image.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.ImageColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.ImageColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a ImageColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ImageColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Data.Image.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Data.Image.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.ImageColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single Image instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a ImageColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ImageColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Data.Image.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Data.Image.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.ImageColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a ImageColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ImageColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Image.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.ImageColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a ImageColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ImageColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Image.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.ImageColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.ImageColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a ImageColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ImageColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Image.Count(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.ImageColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a ImageColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ImageColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.ImageTag.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Analytics.Data.ImageTag.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the ImageTag table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.ImageTag.Where(System.Func{Brevitee.Analytics.Data.ImageTagColumns,Brevitee.Data.QueryFilter{Brevitee.Analytics.Data.ImageTagColumns}},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.ImageTagColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a ImageTagColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between ImageTagColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.ImageTag.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.ImageTagColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a ImageTagColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ImageTagColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.ImageTag.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.ImageTagColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.ImageTagColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a ImageTagColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ImageTagColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Data.ImageTag.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Data.ImageTag.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.ImageTagColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single ImageTag instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a ImageTagColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ImageTagColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Data.ImageTag.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Data.ImageTag.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.ImageTagColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a ImageTagColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ImageTagColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.ImageTag.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.ImageTagColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a ImageTagColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ImageTagColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.ImageTag.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.ImageTagColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.ImageTagColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a ImageTagColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ImageTagColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.ImageTag.Count(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.ImageTagColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a ImageTagColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ImageTagColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Path.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Path.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the Path table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Path.Where(System.Func{Brevitee.Analytics.Data.PathColumns,Brevitee.Data.QueryFilter{Brevitee.Analytics.Data.PathColumns}},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.PathColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a PathColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between PathColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Path.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.PathColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a PathColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between PathColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Path.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.PathColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.PathColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a PathColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between PathColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Data.Path.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Data.Path.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.PathColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single Path instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a PathColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between PathColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Data.Path.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Data.Path.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.PathColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a PathColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between PathColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Path.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.PathColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a PathColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between PathColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Path.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.PathColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.PathColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a PathColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between PathColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Path.Count(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.PathColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a PathColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between PathColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Port.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Port.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the Port table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Port.Where(System.Func{Brevitee.Analytics.Data.PortColumns,Brevitee.Data.QueryFilter{Brevitee.Analytics.Data.PortColumns}},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.PortColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a PortColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between PortColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Port.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.PortColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a PortColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between PortColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Port.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.PortColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.PortColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a PortColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between PortColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Data.Port.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Data.Port.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.PortColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single Port instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a PortColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between PortColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Data.Port.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Data.Port.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.PortColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a PortColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between PortColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Port.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.PortColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a PortColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between PortColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Port.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.PortColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.PortColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a PortColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between PortColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Port.Count(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.PortColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a PortColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between PortColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Protocol.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Protocol.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the Protocol table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Protocol.Where(System.Func{Brevitee.Analytics.Data.ProtocolColumns,Brevitee.Data.QueryFilter{Brevitee.Analytics.Data.ProtocolColumns}},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.ProtocolColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a ProtocolColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between ProtocolColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Protocol.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.ProtocolColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a ProtocolColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ProtocolColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Protocol.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.ProtocolColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.ProtocolColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a ProtocolColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ProtocolColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Data.Protocol.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Data.Protocol.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.ProtocolColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single Protocol instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a ProtocolColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ProtocolColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Data.Protocol.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Data.Protocol.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.ProtocolColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a ProtocolColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ProtocolColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Protocol.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.ProtocolColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a ProtocolColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ProtocolColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Protocol.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.ProtocolColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.ProtocolColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a ProtocolColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ProtocolColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Protocol.Count(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.ProtocolColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a ProtocolColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ProtocolColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.QueryString.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Analytics.Data.QueryString.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the QueryString table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.QueryString.Where(System.Func{Brevitee.Analytics.Data.QueryStringColumns,Brevitee.Data.QueryFilter{Brevitee.Analytics.Data.QueryStringColumns}},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.QueryStringColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a QueryStringColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between QueryStringColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.QueryString.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.QueryStringColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a QueryStringColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between QueryStringColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.QueryString.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.QueryStringColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.QueryStringColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a QueryStringColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between QueryStringColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Data.QueryString.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Data.QueryString.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.QueryStringColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single QueryString instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a QueryStringColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between QueryStringColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Data.QueryString.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Data.QueryString.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.QueryStringColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a QueryStringColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between QueryStringColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.QueryString.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.QueryStringColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a QueryStringColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between QueryStringColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.QueryString.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.QueryStringColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.QueryStringColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a QueryStringColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between QueryStringColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.QueryString.Count(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.QueryStringColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a QueryStringColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between QueryStringColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Tag.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Tag.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the Tag table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Tag.Where(System.Func{Brevitee.Analytics.Data.TagColumns,Brevitee.Data.QueryFilter{Brevitee.Analytics.Data.TagColumns}},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.TagColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a TagColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between TagColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Tag.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.TagColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a TagColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between TagColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Tag.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.TagColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.TagColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a TagColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between TagColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Data.Tag.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Data.Tag.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.TagColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single Tag instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a TagColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between TagColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Data.Tag.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Data.Tag.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.TagColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a TagColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between TagColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Tag.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.TagColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a TagColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between TagColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Tag.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.TagColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.TagColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a TagColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between TagColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Tag.Count(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.TagColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a TagColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between TagColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Url.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Url.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the Url table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Url.Where(System.Func{Brevitee.Analytics.Data.UrlColumns,Brevitee.Data.QueryFilter{Brevitee.Analytics.Data.UrlColumns}},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.UrlColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a UrlColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between UrlColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Url.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.UrlColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a UrlColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between UrlColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Url.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.UrlColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.UrlColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a UrlColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between UrlColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Data.Url.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Data.Url.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.UrlColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single Url instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a UrlColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between UrlColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Data.Url.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Data.Url.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.UrlColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a UrlColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between UrlColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Url.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.UrlColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a UrlColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between UrlColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Url.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.UrlColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.UrlColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a UrlColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between UrlColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.Url.Count(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.UrlColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a UrlColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between UrlColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.UrlTag.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Analytics.Data.UrlTag.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the UrlTag table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.UrlTag.Where(System.Func{Brevitee.Analytics.Data.UrlTagColumns,Brevitee.Data.QueryFilter{Brevitee.Analytics.Data.UrlTagColumns}},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.UrlTagColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a UrlTagColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between UrlTagColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.UrlTag.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.UrlTagColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a UrlTagColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between UrlTagColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.UrlTag.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.UrlTagColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.UrlTagColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a UrlTagColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between UrlTagColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Data.UrlTag.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Data.UrlTag.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.UrlTagColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single UrlTag instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a UrlTagColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between UrlTagColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Data.UrlTag.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Data.UrlTag.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.UrlTagColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a UrlTagColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between UrlTagColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.UrlTag.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.UrlTagColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a UrlTagColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between UrlTagColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.UrlTag.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.UrlTagColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Data.UrlTagColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a UrlTagColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between UrlTagColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Data.UrlTag.Count(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Data.UrlTagColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a UrlTagColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between UrlTagColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Crawlers.ImageCrawler.ProcessTarget(System.String)">
+            <summary>
+            Reads the target and saves the url of any img tag it finds
+            </summary>
+            <param name="target"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.ClickCounter.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.ClickCounter.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the ClickCounter table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.ClickCounter.Where(System.Func{Brevitee.Analytics.Metrics.ClickCounterColumns,Brevitee.Data.QueryFilter{Brevitee.Analytics.Metrics.ClickCounterColumns}},Brevitee.Data.OrderBy{Brevitee.Analytics.Metrics.ClickCounterColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a ClickCounterColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between ClickCounterColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.ClickCounter.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.ClickCounterColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a ClickCounterColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ClickCounterColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.ClickCounter.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.ClickCounterColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Metrics.ClickCounterColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a ClickCounterColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ClickCounterColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Metrics.ClickCounter.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Metrics.ClickCounter.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.ClickCounterColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single ClickCounter instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a ClickCounterColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ClickCounterColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Metrics.ClickCounter.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Metrics.ClickCounter.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.ClickCounterColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a ClickCounterColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ClickCounterColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.ClickCounter.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.ClickCounterColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a ClickCounterColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ClickCounterColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.ClickCounter.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.ClickCounterColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Metrics.ClickCounterColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a ClickCounterColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ClickCounterColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.ClickCounter.Count(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.ClickCounterColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a ClickCounterColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between ClickCounterColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.Counter.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.Counter.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the Counter table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.Counter.Where(System.Func{Brevitee.Analytics.Metrics.CounterColumns,Brevitee.Data.QueryFilter{Brevitee.Analytics.Metrics.CounterColumns}},Brevitee.Data.OrderBy{Brevitee.Analytics.Metrics.CounterColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a CounterColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between CounterColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.Counter.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.CounterColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a CounterColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CounterColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.Counter.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.CounterColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Metrics.CounterColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a CounterColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CounterColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Metrics.Counter.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Metrics.Counter.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.CounterColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single Counter instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a CounterColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CounterColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Metrics.Counter.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Metrics.Counter.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.CounterColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a CounterColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CounterColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.Counter.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.CounterColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a CounterColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CounterColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.Counter.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.CounterColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Metrics.CounterColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a CounterColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CounterColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.Counter.Count(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.CounterColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a CounterColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CounterColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.CustomTimer.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.CustomTimer.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the CustomTimer table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.CustomTimer.Where(System.Func{Brevitee.Analytics.Metrics.CustomTimerColumns,Brevitee.Data.QueryFilter{Brevitee.Analytics.Metrics.CustomTimerColumns}},Brevitee.Data.OrderBy{Brevitee.Analytics.Metrics.CustomTimerColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a CustomTimerColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between CustomTimerColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.CustomTimer.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.CustomTimerColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a CustomTimerColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CustomTimerColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.CustomTimer.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.CustomTimerColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Metrics.CustomTimerColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a CustomTimerColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CustomTimerColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Metrics.CustomTimer.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Metrics.CustomTimer.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.CustomTimerColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single CustomTimer instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a CustomTimerColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CustomTimerColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Metrics.CustomTimer.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Metrics.CustomTimer.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.CustomTimerColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a CustomTimerColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CustomTimerColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.CustomTimer.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.CustomTimerColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a CustomTimerColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CustomTimerColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.CustomTimer.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.CustomTimerColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Metrics.CustomTimerColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a CustomTimerColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CustomTimerColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.CustomTimer.Count(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.CustomTimerColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a CustomTimerColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between CustomTimerColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.LoadCounter.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.LoadCounter.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the LoadCounter table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.LoadCounter.Where(System.Func{Brevitee.Analytics.Metrics.LoadCounterColumns,Brevitee.Data.QueryFilter{Brevitee.Analytics.Metrics.LoadCounterColumns}},Brevitee.Data.OrderBy{Brevitee.Analytics.Metrics.LoadCounterColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a LoadCounterColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between LoadCounterColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.LoadCounter.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.LoadCounterColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a LoadCounterColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between LoadCounterColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.LoadCounter.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.LoadCounterColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Metrics.LoadCounterColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a LoadCounterColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between LoadCounterColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Metrics.LoadCounter.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Metrics.LoadCounter.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.LoadCounterColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single LoadCounter instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a LoadCounterColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between LoadCounterColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Metrics.LoadCounter.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Metrics.LoadCounter.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.LoadCounterColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a LoadCounterColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between LoadCounterColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.LoadCounter.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.LoadCounterColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a LoadCounterColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between LoadCounterColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.LoadCounter.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.LoadCounterColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Metrics.LoadCounterColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a LoadCounterColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between LoadCounterColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.LoadCounter.Count(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.LoadCounterColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a LoadCounterColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between LoadCounterColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.LoadTimer.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.LoadTimer.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the LoadTimer table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.LoadTimer.Where(System.Func{Brevitee.Analytics.Metrics.LoadTimerColumns,Brevitee.Data.QueryFilter{Brevitee.Analytics.Metrics.LoadTimerColumns}},Brevitee.Data.OrderBy{Brevitee.Analytics.Metrics.LoadTimerColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a LoadTimerColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between LoadTimerColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.LoadTimer.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.LoadTimerColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a LoadTimerColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between LoadTimerColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.LoadTimer.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.LoadTimerColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Metrics.LoadTimerColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a LoadTimerColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between LoadTimerColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Metrics.LoadTimer.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Metrics.LoadTimer.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.LoadTimerColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single LoadTimer instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a LoadTimerColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between LoadTimerColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Metrics.LoadTimer.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Metrics.LoadTimer.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.LoadTimerColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a LoadTimerColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between LoadTimerColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.LoadTimer.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.LoadTimerColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a LoadTimerColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between LoadTimerColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.LoadTimer.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.LoadTimerColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Metrics.LoadTimerColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a LoadTimerColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between LoadTimerColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.LoadTimer.Count(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.LoadTimerColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a LoadTimerColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between LoadTimerColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.LoginCounter.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.LoginCounter.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the LoginCounter table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.LoginCounter.Where(System.Func{Brevitee.Analytics.Metrics.LoginCounterColumns,Brevitee.Data.QueryFilter{Brevitee.Analytics.Metrics.LoginCounterColumns}},Brevitee.Data.OrderBy{Brevitee.Analytics.Metrics.LoginCounterColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a LoginCounterColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between LoginCounterColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.LoginCounter.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.LoginCounterColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a LoginCounterColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between LoginCounterColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.LoginCounter.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.LoginCounterColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Metrics.LoginCounterColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a LoginCounterColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between LoginCounterColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Metrics.LoginCounter.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Metrics.LoginCounter.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.LoginCounterColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single LoginCounter instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a LoginCounterColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between LoginCounterColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Metrics.LoginCounter.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Metrics.LoginCounter.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.LoginCounterColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a LoginCounterColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between LoginCounterColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.LoginCounter.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.LoginCounterColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a LoginCounterColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between LoginCounterColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.LoginCounter.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.LoginCounterColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Metrics.LoginCounterColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a LoginCounterColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between LoginCounterColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.LoginCounter.Count(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.LoginCounterColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a LoginCounterColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between LoginCounterColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.MethodCounter.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.MethodCounter.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the MethodCounter table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.MethodCounter.Where(System.Func{Brevitee.Analytics.Metrics.MethodCounterColumns,Brevitee.Data.QueryFilter{Brevitee.Analytics.Metrics.MethodCounterColumns}},Brevitee.Data.OrderBy{Brevitee.Analytics.Metrics.MethodCounterColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a MethodCounterColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between MethodCounterColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.MethodCounter.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.MethodCounterColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a MethodCounterColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between MethodCounterColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.MethodCounter.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.MethodCounterColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Metrics.MethodCounterColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a MethodCounterColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between MethodCounterColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Metrics.MethodCounter.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Metrics.MethodCounter.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.MethodCounterColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single MethodCounter instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a MethodCounterColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between MethodCounterColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Metrics.MethodCounter.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Metrics.MethodCounter.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.MethodCounterColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a MethodCounterColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between MethodCounterColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.MethodCounter.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.MethodCounterColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a MethodCounterColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between MethodCounterColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.MethodCounter.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.MethodCounterColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Metrics.MethodCounterColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a MethodCounterColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between MethodCounterColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.MethodCounter.Count(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.MethodCounterColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a MethodCounterColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between MethodCounterColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.MethodTimer.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.MethodTimer.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the MethodTimer table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.MethodTimer.Where(System.Func{Brevitee.Analytics.Metrics.MethodTimerColumns,Brevitee.Data.QueryFilter{Brevitee.Analytics.Metrics.MethodTimerColumns}},Brevitee.Data.OrderBy{Brevitee.Analytics.Metrics.MethodTimerColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a MethodTimerColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between MethodTimerColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.MethodTimer.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.MethodTimerColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a MethodTimerColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between MethodTimerColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.MethodTimer.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.MethodTimerColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Metrics.MethodTimerColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a MethodTimerColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between MethodTimerColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Metrics.MethodTimer.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Metrics.MethodTimer.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.MethodTimerColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single MethodTimer instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a MethodTimerColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between MethodTimerColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Metrics.MethodTimer.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Metrics.MethodTimer.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.MethodTimerColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a MethodTimerColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between MethodTimerColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.MethodTimer.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.MethodTimerColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a MethodTimerColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between MethodTimerColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.MethodTimer.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.MethodTimerColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Metrics.MethodTimerColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a MethodTimerColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between MethodTimerColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.MethodTimer.Count(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.MethodTimerColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a MethodTimerColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between MethodTimerColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.Timer.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.Timer.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the Timer table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.Timer.Where(System.Func{Brevitee.Analytics.Metrics.TimerColumns,Brevitee.Data.QueryFilter{Brevitee.Analytics.Metrics.TimerColumns}},Brevitee.Data.OrderBy{Brevitee.Analytics.Metrics.TimerColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a TimerColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between TimerColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.Timer.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.TimerColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a TimerColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between TimerColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.Timer.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.TimerColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Metrics.TimerColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a TimerColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between TimerColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Metrics.Timer.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Metrics.Timer.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.TimerColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single Timer instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a TimerColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between TimerColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Metrics.Timer.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Metrics.Timer.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.TimerColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a TimerColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between TimerColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.Timer.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.TimerColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a TimerColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between TimerColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.Timer.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.TimerColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Metrics.TimerColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a TimerColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between TimerColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.Timer.Count(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.TimerColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a TimerColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between TimerColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.UserIdentifier.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.UserIdentifier.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the UserIdentifier table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.UserIdentifier.Where(System.Func{Brevitee.Analytics.Metrics.UserIdentifierColumns,Brevitee.Data.QueryFilter{Brevitee.Analytics.Metrics.UserIdentifierColumns}},Brevitee.Data.OrderBy{Brevitee.Analytics.Metrics.UserIdentifierColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a UserIdentifierColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between UserIdentifierColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.UserIdentifier.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.UserIdentifierColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a UserIdentifierColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between UserIdentifierColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.UserIdentifier.Where(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.UserIdentifierColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Metrics.UserIdentifierColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a UserIdentifierColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between UserIdentifierColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Metrics.UserIdentifier.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Metrics.UserIdentifier.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.UserIdentifierColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single UserIdentifier instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a UserIdentifierColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between UserIdentifierColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Analytics.Metrics.UserIdentifier.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Analytics.Metrics.UserIdentifier.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.UserIdentifierColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a UserIdentifierColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between UserIdentifierColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.UserIdentifier.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.UserIdentifierColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a UserIdentifierColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between UserIdentifierColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.UserIdentifier.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.UserIdentifierColumns},Brevitee.Data.OrderBy{Brevitee.Analytics.Metrics.UserIdentifierColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a UserIdentifierColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between UserIdentifierColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Analytics.Metrics.UserIdentifier.Count(Brevitee.Data.WhereDelegate{Brevitee.Analytics.Metrics.UserIdentifierColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a UserIdentifierColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between UserIdentifierColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+    </members>
+</doc>

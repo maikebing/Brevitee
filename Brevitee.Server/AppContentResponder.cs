@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Reflection;
 using Ionic.Zip;
 using System.IO;
+using Brevitee.Logging;
 using Brevitee.ServiceProxy;
 using Brevitee.Server.Renderers;
 using Brevitee.Javascript;
@@ -26,6 +27,7 @@ namespace Brevitee.Server
             this.AppRoot = this.AppConf.AppRoot;
             this.AppDustRenderer = new AppDustRenderer(this);
             this.UseCache = serverRoot.UseCache;
+            this.ContentLocator = ContentLocator.Load(this);
 
             this.SetBaseIgnorePrefixes();
         }
@@ -44,6 +46,7 @@ namespace Brevitee.Server
             this.AppRoot = this.AppConf.AppRoot;
             this.AppDustRenderer = new AppDustRenderer(this);
             this.UseCache = serverRoot.UseCache;
+            this.ContentLocator = ContentLocator.Load(this);
 
             this.SetBaseIgnorePrefixes();
         }
@@ -54,6 +57,14 @@ namespace Brevitee.Server
             AddIgnorPrefix("serviceproxy");
             AddIgnorPrefix("api");
             AddIgnorPrefix("bam");
+            AddIgnorPrefix("get");
+            AddIgnorPrefix("post");
+        }
+
+        public ContentLocator ContentLocator
+        {
+            get;
+            private set;
         }
 
         /// <summary>
@@ -115,7 +126,11 @@ namespace Brevitee.Server
         /// </summary>
         public Fs AppRoot { get; private set; }
 
-        public void Initialize()
+        /// <summary>
+        /// Initializes the file system from the embedded zip resource
+        /// that represents a bare bones app.
+        /// </summary>
+        public override void Initialize()
         {
             OnAppInitializing();
             string baseDirectory = Path.Combine(BreviteeConf.ContentRoot, "apps", ApplicationName);
@@ -140,47 +155,72 @@ namespace Brevitee.Server
             OnAppInitialized();
         }
 
-        LayoutModel _defaultLayoutModel;
-        object _defaultLayoutModelLock = new object();
-        public LayoutModel DefaultLayoutModel
+        Dictionary<string, LayoutModel> _layoutModelsByPath;
+        object _layoutsByPathSync = new object();
+        protected internal Dictionary<string, LayoutModel> LayoutModelsByPath
         {
             get
-            {   
-                return _defaultLayoutModelLock.DoubleCheckLock(ref _defaultLayoutModel, () =>
-                {
-                    LayoutConf info = new LayoutConf(AppConf);
-                    return info.CreateLayoutModel(ApplicationName);
-                });
+            {
+                return _layoutsByPathSync.DoubleCheckLock(ref _layoutModelsByPath, () => new Dictionary<string, LayoutModel>());
             }
         }
-        
-        protected internal LayoutModel GetLayoutModelForPath(string path, string ext = ".ba")
+     
+        protected internal LayoutModel GetLayoutModelForPath(string path, string ext = ".layout")
         {
-            string filePath = string.Format("{0}{1}", path, ext);            
-            string[] segments = new string[] { "pages", filePath };
-            LayoutModel result = DefaultLayoutModel;
+			if (path.Equals("/"))
+			{
+				path = "/{0}"._Format(AppConf.DefaultPage.Or(AppConf.DefaultLayoutConst));
+			}
 
-            if (AppRoot.FileExists(segments))
+            string lowered = path.ToLowerInvariant();
+            string[] layoutSegments = string.Format("~/pages/{0}{1}", path, ext).DelimitSplit("/", "\\");
+            string[] htmlSegments = string.Format("~/pages/{0}.html", path).DelimitSplit("/", "\\");
+
+            LayoutModel result = null;
+            if (LayoutModelsByPath.ContainsKey(lowered))
             {
-                LayoutConf page = AppRoot.ReadAllText(segments).FromJson<LayoutConf>();
-                result = page.CreateLayoutModel(AppConf);
+                result = LayoutModelsByPath[lowered];
+            }
+            else if (AppRoot.FileExists(layoutSegments))
+            {
+                LayoutConf layoutConf = AppRoot.ReadAllText(layoutSegments).FromJson<LayoutConf>();
+                layoutConf.AppConf = AppConf;
+                result = layoutConf.CreateLayoutModel(htmlSegments);
+                LayoutModelsByPath[lowered] = result;
+            }
+            else
+            {
+                LayoutConf defaultLayoutConf = new LayoutConf(AppConf);
+                result = defaultLayoutConf.CreateLayoutModel(htmlSegments);
+                FileInfo file = new FileInfo(AppRoot.GetAbsolutePath(layoutSegments));
+                if (!file.Directory.Exists)
+                {
+                    file.Directory.Create();
+                }
+                // write the file to disk                 
+                defaultLayoutConf.ToJsonFile(file);
+                LayoutModelsByPath[lowered] = result;
             }
 
             if(string.IsNullOrEmpty(Path.GetExtension(path)))
             {
-                result.StartPage = path.TruncateFront(1);
+                string page = path.TruncateFront(1);
+                if (!string.IsNullOrEmpty(page))
+                {
+                    result.StartPage = page;
+                }
             }
             return result;
         }
-
-        public override bool TryRespond(IContext context)
+        
+        public override bool TryRespond(IHttpContext context)
         {
             IRequest request = context.Request;
             IResponse response = context.Response;
 
             string path = request.Url.AbsolutePath;
             string ext = Path.GetExtension(path);
-            string mgmtPrefix = "/bam/apps/{0}"._Format(ApplicationName);
+            string mgmtPrefix = "/bam/apps/{0}"._Format(AppConf.DomApplicationIdFromAppName(ApplicationName));
             if (path.ToLowerInvariant().StartsWith(mgmtPrefix.ToLowerInvariant()))
             {
                 path = path.TruncateFront(mgmtPrefix.Length);
@@ -189,7 +229,10 @@ namespace Brevitee.Server
             string[] split = path.DelimitSplit("/");
             byte[] content = new byte[] { };
             bool result = false;
-            if (string.IsNullOrEmpty(ext) && !ShouldIgnore(path) || 
+
+            string locatedPath;
+            string[] checkedPaths;
+            if (string.IsNullOrEmpty(ext) && !ShouldIgnore(path) ||
                 (AppRoot.FileExists("~/pages{0}.html"._Format(path))))
             {
                 CommonDustRenderer.SetContentType(response);
@@ -199,24 +242,47 @@ namespace Brevitee.Server
                 content = ms.GetBuffer();
                 result = true;
             }
-            else if (Cache.ContainsKey(path) && UseCache)
+            else if (ContentLocator.Locate(path, out locatedPath, out checkedPaths))
             {
-                content = Cache[path];
-                result = true;
-            }
-            else if (MinCache.ContainsKey(path) && UseCache) // check the min cache
-            {
-                content = MinCache[path];
-                result = true;
-            }
-            else if (AppRoot.FileExists(path))
-            {
-                byte[] temp = ReadFile(AppRoot, path);
+                if (Cache.ContainsKey(locatedPath) && UseCache)
+                {
+                    content = Cache[path];
+                    result = true;
+                }
+                else if (MinCache.ContainsKey(locatedPath) && UseCache) // check the min cache
+                {
+                    content = MinCache[locatedPath];
+                    result = true;
+                }
+                else if (AppRoot.FileExists(locatedPath))
+                {
+                    byte[] temp = ReadFile(AppRoot, locatedPath);
 
-                content = temp;
-                result = true;
+                    content = temp;
+                    result = true;
+                }
+            }
+            else
+            {
+                if (AppConf.LogNotFoundFilesWithTheseExtensions.Contains(ext))
+                {
+                    StringBuilder checkedPathString = new StringBuilder();
+                    checkedPaths.Each(p =>
+                    {
+                        checkedPathString.AppendLine(p);
+                    });
+
+                    Logger.AddEntry(
+                        "App[{0}]::Path='{1}'::Not Found\r\nChecked Paths\r\n{2}", 
+                        LogEventType.Warning, 
+                        AppConf.Name, 
+                        path,
+                        checkedPathString.ToString()
+                    );
+                }
             }
 
+            
             if (result)
             {
                 SetContentType(response, path);

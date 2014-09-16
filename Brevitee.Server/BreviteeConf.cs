@@ -9,6 +9,8 @@ using Brevitee.Yaml;
 using Brevitee.Configuration;
 using Brevitee.Data;
 using Brevitee.CommandLine;
+using Brevitee.UserAccounts.Data;
+using Brevitee.UserAccounts;
 using System.IO;
 using System.Reflection;
 
@@ -19,21 +21,35 @@ namespace Brevitee.Server
     /// </summary>
     public class BreviteeConf
     {
+        public const string ContentRootConfigKey = "ContentRoot";
+
         public BreviteeConf()
         {
-            this.Fs = new Fs(".");
-            this.MaxThreads = "25";
+            this.Fs = new Fs(Fs.GetAppDataFolder());
+            this.MaxThreads = 50;
             this.GenerateDao = true;
             this.InitializeTemplates = true;
-            this.DaoSearchPattern = "*.dll";
+            this.DaoSearchPattern = "*Dao.dll";
             this.LoggerPaths = new string[] { "." };
             this.LoggerSearchPattern = "*Logging.dll";
+            this.ServiceSearchPattern = "*Services.dll";
             this.LoggerName = "ConsoleLogger";
             this.InitializeFileSystemFromEnum = InitializeFrom.Resource;
             this.ZipPath = "~/bkg/content.root";
+            
+            List<SchemaInitializer> schemaInitInfos = new List<SchemaInitializer>();
+            schemaInitInfos.Add(new SchemaInitializer(typeof(UserAccountsContext), typeof(SQLiteRegistrarCaller)));
+
+            this._schemaInitializers = schemaInitInfos;
         }
 
-        public string LoadedFrom { get; set; }
+        internal string LoadedFrom { get; set; }
+
+        internal ConfFormat Format
+        {
+            get;
+            set;
+        }
 
         internal BreviteeServer Server
         {
@@ -53,7 +69,7 @@ namespace Brevitee.Server
         internal Fs AppFs(string appName)
         {
             Fs result = null;
-            AppConf conf = AppConfigs.Where(ac => ac.Name.Equals(appName)).FirstOrDefault();
+            AppConf conf = AppConfigs.Where(ac => ac.Name.Equals(appName) || ac.Name.Equals(appName.ToLowerInvariant())).FirstOrDefault();
             if (conf != null)
             {
                 result = conf.AppRoot;
@@ -61,8 +77,14 @@ namespace Brevitee.Server
 
             return result;
         }
-
+        
         public bool GenerateDao
+        {
+            get;
+            set;
+        }
+
+        public string ServiceSearchPattern
         {
             get;
             set;
@@ -93,10 +115,17 @@ namespace Brevitee.Server
             }
         }
 
+        string _zipPath;
         public string ZipPath
         {
-            get;
-            set;
+            get
+            {
+                return _zipPath;
+            }
+            set
+            {
+                _zipPath = Fs.GetAbsolutePath(value);
+            }
         }
 
         public bool InitializeTemplates
@@ -154,18 +183,7 @@ namespace Brevitee.Server
                 }
             }
         }
-
-        /// <summary>
-        /// A list of additional absolute or relative paths
-        /// to search for proxyable classes (classes that
-        /// have the ProxyAttribute)
-        /// </summary>
-        public string[] ServiceProxyPaths
-        {
-            get;
-            set;
-        }
-
+        
         /// <summary>
         /// Directory paths to search for ILogger implementations
         /// </summary>
@@ -209,7 +227,7 @@ namespace Brevitee.Server
             loggerType  = null;
             if (!string.IsNullOrEmpty(LoggerName))
             {
-                loggerType = AvailableLoggers.Where(type => type.Name.Equals(LoggerName)).FirstOrDefault();
+                loggerType = AvailableLoggers.FirstOrDefault(type => type.Name.Equals(LoggerName));
             }
 
             ILogger logger = null;
@@ -257,22 +275,9 @@ namespace Brevitee.Server
 
             return results.ToArray();
         }
-
-        string _port;
-        public string Port
-        {
-            get
-            {
-                return _port;
-            }
-            set
-            {
-                _port = value;
-            }
-        }
-
-        string _maxThreads;
-        public string MaxThreads
+                
+        int _maxThreads;
+        public int MaxThreads
         {
             get
             {
@@ -281,6 +286,19 @@ namespace Brevitee.Server
             set
             {
                 _maxThreads = value;
+            }
+        }
+
+        List<SchemaInitializer> _schemaInitializers;
+        public SchemaInitializer[] SchemaInitializers
+        {
+            get
+            {
+                return _schemaInitializers.ToArray();
+            }
+            set
+            {
+                _schemaInitializers = new List<SchemaInitializer>(value);
             }
         }
         
@@ -328,17 +346,26 @@ namespace Brevitee.Server
         }
 
         object _initAppConfigsLock = new object();
+        /// <summary>
+        /// Deserializes each appConf found in subdirectories of
+        /// the ~s:/apps folder.  For example, if there is a subfolder named
+        /// Monkey in ~s:/apps then this method will search for ~s:/apps/Monkey/appConf.json
+        /// then ~s:/apps/Monkey/appConf.yaml if the json file isn't found.  If neither
+        /// is found a new AppConf is created and and serialized to the json file
+        /// specified above.
+        /// </summary>
+        /// <returns></returns>
         public List<AppConf> InitializeAppConfigs()
         {
             lock(_initAppConfigsLock)
             {
                 List<AppConf> configs = new List<AppConf>();
-                DirectoryInfo contentRoot = new DirectoryInfo(Path.Combine(ContentRoot, "apps"));
-                if (!contentRoot.Exists)
+                DirectoryInfo appRoot = new DirectoryInfo(Path.Combine(ContentRoot, "apps"));
+                if (!appRoot.Exists)
                 {
-                    contentRoot.Create();
+                    appRoot.Create();
                 }
-                DirectoryInfo[] appDirs = contentRoot.GetDirectories();
+                DirectoryInfo[] appDirs = appRoot.GetDirectories();
                 appDirs.Each(appDir =>
                 {
                     bool configFound = false;
@@ -366,7 +393,7 @@ namespace Brevitee.Server
                     if (!configFound)
                     {
                         AppConf conf = new AppConf(this, appDir.Name);
-                        conf.GenerateDao = true;                        
+                        conf.GenerateDao = this.GenerateDao;                        
                         conf.ToJsonFile(jsonConfig);
                         configs.Add(conf);
                     }
@@ -387,9 +414,18 @@ namespace Brevitee.Server
         private static AppConf SetAppNameInJson(DirectoryInfo appDir, FileInfo appsConf)
         {
             AppConf conf = appsConf.FromJson<AppConf>();
+            if (conf == null)
+            {
+                conf = new AppConf();
+            }
             conf.Name = appDir.Name;
             conf.ToJsonFile(appsConf);
             return conf;
+        }
+
+        public static BreviteeConf Load()
+        {
+            return Load(DefaultConfiguration.GetAppSetting(ContentRootConfigKey, new object().GetAppDataFolder()));
         }
 
         /// <summary>
@@ -398,24 +434,27 @@ namespace Brevitee.Server
         /// will always be provided and will never return null.
         /// </summary>
         /// <returns></returns>
-        public static BreviteeConf Load()
+        public static BreviteeConf Load(string contentRootDir)
         {
             BreviteeConf c = null;
-            string jsonConfig = string.Format("./{0}.json", typeof(BreviteeConf).Name);
+           
+            string jsonConfig = Path.Combine(contentRootDir, string.Format("{0}.json", typeof(BreviteeConf).Name));
 
             if (File.Exists(jsonConfig))
             {
                 c = jsonConfig.FromJsonFile<BreviteeConf>();
                 c.LoadedFrom = new FileInfo(jsonConfig).FullName;
+                c.Format = ConfFormat.Json;
             }
 
             if (c == null)
             {
-                string yamlConfig = string.Format("./{0}.yaml", typeof(BreviteeConf).Name);
+                string yamlConfig = Path.Combine(contentRootDir, string.Format("{0}.yaml", typeof(BreviteeConf).Name));
                 if (File.Exists(yamlConfig))
                 {
                     c = (BreviteeConf)(yamlConfig.FromYamlFile().FirstOrDefault());
                     c.LoadedFrom = new FileInfo(yamlConfig).FullName;
+                    c.Format = ConfFormat.Yaml;
                 }
             }
 
@@ -423,27 +462,41 @@ namespace Brevitee.Server
             {
                 c = new BreviteeConf();
                 DefaultConfiguration.SetProperties(c);
+                c.LoadedFrom = new FileInfo(jsonConfig).FullName;
+                c.Save();
             }
-
+            
+            c.ContentRoot = contentRootDir;
             return c;
+        }
+
+        public void Save()
+        {
+            FileInfo file = new FileInfo(LoadedFrom);
+            Save(file.Directory.FullName, true, Format);
         }
 
         public void Save(bool overwrite = false, ConfFormat format = ConfFormat.Json)
         {
+            Save(ContentRoot, overwrite, format);
+        }
+
+        public void Save(string rootDir, bool overwrite = false, ConfFormat format = ConfFormat.Json)
+        {
             switch (format)
             {
                 case ConfFormat.Yaml:
-                    string fileName = "{0}.yaml"._Format(typeof(BreviteeConf).Name);
-                    if (overwrite || !File.Exists(fileName))
+                    string filePath = Path.Combine(rootDir, "{0}.yaml"._Format(typeof(BreviteeConf).Name));
+                    if (overwrite || !File.Exists(filePath))
                     {
-                        this.ToYaml().SafeWriteToFile(fileName, overwrite);
+                        this.ToYaml().SafeWriteToFile(filePath, overwrite);
                     }
                     break;
                 case ConfFormat.Json:
-                    fileName = "{0}.json"._Format(typeof(BreviteeConf).Name);
-                    if (overwrite || !File.Exists(fileName))
+                    filePath = Path.Combine(rootDir, "{0}.json"._Format(typeof(BreviteeConf).Name));
+                    if (overwrite || !File.Exists(filePath))
                     {
-                        this.ToJson(true).SafeWriteToFile(fileName, overwrite);
+                        this.ToJson(true).SafeWriteToFile(filePath, overwrite);
                     }
                     break;
             }

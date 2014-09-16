@@ -59,34 +59,7 @@ namespace Brevitee.Data.Tests
 
 
         // To run ConsoleAction methods use the command line argument /i.        
-        
-
   
-
-        [UnitTest]
-        public static void LanguageComparisonOperatorsShouldReturnExperssionBuilder()
-        {
-            //TableColumns c = new TableColumns();
-            //Select<TableColumns>.From<Table>().Where((tc) => 
-            //    {
-            //        Out((
-            //                (tc.ColumnOne == "monkey"
-            //                    ||
-            //                (tc.ColumnTwo != "mouth"))
-            //                    &&
-            //                 tc.ColumnTwo.StartsWith("bro")
-            //             )
-            //            .Parse()
-            //        );
-            //    });
-
-
-            //TableColumns one = new TableColumns();
-            //QueryFilter<TableColumns> v = (one.ColumnOne == "monkey" || one.ColumnTwo != "mouth") &&
-            //                 one.ColumnTwo.StartsWith("bro");
-
-            //Expect.IsInstanceOfType<QueryFilter<TableColumns>>(v);            
-        }
 
         public static DaoCollection<TableColumns, TestDao> CreateTestDaoCollection()
         {

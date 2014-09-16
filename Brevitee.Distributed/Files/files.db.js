@@ -11,15 +11,23 @@ var database = {
             ],
             cols: [
                 { Name: "String" },
-                { Container: "Boolean" },
-                { StartChunkId: "Long" }
+                { IsFolder: "Boolean" }
+            ]
+        },
+        {
+            name: "File",
+            fks: [
+                { NodeId: "Node" },
+                { StartChunkId: "Chunk" },
+                { Size: "Int" }
             ]
         },
         {
             name: "Chunk",
             fks: [
                 { PreviousChunkId: "Chunk" },
-                { NextChunkId: "Chunk" }
+                { NextChunkId: "Chunk" },
+                { Size: "Int", Null: false }
             ],
             cols: [
                 { Data: "Byte" },                

@@ -30,6 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Brevitee.Server.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CsQuery">
@@ -38,12 +39,13 @@
     <Reference Include="dotless.Core">
       <HintPath>..\packages\dotless.1.3.1.0\lib\dotless.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Ionic.Zip, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
+    <Reference Include="Ionic.Zip, Version=1.9.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\DotNetZip.1.9.2\lib\net20\Ionic.Zip.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -72,6 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppConf.cs" />
+    <Compile Include="AppConfApplicationNameProvider.cs" />
     <Compile Include="AppContentResponder.cs" />
     <Compile Include="BreviteeApplicationManager.cs" />
     <Compile Include="BreviteeApplicationManagerResult.cs" />
@@ -79,8 +82,15 @@
     <Compile Include="BreviteeServer.cs" />
     <Compile Include="BreviteeServiceProxyServer.cs" />
     <Compile Include="ColorScheme.cs" />
+    <Compile Include="ContentLocator.cs" />
+    <Compile Include="ContentLocatorEventArgs.cs" />
     <Compile Include="FileContentHash.cs" />
     <Compile Include="DustTemplateInitializer.cs" />
+    <Compile Include="HostPrefix.cs" />
+    <Compile Include="IncludeOrder.cs" />
+    <Compile Include="Renderers\CompiledDustTemplate.cs" />
+    <Compile Include="SearchDirectory.cs" />
+    <Compile Include="SearchRule.cs" />
     <Compile Include="TcpServer.cs" />
     <Compile Include="IInitialize.cs" />
     <Compile Include="Includes.cs" />
@@ -102,9 +112,6 @@
     <Compile Include="BreviteeConf.cs" />
     <Compile Include="ConfFormat.cs" />
     <Compile Include="ContentResponder.cs" />
-    <Compile Include="Context.cs" />
-    <Compile Include="DefaultBreviteeServerFactory.cs" />
-    <Compile Include="DynamicBreviteeServerFactory.cs" />
     <Compile Include="Renderers\JsonRenderer.cs" />
     <Compile Include="Renderers\ScriptRenderer.cs" />
     <Compile Include="Renderers\SmartRenderer.cs" />
@@ -116,7 +123,6 @@
     <Compile Include="Fs.cs" />
     <Compile Include="FsEvent.cs" />
     <Compile Include="HttpServer.cs" />
-    <Compile Include="IContext.cs" />
     <Compile Include="IRequestHandler.cs" />
     <Compile Include="IRequestRenderer.cs" />
     <Compile Include="IResponder.cs" />
@@ -135,17 +141,25 @@
     <Compile Include="TemplateInitializerBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="content.root" />
+    <EmbeddedResource Include="app.base" />
+    <None Include="app.config" />
+    <None Include="BAM.md" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Renderers\json2.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Renderers\dust-full-0.3.0.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Renderers\dust.custom.js" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Brevitee.CommandLine\Brevitee.CommandLine.csproj">
       <Project>{ea9863a9-8e0b-4497-b7fd-abf450a3e468}</Project>
       <Name>Brevitee.CommandLine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Brevitee.Data.Model\Brevitee.Data.Model.csproj">
-      <Project>{26216f9a-dc1a-475d-a355-568e350c3690}</Project>
-      <Name>Brevitee.Data.Model</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Brevitee.Data.MSSql\Brevitee.Data.MsSql.csproj">
-      <Project>{f373eaf9-b69c-4322-9659-a53a8fb7d43f}</Project>
-      <Name>Brevitee.Data.MsSql</Name>
     </ProjectReference>
     <ProjectReference Include="..\Brevitee.Data.Schema\Brevitee.Data.Schema.csproj">
       <Project>{d2c2b1c0-1047-4211-92fc-37f332861161}</Project>
@@ -163,6 +177,10 @@
       <Project>{1db5bac4-f6fd-48d7-a89a-228f41036b78}</Project>
       <Name>Brevitee.Drawing</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Brevitee.Encryption\Brevitee.Encryption.csproj">
+      <Project>{f27dc9a6-e432-4d20-bcef-d10b0c2a657d}</Project>
+      <Name>Brevitee.Encryption</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Brevitee.Html\Brevitee.Html.csproj">
       <Project>{795d5552-94d6-4373-b4f1-551b1d5bdafb}</Project>
       <Name>Brevitee.Html</Name>
@@ -175,17 +193,13 @@
       <Project>{34c5016d-5265-4394-a9ba-cb2f70d8e93b}</Project>
       <Name>Brevitee.Javascript</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Brevitee.Logging\Brevitee.Logging.csproj">
-      <Project>{15e91407-00d6-4edf-b75c-bc817a75c8ad}</Project>
-      <Name>Brevitee.Logging</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Brevitee.ServiceProxy\Brevitee.ServiceProxy.csproj">
       <Project>{8987d8c8-033b-4993-99f0-8dd5a4d6dd0d}</Project>
       <Name>Brevitee.ServiceProxy</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Brevitee.Users\Brevitee.Users.csproj">
+    <ProjectReference Include="..\Brevitee.UserAccounts\Brevitee.UserAccounts.csproj">
       <Project>{74d5a262-b0b9-40e6-a3fd-b120dc8e9f54}</Project>
-      <Name>Brevitee.Users</Name>
+      <Name>Brevitee.UserAccounts</Name>
     </ProjectReference>
     <ProjectReference Include="..\Brevitee.Yaml\Brevitee.Yaml.csproj">
       <Project>{1c5258ec-7579-4032-94ec-b016bdc1b876}</Project>
@@ -195,20 +209,6 @@
       <Project>{8794c09d-d72c-420c-812f-bfda251b64c9}</Project>
       <Name>Brevitee</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="content.root" />
-    <EmbeddedResource Include="app.base" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Renderers\json2.js" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Renderers\dust-full-0.3.0.js" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Renderers\dust.custom.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

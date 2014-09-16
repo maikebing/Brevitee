@@ -20,38 +20,53 @@ namespace Brevitee.ServiceProxy
         {
             DocAttribute attribute;
             this.DeclaringType = type;
+            this.MemberType = MemberType.Type;
+            this.MemberName = "{0}.{1}"._Format(type.Namespace, type.Name);
+            this.From = DocFrom.Reflection;
+
             if (type.HasCustomAttributeOfType<DocAttribute>(out attribute))
             {
                 this.Summary = attribute.Summary;
-                this.MemberType = MemberType.Type;
-                this.MemberName = "{0}.{1}"._Format(type.Namespace, type.Name);
             }           
         }
 
         public DocInfo(PropertyInfo property)
         {
             DocAttribute attribute;
-            this.DeclaringType = property.DeclaringType;
+
+            Type type = property.DeclaringType;
+            this.DeclaringType = type;
+            this.MemberType = MemberType.Property;
+            this.MemberName = "{0}.{1}.{2}"._Format(type.Namespace, type.Name, property.Name);
+            this.From = DocFrom.Reflection;
+
             if (property.HasCustomAttributeOfType<DocAttribute>(out attribute))
             {
-                Type type = property.DeclaringType;
-                this.Summary = attribute.Summary;
-                this.MemberType = MemberType.Property;
-                this.MemberName = "{0}.{1}.{2}"._Format(type.Namespace, type.Name, property.Name);
+                this.Summary = attribute.Summary;                
             }
         }
 
         public DocInfo(MethodInfo method)
         {
             DocAttribute attribute;
-            this.DeclaringType = method.DeclaringType;
+            Type type = method.DeclaringType;
+            this.DeclaringType = type;
+            this.MemberType = MemberType.Method;
+            this.Returns = method.ReturnType.FullName;
+            this.MemberName = "{0}.{1}.{2}"._Format(type.Namespace, type.Name, method.Name);
+            this.From = DocFrom.Reflection;
+
             if (method.HasCustomAttributeOfType<DocAttribute>(out attribute))
             {
                 this.Summary = attribute.Summary;
-                this.MemberType = MemberType.Method;
-                this.Returns = method.ReturnType.FullName;
                 SetMethodInfo(attribute, method);
             }
+        }
+
+        public DocFrom From
+        {
+            get;
+            set;
         }
 
         /// <summary>
@@ -340,6 +355,28 @@ namespace Brevitee.ServiceProxy
             return allResults;
         }
 
+        internal static bool TryFromXmlFile(string filePath, out  Dictionary<string, List<DocInfo>> docInfos)
+        {
+            return TryFromXmlFile(new FileInfo(filePath), out docInfos);
+        }
+
+        internal static bool TryFromXmlFile(FileInfo file, out Dictionary<string, List<DocInfo>> docInfos)
+        {
+            docInfos = null;
+            bool result = true;
+            try
+            {
+                docInfos = FromXmlFile(file);
+            }
+            catch (Exception ex)
+            {
+                Log.AddEntry("An error occurred getting DocInfo for file {0}: {1}", ex, file.FullName, ex.Message);
+                result = false;
+            }
+
+            return result;
+        }
+
         internal static Dictionary<string, List<DocInfo>> FromXmlFile(string filePath)
         {
             return FromXmlFile(new FileInfo(filePath));
@@ -364,6 +401,7 @@ namespace Brevitee.ServiceProxy
                         string memberName;
                         info.MemberType = GetMemberType(mem.name, out memberName);
                         info.MemberName = memberName;
+                        info.From = DocFrom.Xml;
                         
                         #region ugly
                        
@@ -697,9 +735,9 @@ namespace Brevitee.ServiceProxy
             return (MemberType)((int)memberType);
         }
 
-        internal static Dictionary<Type, DocInfo[]> FromDocAttributes(Type type)
+        internal static Dictionary<string, List<DocInfo>> FromDocAttributes(Type type)
         {
-            Dictionary<Type, DocInfo[]> documentation = new Dictionary<Type, DocInfo[]>();
+            Dictionary<string, List<DocInfo>> documentation = new Dictionary<string, List<DocInfo>>();
             List<DocInfo> docInfos = new List<DocInfo>();
             docInfos.Add(new DocInfo(type));
             PropertyInfo[] properties = type.GetProperties();
@@ -716,7 +754,7 @@ namespace Brevitee.ServiceProxy
                 }
             });
 
-            documentation.Add(type, docInfos.ToArray());
+            documentation.Add(type.AssemblyQualifiedName, docInfos);
             return documentation;
         }
 
@@ -765,6 +803,64 @@ namespace Brevitee.ServiceProxy
                 declaringType.Name,
                 method.Name,
                 paramInfoString.ToString());
+        }
+
+        public static Dictionary<string, List<DocInfo>> Infer(Assembly assembly, DocPrecedence precedence = DocPrecedence.Xml)
+        {
+            Args.ThrowIfNull(assembly, "assembly");
+
+            FileInfo assemblyFileInfo = new FileInfo(assembly.Location);
+            Dictionary<string, List<DocInfo>> results = new Dictionary<string,List<DocInfo>>();
+            assembly.GetTypes().Each(type =>
+            {
+                AddDocInfos(results, type);
+            });
+
+            string name = Path.GetFileNameWithoutExtension(assemblyFileInfo.FullName);
+            string xmlFilePath = Path.Combine(assemblyFileInfo.Directory.FullName, "{0}.xml"._Format(name));
+            FileInfo xmlFile = new FileInfo(xmlFilePath);            
+
+            if (xmlFile.Exists)
+            {
+                AddDocInfos(results, xmlFile, precedence);
+            }
+
+            return results;
+        }
+
+        public static void AddDocInfos(Dictionary<string, List<DocInfo>> results, FileInfo xmlFile, DocPrecedence precedence = DocPrecedence.Xml)
+        {
+            Dictionary<string, List<DocInfo>> xmlResults;
+            if (TryFromXmlFile(xmlFile, out xmlResults))
+            {
+                xmlResults.Keys.Each(typeName =>
+                {
+                    if ((results.ContainsKey(typeName) && precedence == DocPrecedence.Xml) ||
+                        !results.ContainsKey(typeName))
+                    {
+                        if (!results.ContainsKey(typeName))
+                        {
+                            results.Add(typeName, new List<DocInfo>());
+                        }
+
+                        results[typeName].AddRange(xmlResults[typeName]);
+                    }
+                });
+            }
+        }
+
+        public static void AddDocInfos(Dictionary<string, List<DocInfo>> results, Type type)
+        {
+            Dictionary<string, List<DocInfo>> tempResults = FromDocAttributes(type);
+            tempResults.Keys.Each(typeName =>
+            {
+                if (!results.ContainsKey(typeName))
+                {
+                    results.Add(typeName, new List<DocInfo>());
+                }
+
+                results[typeName].AddRange(tempResults[typeName]);
+            });
         }
     }
 }

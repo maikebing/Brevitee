@@ -24,6 +24,15 @@ namespace Brevitee.Server.Tests
     [Serializable]
     public class ConsoleActions : CommandLineTestInterface
     {
+        [ConsoleAction("Elevate test")]
+        public void ElevateTest()
+        {
+            if (!WeHaveAdminRights())
+            {
+                Elevate();
+            }
+        }
+
         [ConsoleAction("Test TcpServer")]
         public void TestTcpServer()
         {
@@ -99,15 +108,15 @@ namespace Brevitee.Server.Tests
             }
         }
 
-        internal static BreviteeServer CreateServer(string port, string rootDir = "", string name = "")
+        internal static BreviteeServer CreateServer(int port, string rootDir = "", string name = "")
         {
-            BreviteeServer server = new BreviteeServer();
+            BreviteeServer server = new BreviteeServer(BreviteeConf.Load());
             if (string.IsNullOrEmpty(rootDir))
             {
                 rootDir = ".\\".RandomLetters(5);
             }
             server.ContentRoot = rootDir;
-            server.Port = port;
+            //server.Port = port;
 
             if (string.IsNullOrEmpty(name) || Servers.ContainsKey(name))
             {
@@ -144,8 +153,10 @@ namespace Brevitee.Server.Tests
                 }
             }
 
-            string port = BreviteeHappyPrompt("Enter the port number to listen on\r\n");            
-            
+            string portString = BreviteeHappyPrompt("Enter the port number to listen on\r\n");
+            int port = 8080;
+            int.TryParse(portString, out port);
+
             BreviteeServer server = CreateServer(port, rootDir, rootDir);
             BreviteeConf conf = server.GetCurrentConf();
             conf.GenerateDao = true;            

@@ -8,8 +8,8 @@ namespace Brevitee.CommandLine
 {
     public interface IPreAndPostInvoke
     {
-        string PreInvokeMethodName { get; set; }
-        string PostInvokeMethodName { get; set; }
-        string AlwaysPostInvokeMethodName { get; set; }
+        string Before { get; set; }
+        string AfterSuccess { get; set; }
+        string AlwaysAfter { get; set; }
     }
 }

@@ -12,8 +12,9 @@ namespace Brevitee.Distributed
     /// attribute.  Each property will be included 
     /// as properties on the object returned by 
     /// GetInfo as well as the Dictionary returned
-    /// by GetInfoDictionary
+    /// by GetInfoDictionary.
     /// </summary>
+    /// <see cref="Brevitee.Distributed.InfoAttribute"/>
     public interface IHasInfo
     {
         object GetInfo();

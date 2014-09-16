@@ -31,7 +31,7 @@ namespace SampleData
 		}
 
 	// property:Id, columnName:Id	
-	[Brevitee.Data.KeyColumn(Name="Id", ExtractedType="BigInt", MaxLength="8")]
+	[Brevitee.Data.KeyColumn(Name="Id", DbDataType="BigInt", MaxLength="8")]
 	public long? Id
 	{
 		get
@@ -45,7 +45,7 @@ namespace SampleData
 	}
 
 	// property:LastModified, columnName:LastModified	
-	[Brevitee.Data.Column(Name="LastModified", ExtractedType="DateTime", MaxLength="8", AllowNull=false)]
+	[Brevitee.Data.Column(Name="LastModified", DbDataType="DateTime", MaxLength="8", AllowNull=false)]
 	public DateTime LastModified
 	{
 		get
@@ -63,7 +63,7 @@ namespace SampleData
 	[Brevitee.Data.ForeignKey(
         Table="Give",
 		Name="HaveId", 
-		ExtractedType="BigInt", 
+		DbDataType="BigInt", 
 		MaxLength="8",
 		AllowNull=false, 
 		ReferencedKey="Id",
@@ -98,7 +98,7 @@ namespace SampleData
 	[Brevitee.Data.ForeignKey(
         Table="Give",
 		Name="WantId", 
-		ExtractedType="BigInt", 
+		DbDataType="BigInt", 
 		MaxLength="8",
 		AllowNull=false, 
 		ReferencedKey="Id",
@@ -133,7 +133,7 @@ namespace SampleData
 	[Brevitee.Data.ForeignKey(
         Table="Give",
 		Name="GiveStatusId", 
-		ExtractedType="BigInt", 
+		DbDataType="BigInt", 
 		MaxLength="8",
 		AllowNull=false, 
 		ReferencedKey="Id",
@@ -241,7 +241,7 @@ namespace SampleData
             GiveColumns c = new GiveColumns();
             IQueryFilter filter = where(c);         
             
-			Database db = database == null ? _.Db.For<Give>(): database;
+			Database db = database == null ? Db.For<Give>(): database;
 			QuerySet query = GetQuerySet(db); 
             query.Top<Give>(count);
             query.Where(filter);
@@ -260,7 +260,7 @@ namespace SampleData
 			GiveColumns c = new GiveColumns();
 			IQueryFilter filter = where(c) ;
 
-			Database db = database == null ? _.Db.For<Give>(): database;
+			Database db = database == null ? Db.For<Give>(): database;
 			QuerySet query = GetQuerySet(db);	 
 			query.Count<Give>();
 			query.Where(filter);	  

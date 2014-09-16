@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Brevitee.Encryption</id>
+    <version>3.0.7</version>
+    <authors>Brevitee</authors>
+    <owners>Brevitee</owners>
+    <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
+    <projectUrl>http://breviteedocs.wordpress.com/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+		Encryption tools built on top of BouncyCastle.  
+		Store sensitive information in an encrypted Vault that 
+		stores encrypted data in SQLite database files.
+    </description>
+    <copyright>Copyright 2014</copyright>
+    <dependencies>
+      <dependency id="BouncyCastle" version="1.7.0" />
+      <dependency id="Brevitee" version="3.0.6" />
+      <dependency id="Brevitee.Data" version="3.0.6" />
+      <dependency id="Brevitee.Incubation" version="3.0.6" />
+    </dependencies>
+  </metadata>
+</package>

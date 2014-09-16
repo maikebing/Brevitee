@@ -13,8 +13,9 @@ using Brevitee;
 using Brevitee.Testing;
 using Brevitee.Encryption;
 using Brevitee.Html;
+using Brevitee.Data;
 
-namespace Jing
+namespace jing
 {
     [Serializable]
     class Program : CommandLineInterface
@@ -23,6 +24,7 @@ namespace Jing
         {
             AddValidArgument("root", false, "The root directory to search for dao assemblies", "/root:<path_to_dao_root_typically_bin");
             AddValidArgument("out", false, "The output directory", "/out:<path_to_output_directory");
+			AddValidArgument("viewType", false, "dao || method", "/viewType:dao");
             AddValidArgument("?", true);
 
             ParseArgs(args);
@@ -35,55 +37,73 @@ namespace Jing
             }
             else
             {
-                string outputPath = Arguments["out"];
-                string dllRoot = Arguments["root"];
+				Dictionary<string, Action<Type, string>> actions = new Dictionary<string, Action<Type, string>>();
+				actions.Add("dao", WritePartialView);
+				actions.Add("method", WriteMethodForms);
 
-                if (string.IsNullOrEmpty(outputPath))
-                {
-                    outputPath = Path.Combine(dllRoot, "dust");
-                }
-                if (string.IsNullOrEmpty(dllRoot))
-                {
-                    Out("dll root must be specified");
-                    Environment.Exit(1);
-                }
+				string outputPath = Arguments["out"];
+				string dllRoot = Arguments["root"];
+	            string viewType = Arguments.Contains("viewType") ? Arguments["viewType"] : "dao";
 
-                DirectoryInfo outputDir = new DirectoryInfo(outputPath);
+				if (string.IsNullOrEmpty(outputPath))
+				{
+					outputPath = Path.Combine(dllRoot, "dust");
+				}
+				if (string.IsNullOrEmpty(dllRoot))
+				{
+					Out("dll root must be specified");
+					Environment.Exit(1);
+				}
 
-                DirectoryInfo root = new DirectoryInfo(dllRoot);
-                FileInfo[] dlls = root.GetFiles("*.dll");
-                foreach (FileInfo dll in dlls)
-                {   
-                    string dllPath = dll.FullName;
-                    FileInfo file = new FileInfo(dllPath);
-                    try
-                    {
-                        Assembly daoAssembly = Assembly.LoadFrom(file.FullName);
-                        Type[] daoTypes = (from type in daoAssembly.GetTypes()
-                                            where type.HasCustomAttributeOfType<Brevitee.Data.TableAttribute>()
-                                            select type).ToArray();
+				DirectoryInfo outputDir = new DirectoryInfo(outputPath);
 
-                        if (daoTypes.Length == 0)
-                        {
-                            OutFormat("No dao types were found in ({0})", ConsoleColor.Yellow, daoAssembly.FullName);
-                        }
-                        else
-                        {
-                            for (int i = 0; i < daoTypes.Length; i++)
-                            {
-                                WritePartialView(daoTypes[i], outputDir.FullName);
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        OutFormat("{0}::{1}", ConsoleColor.Red, file.Name, ex.Message);
-                    }
-                }
+				DirectoryInfo root = new DirectoryInfo(dllRoot);
+				FileInfo[] dlls = root.GetFiles("*.dll");
+				foreach (FileInfo dll in dlls)
+				{
+					string dllPath = dll.FullName;
+					FileInfo file = new FileInfo(dllPath);
+					try
+					{
+						if (viewType.Equals("dao")) 
+						{
+							ForEachTypeAddornedWith<TableAttribute>(file, outputDir, actions[viewType]);
+						}
+						else 
+						{
+							ForEachTypeAddornedWith<ProxyAttribute>(file, outputDir, actions[viewType]);
+						}
+						
+					}
+					catch (Exception ex)
+					{
+						OutFormat("{0}::{1}", ConsoleColor.Red, file.Name, ex.Message);
+					}
+				}
             }
         }
 
-        private static void WritePartialView(Type daoType, string outputDir = ".")
+	    private static void ForEachTypeAddornedWith<T>(FileInfo file, DirectoryInfo outputDir, Action<Type, string> doAction)  where T: Attribute
+		{
+		    Assembly assembly = Assembly.LoadFrom(file.FullName);
+		    Type[] addornedTypes = (from type in assembly.GetTypes()
+			    where type.HasCustomAttributeOfType<T>()
+			    select type).ToArray();
+
+		    if (addornedTypes.Length == 0) 
+			{
+			    OutFormat("No dao types were found in ({0})", ConsoleColor.Yellow, assembly.FullName);
+		    } 
+			else 
+			{
+			    for (int i = 0; i < addornedTypes.Length; i++) 
+				{
+				    doAction(addornedTypes[i], outputDir.FullName); //WritePartialView(addornedTypes[i], outputDir.FullName);
+			    }
+		    }
+	    }
+
+	    private static void WritePartialView(Type daoType, string outputDir = ".")
         {
             Type safeType = daoType.CreateDynamicType<Brevitee.Data.ColumnAttribute>();
             object instance = ConstructAndSetTemplateProperties(safeType);
@@ -93,20 +113,46 @@ namespace Jing
             bool overwrite = false;
             if (file.Exists)
             {
-                string backup = Path.Combine(outputDir, string.Format("{0}_{1}.dust", Path.GetFileNameWithoutExtension(file.FullName), DateTime.Now.ToJulianDate().ToString()));
-                File.Move(file.FullName, backup);
+                string backup = Path.Combine(outputDir, string.Format("{0}_{1}.dust", Path.GetFileNameWithoutExtension(fileName), DateTime.Now.ToJulianDate().ToString()));
+                File.Move(fileName, backup);
             }
 
             OutFormat("Writing {0}", ConsoleColor.Green, fileName);
             htm.SafeWriteToFile(fileName, overwrite);
         }
 
-        public static string InputFor(Type type, object defaults = null, string name = null)
+		private static void WriteMethodForms(Type serviceProxyType, string outputDir = ".")
+		{
+			MethodInfo[] proxiedMethods = serviceProxyType.GetMethods().Where(m => !m.HasCustomAttributeOfType<ExcludeAttribute>()).ToArray();
+			foreach (MethodInfo method in proxiedMethods)
+			{
+				string htm = MethodForm(serviceProxyType, method.Name);
+				FileInfo outputFile = new FileInfo(Path.Combine(outputDir, string.Format("{0}.inc", method.Name)));
+				string fileName = outputFile.FullName;
+				bool overwrite = false;
+				if(outputFile.Exists)
+				{
+					string backup = Path.Combine(outputDir, string.Format("{0}_{1}.inc", Path.GetFileNameWithoutExtension(fileName), DateTime.Now.ToJulianDate().ToString()));
+					File.Move(fileName, backup);
+				}
+
+				OutFormat("Writing {0}", ConsoleColor.Cyan, fileName);
+				htm.SafeWriteToFile(fileName, overwrite);
+			}
+		}
+
+        public static string InputFor(Type type, object instance)
         {
             InputFormBuilder builder = new InputFormBuilder();
-            return builder.FieldsetFor(type, defaults, name).ToString();
+            return builder.FieldsetFor(type, instance, null).ToString();
         }
 
+		public static string MethodForm(Type type, string methodName)
+		{
+			InputFormBuilder builder = new InputFormBuilder();
+			int ignore = -1;
+			return builder.MethodForm(type, "fieldset", methodName, null, out ignore).ToString();
+		}
 
         private static object ConstructAndSetTemplateProperties(Type type)
         {

@@ -1,0 +1,356 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Brevitee.Messaging</name>
+    </assembly>
+    <members>
+        <member name="M:Brevitee.Messaging.Data.DirectMessage.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Messaging.Data.DirectMessage.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the DirectMessage table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Messaging.Data.DirectMessage.Where(System.Func{Brevitee.Messaging.Data.DirectMessageColumns,Brevitee.Data.QueryFilter{Brevitee.Messaging.Data.DirectMessageColumns}},Brevitee.Data.OrderBy{Brevitee.Messaging.Data.DirectMessageColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a DirectMessageColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between DirectMessageColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Messaging.Data.DirectMessage.Where(Brevitee.Data.WhereDelegate{Brevitee.Messaging.Data.DirectMessageColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a DirectMessageColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between DirectMessageColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Messaging.Data.DirectMessage.Where(Brevitee.Data.WhereDelegate{Brevitee.Messaging.Data.DirectMessageColumns},Brevitee.Data.OrderBy{Brevitee.Messaging.Data.DirectMessageColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a DirectMessageColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between DirectMessageColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Messaging.Data.DirectMessage.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Messaging.Data.DirectMessage.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Messaging.Data.DirectMessageColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single DirectMessage instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a DirectMessageColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between DirectMessageColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Messaging.Data.DirectMessage.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Messaging.Data.DirectMessage.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Messaging.Data.DirectMessageColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a DirectMessageColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between DirectMessageColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Messaging.Data.DirectMessage.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Messaging.Data.DirectMessageColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a DirectMessageColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between DirectMessageColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Messaging.Data.DirectMessage.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Messaging.Data.DirectMessageColumns},Brevitee.Data.OrderBy{Brevitee.Messaging.Data.DirectMessageColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a DirectMessageColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between DirectMessageColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Messaging.Data.DirectMessage.Count(Brevitee.Data.WhereDelegate{Brevitee.Messaging.Data.DirectMessageColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a DirectMessageColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between DirectMessageColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Messaging.Data.EmailMessage.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Messaging.Data.EmailMessage.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the EmailMessage table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Messaging.Data.EmailMessage.Where(System.Func{Brevitee.Messaging.Data.EmailMessageColumns,Brevitee.Data.QueryFilter{Brevitee.Messaging.Data.EmailMessageColumns}},Brevitee.Data.OrderBy{Brevitee.Messaging.Data.EmailMessageColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a EmailMessageColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between EmailMessageColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Messaging.Data.EmailMessage.Where(Brevitee.Data.WhereDelegate{Brevitee.Messaging.Data.EmailMessageColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a EmailMessageColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between EmailMessageColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Messaging.Data.EmailMessage.Where(Brevitee.Data.WhereDelegate{Brevitee.Messaging.Data.EmailMessageColumns},Brevitee.Data.OrderBy{Brevitee.Messaging.Data.EmailMessageColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a EmailMessageColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between EmailMessageColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Messaging.Data.EmailMessage.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Messaging.Data.EmailMessage.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Messaging.Data.EmailMessageColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single EmailMessage instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a EmailMessageColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between EmailMessageColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Messaging.Data.EmailMessage.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Messaging.Data.EmailMessage.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Messaging.Data.EmailMessageColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a EmailMessageColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between EmailMessageColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Messaging.Data.EmailMessage.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Messaging.Data.EmailMessageColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a EmailMessageColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between EmailMessageColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Messaging.Data.EmailMessage.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Messaging.Data.EmailMessageColumns},Brevitee.Data.OrderBy{Brevitee.Messaging.Data.EmailMessageColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a EmailMessageColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between EmailMessageColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Messaging.Data.EmailMessage.Count(Brevitee.Data.WhereDelegate{Brevitee.Messaging.Data.EmailMessageColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a EmailMessageColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between EmailMessageColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Messaging.Data.Message.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Messaging.Data.Message.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the Message table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Messaging.Data.Message.Where(System.Func{Brevitee.Messaging.Data.MessageColumns,Brevitee.Data.QueryFilter{Brevitee.Messaging.Data.MessageColumns}},Brevitee.Data.OrderBy{Brevitee.Messaging.Data.MessageColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a MessageColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between MessageColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Messaging.Data.Message.Where(Brevitee.Data.WhereDelegate{Brevitee.Messaging.Data.MessageColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a MessageColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between MessageColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Messaging.Data.Message.Where(Brevitee.Data.WhereDelegate{Brevitee.Messaging.Data.MessageColumns},Brevitee.Data.OrderBy{Brevitee.Messaging.Data.MessageColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a MessageColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between MessageColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Messaging.Data.Message.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Messaging.Data.Message.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Messaging.Data.MessageColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single Message instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a MessageColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between MessageColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Messaging.Data.Message.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Messaging.Data.Message.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Messaging.Data.MessageColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a MessageColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between MessageColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Messaging.Data.Message.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Messaging.Data.MessageColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a MessageColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between MessageColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Messaging.Data.Message.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Messaging.Data.MessageColumns},Brevitee.Data.OrderBy{Brevitee.Messaging.Data.MessageColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a MessageColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between MessageColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Messaging.Data.Message.Count(Brevitee.Data.WhereDelegate{Brevitee.Messaging.Data.MessageColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a MessageColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between MessageColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+    </members>
+</doc>

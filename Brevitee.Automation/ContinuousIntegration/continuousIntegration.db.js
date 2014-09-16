@@ -1,8 +1,7 @@
 var database = {
     nameSpace: "Brevitee.Automation.ContinuousIntegration.Data",
     schemaName: "ContinuousIntegration",
-    xrefs: [
-       // ["StickerizableList", "Stickerizable"],       
+    xrefs: [       
     ],
     tables: [
         {

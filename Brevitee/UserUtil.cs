@@ -85,6 +85,11 @@ namespace Brevitee
             return user;
         }
 
+        public static bool CurrentWindowsUserHasAdminRights()
+        {
+            return WindowsIdentity.GetCurrent().HasAdminRights();
+        }
+
         /// <summary>
         /// Gets the current Windows user.  This is typically the owner of the currently
         /// running process.

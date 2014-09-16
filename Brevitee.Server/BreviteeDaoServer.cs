@@ -12,13 +12,6 @@ namespace Brevitee.Server
     /// </summary>
     public class BreviteeDaoServer: BreviteeServer
     {
-        public BreviteeDaoServer()
-            : base()
-        {
-            this.EnableDao = true;
-            this.EnableServiceProxy = false;
-        }
-
         public BreviteeDaoServer(BreviteeConf conf)
             : base(conf)
         {

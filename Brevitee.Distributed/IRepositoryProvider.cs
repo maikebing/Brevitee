@@ -12,6 +12,6 @@ namespace Brevitee.Distributed
         T Retrieve<T>(object keyOwner);
         void Update(object value);
         void Delete(object value);
-        T[] Search<T>(object query);
+        IEnumerable<T> Search<T>(object query);
     }
 }

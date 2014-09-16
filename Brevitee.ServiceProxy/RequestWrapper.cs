@@ -79,7 +79,14 @@ namespace Brevitee.ServiceProxy
                 PropertyInfo prop = WrappedType.GetProperty(name);
                 if(prop != null)
                 {
-                    return prop.GetValue(Wrapped, null);
+                    try
+                    {
+                        return prop.GetValue(Wrapped, null);
+                    }
+                    catch// (Exception ex)
+                    {
+                        return null;
+                    }
                 }
             }
 
@@ -142,18 +149,37 @@ namespace Brevitee.ServiceProxy
             }
         }
 
-        // TODO: Wrap the cookies
+        System.Net.CookieCollection _cookies;
         public System.Net.CookieCollection Cookies
         {
-            get;
-            private set;
+            get
+            {
+                if (_cookies == null)
+                {
+                    _cookies = (System.Net.CookieCollection)Get("Cookies");
+                }
+                return _cookies;
+            }
+            private set
+            {
+                _cookies = value;
+            }
         }
-        
+
+        NameValueCollection _headers;
         public NameValueCollection Headers
         {
             get
             {
-                return (NameValueCollection)Get("Headers");
+                if (_headers == null)
+                {
+                    _headers = (NameValueCollection)Get("Headers");
+                }
+                return _headers;
+            }
+            set
+            {
+                _headers = value;
             }
         }
 

@@ -40,7 +40,7 @@ namespace Brevitee.Logging
 
 	// property:Id, columnName:Id	
 	[Exclude]
-	[Brevitee.Data.KeyColumn(Name="Id", ExtractedType="BigInt", MaxLength="8")]
+	[Brevitee.Data.KeyColumn(Name="Id", DbDataType="BigInt", MaxLength="8")]
 	public long? Id
 	{
 		get
@@ -54,7 +54,7 @@ namespace Brevitee.Logging
 	}
 
 	// property:Position, columnName:Position	
-	[Brevitee.Data.Column(Name="Position", ExtractedType="Int", MaxLength="4", AllowNull=true)]
+	[Brevitee.Data.Column(Name="Position", DbDataType="Int", MaxLength="4", AllowNull=true)]
 	public int? Position
 	{
 		get
@@ -68,7 +68,7 @@ namespace Brevitee.Logging
 	}
 
 	// property:Value, columnName:Value	
-	[Brevitee.Data.Column(Name="Value", ExtractedType="VarChar", MaxLength="4000", AllowNull=true)]
+	[Brevitee.Data.Column(Name="Value", DbDataType="VarChar", MaxLength="4000", AllowNull=true)]
 	public string Value
 	{
 		get
@@ -144,7 +144,7 @@ namespace Brevitee.Logging
 		{
 			SqlStringBuilder sql = new SqlStringBuilder();
 			sql.Select<Param>();
-			Database db = database == null ? _.Db.For<Param>(): database;
+			Database db = database == null ? Db.For<Param>(): database;
 			return new ParamCollection(sql.GetDataTable(db));
 		}
 
@@ -308,7 +308,7 @@ namespace Brevitee.Logging
 			ParamColumns c = new ParamColumns();
 			IQueryFilter filter = where(c);         
 			
-			Database db = database == null ? _.Db.For<Param>(): database;
+			Database db = database == null ? Db.For<Param>(): database;
 			QuerySet query = GetQuerySet(db); 
 			query.Top<Param>(count);
 			query.Where(filter);
@@ -335,7 +335,7 @@ namespace Brevitee.Logging
 			ParamColumns c = new ParamColumns();
 			IQueryFilter filter = where(c) ;
 
-			Database db = database == null ? _.Db.For<Param>(): database;
+			Database db = database == null ? Db.For<Param>(): database;
 			QuerySet query = GetQuerySet(db);	 
 			query.Count<Param>();
 			query.Where(filter);	  

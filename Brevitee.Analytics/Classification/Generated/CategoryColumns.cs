@@ -20,21 +20,28 @@ namespace Brevitee.Analytics.Classification
 			}
 		}	
 				
-        public CategoryColumns Id
+﻿        public CategoryColumns Id
         {
             get
             {
                 return new CategoryColumns("Id");
             }
         }
-        public CategoryColumns Value
+﻿        public CategoryColumns Uuid
+        {
+            get
+            {
+                return new CategoryColumns("Uuid");
+            }
+        }
+﻿        public CategoryColumns Value
         {
             get
             {
                 return new CategoryColumns("Value");
             }
         }
-        public CategoryColumns DocumentCount
+﻿        public CategoryColumns DocumentCount
         {
             get
             {
@@ -43,11 +50,19 @@ namespace Brevitee.Analytics.Classification
         }
 
 
+		protected internal Type TableType
+		{
+			get
+			{
+				return typeof(Category);
+			}
+		}
+
 		public string Operator { get; set; }
 
         public override string ToString()
         {
-            return this.ColumnName;
+            return base.ColumnName;
         }
 	}
 }

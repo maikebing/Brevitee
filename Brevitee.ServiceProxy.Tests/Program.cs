@@ -8,16 +8,34 @@ using System.Data.Common;
 using System.Data.Sql;
 using System.Data.SqlClient;
 using System.IO;
-using Brevitee.CommandLine;
-using Brevitee;
-using Brevitee.Testing;
+using System.Net;
+using Brevitee.Configuration;
 using Brevitee.Encryption;
+using Brevitee.CommandLine;
+using Brevitee.Incubation;
+using Brevitee;
+using Brevitee.Data;
+using Brevitee.Testing;
+using Brevitee.Javascript;
+using Brevitee.Server;
 using Brevitee.ServiceProxy;
+using Brevitee.ServiceProxy.Secure;
+using Org.BouncyCastle.OpenSsl;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Security;
+using Org.BouncyCastle.Utilities;
+using Org.BouncyCastle.X509;
+using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Crypto.Generators;
+using Org.BouncyCastle.Math;
+using Org.BouncyCastle.Crypto.Engines;
+using Brevitee.UserAccounts;
+using Brevitee.UserAccounts.Data;
 
 namespace Brevitee.ServiceProxy.Tests
 {
     [Serializable]
-    class Program : CommandLineTestInterface
+    public partial class Program : CommandLineTestInterface
     {
         static void Main(string[] args)
         {
@@ -48,10 +66,311 @@ namespace Brevitee.ServiceProxy.Tests
             #endregion
         }
 
-        [ConsoleAction("Add your action here")]
-        public void AddYourActionHere()
+        [UnitTest("Test HeaderCollection")]
+        public void TestHeaderCollection()
         {
+            WebHeaderCollection headers = new WebHeaderCollection();
+            headers.Add("Monkey", "banana");
+            headers.Set("Banana", "Monkey");
+
+            headers.Add("Monkey", "AddAgain");
+            headers.Set("Monkey", "Set");
+
+            headers.Add("Banana", "AddAgain");
+            headers.Set("Banana", "SetAgain");
+
+            headers.Add("AddDoesntExist", "AddDoesntExist");
+            headers.Set("SetDoesntExist", "SetDoesntExist");
+
+            foreach (string key in headers.Keys)
+            {
+                OutLineFormat("{0}={1}", key, headers[key]);
+            }
+            
         }
+
+        class TestApiKeyClient: SecureServiceProxyClient<string>
+        {
+            public TestApiKeyClient() : base("") { }
+
+            public WebRequest TestGetWebRequest()
+            {
+                return GetWebRequest(new Uri("http://test.cxm/"));
+            }
+            protected override WebRequest GetWebRequest(Uri address)
+            {
+                return base.GetWebRequest(address);
+            }
+
+            public void TestStartSession()
+            {
+                base.StartSession();
+            }
+        }
+
+        [UnitTest]
+        public void ApiKeyProviderShouldNotBeNull()
+        {
+            TestApiKeyClient client = new TestApiKeyClient();
+            Expect.IsNotNull(client.ApiKeyResolver.ApiKeyProvider, "ApiKeyProvider was null");
+        }
+
+
+        [UnitTest]
+        public void SecureServiceProxyClientBaseAddressShouldBeSet()
+        {
+            string baseAddress = "http://localhost:8989/";
+            SecureServiceProxyClient<Echo> sspc = new SecureServiceProxyClient<Echo>(baseAddress);
+            Expect.AreEqual(baseAddress, sspc.BaseAddress);
+        }
+
+        [UnitTest]
+        public void PostShouldFireEvents()
+        {
+            BreviteeServer server;
+            SecureServiceProxyClient<Echo> sspc;
+            StartTestServerGetEchoClient(out server, out sspc);
+
+            bool? firedIngEvent = false;
+            bool? firedEdEvent = false;
+            
+            sspc.Posting += (s, a) =>
+            {
+                firedIngEvent = true;
+            };
+            sspc.Posted += (s, assembly) =>
+            {
+                firedEdEvent = true;
+            };
+            try
+            {
+                sspc.Post("TestStringParameter", new object[] { "monkey" }); // array forces resolution to the correct method
+            }
+            catch (Exception ex)
+            {
+                server.Stop();
+                Expect.Fail(ex.Message);
+            }
+
+            server.Stop();
+
+            Expect.IsTrue(firedIngEvent.Value, "Posting event didn't fire");
+            Expect.IsTrue(firedEdEvent.Value, "Posted event didn't fire");
+        }
+
+        [UnitTest]
+        public void PostShouldBeCancelable()
+        {
+            BreviteeServer server;
+            SecureServiceProxyClient<Echo> sspc;
+            StartTestServerGetEchoClient(out server, out sspc);
+
+            bool? firedIngEvent = false;
+            bool? firedEdEvent = false;
+            sspc.Posting += (s, a) =>
+            {
+                firedIngEvent = true;
+                a.CancelInvoke = true; // should cancel the call
+            };
+            sspc.Posted += (s,a) =>
+            {
+                firedEdEvent = true;
+            };
+
+            try
+            {
+                sspc.Post("TestStringParameter", new object[] { "monkey" });
+            }
+            catch (Exception ex)
+            {
+                server.Stop();
+                Expect.Fail(ex.Message);
+            }
+
+            server.Stop();
+            
+            Expect.IsTrue(firedIngEvent.Value, "Posting didn't fire");
+            Expect.IsFalse(firedEdEvent.Value, "Posted fired but should not have");
+        }
+
+
+        [UnitTest(AlwaysAfter="StopServers")]
+        public void GetShouldFireEvents()
+        {
+            BreviteeServer server;
+            SecureServiceProxyClient<Echo> sspc;
+            StartTestServerGetEchoClient(out server, out sspc);
+
+            bool? firedIngEvent = false;
+            bool? firedEdEvent = false;
+
+            sspc.Getting += (s, a) =>
+            {
+                firedIngEvent = true;
+            };
+            sspc.Got += (s, a) =>
+            {
+                firedEdEvent = true;
+            };
+            try
+            {
+                sspc.Get("TestStringParameter", new object[] { "monkey" }); // array forces resolution to the correct method
+            }
+            catch (Exception ex)
+            {
+                server.Stop();
+                Expect.Fail(ex.Message);
+            }
+            
+            server.Stop();
+
+            Expect.IsTrue(firedIngEvent.Value, "Getting event didn't fire");
+            Expect.IsTrue(firedEdEvent.Value, "Got event didn't fire");
+        }
+
+        [UnitTest(AlwaysAfter = "StopServers")]
+        public void SecureServiceProxyInvokeShouldFireSessionStarting()
+        {
+            BreviteeServer server;
+            SecureServiceProxyClient<Echo> sspc;
+            StartSecureChannelTestServerGetEchoClient(out server, out sspc);
+            bool? sessionStartingCalled = false;
+            sspc.SessionStarting += (c) =>
+            {
+                sessionStartingCalled = true;
+            };
+
+            sspc.Invoke<string>("Send", new object[] { "banana" });
+            server.Stop();
+            Expect.IsTrue(sessionStartingCalled.Value, "SessionStarting did not fire");
+        }
+
+        [UnitTest(AlwaysAfter="StopServers")]
+        public void SecureServiceProxyInvokeShouldEstablishSessionIfSecureChannelServerRegistered()
+        {
+            BreviteeServer server;
+            SecureServiceProxyClient<Echo> sspc;
+            StartSecureChannelTestServerGetEchoClient(out server, out sspc);
+
+            Expect.IsFalse(sspc.SessionEstablished);
+            string value = "InputValue_".RandomLetters(8);
+            string result = sspc.Invoke<string>("Send", new object[] { value });
+            server.Stop();
+
+            string msg = sspc.SessionStartException != null ? sspc.SessionStartException.Message : string.Empty;
+            Expect.IsNull(sspc.SessionStartException, "SessionStartException: {0}"._Format(msg));
+            Expect.IsTrue(sspc.SessionEstablished, "Session was not established");
+
+            server.Stop();
+        }
+
+        [UnitTest(AlwaysAfter = "StopServers")]
+        public void SecureServiceProxyInvokeShouldSucceed()
+        {
+            BreviteeServer server;
+            SecureServiceProxyClient<Echo> sspc;
+            StartSecureChannelTestServerGetEchoClient(out server, out sspc);
+
+            string value = "InputValue_".RandomLetters(8);
+            string result = sspc.Invoke<string>("Send", new object[] { value });
+            server.Stop();
+            Expect.AreEqual(value, result);
+        }
+
+        [UnitTest]
+        public void OutputTimeValues()
+        {
+            DateTime now = DateTime.UtcNow;
+            OutLineFormat("Month: {0}", now.Month);
+            OutLineFormat("Day: {0}", now.Day);
+            OutLineFormat("Year: {0}", now.Year);
+            OutLineFormat("Hour: {0}", now.Hour);
+            OutLineFormat("Minute: {0}", now.Minute);
+            OutLineFormat("Second: {0}", now.Second);
+            OutLineFormat("Millisecond: {0}", now.Millisecond);
+        }
+
+        [UnitTest]
+        public void InstantDiffTest()
+        {
+            Instant now = new Instant();
+            Instant then = new Instant(DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(2)));
+            Instant fromNow = new Instant(DateTime.UtcNow.AddMinutes(4));
+
+            int thenDiff = now.DiffInMilliseconds(then);
+            int fromNowDiff = now.DiffInMilliseconds(fromNow);
+
+            Expect.IsGreaterThan(thenDiff, 0);
+            Expect.IsGreaterThan(fromNowDiff, 0);
+
+            OutLineFormat("Then Diff: {0}", thenDiff);
+            OutLineFormat("From Now Diff: {0}", fromNowDiff);
+
+            TimeSpan thenSpan = TimeSpan.FromMilliseconds(thenDiff);
+            TimeSpan fromNowSpan = TimeSpan.FromMilliseconds(fromNowDiff);
+
+            OutLineFormat("Then minutes diff: {0}", thenSpan.Minutes);
+            OutLineFormat("From now minutes diff: {0}", fromNowSpan.Minutes);
+        }
+
+        [UnitTest]
+        public void InstantToStringParse()
+        {
+            Instant normalNow = new Instant(DateTime.Now);
+            string toStringed = normalNow.ToString();
+            OutLineFormat("ToStringed: {0}", toStringed);
+            Instant parsed = Instant.FromString(toStringed);
+
+            Expect.AreEqual(0, parsed.DiffInMilliseconds(normalNow));
+        }
+
+        [UnitTest]
+        public void StartSession()
+        {
+            BreviteeServer server;
+            SecureServiceProxyClient<Echo> sspc;
+            StartSecureChannelTestServerGetEchoClient(out server, out sspc);
+
+            sspc.StartSession();
+            server.Stop();
+        }
+        
+        [UnitTest]
+        public void GetShouldBeCancelable()
+        {
+            BreviteeServer server;
+            SecureServiceProxyClient<Echo> sspc;
+            StartTestServerGetEchoClient(out server, out sspc);
+
+            bool? firedIngEvent = false;
+            bool? firedEdEvent = false;
+            sspc.Getting += (s, a) =>
+            {
+                firedIngEvent = true;
+                a.CancelInvoke = true; // should cancel the call
+            };
+            sspc.Got += (s, a) =>
+            {
+                firedEdEvent = true;
+            };
+
+            try
+            {
+                sspc.Get("TestStringParameter", new object[] { "monkey" });
+
+            }
+            catch (Exception ex)
+            {
+                server.Stop();
+                Expect.Fail(ex.Message);
+            }
+
+            server.Stop();
+
+            Expect.IsTrue(firedIngEvent.Value, "Getting didn't fire");
+            Expect.IsFalse(firedEdEvent.Value, "Got fired but should not have");
+        }
+
 
         class TestExecutionRequest: ExecutionRequest
         {
@@ -108,7 +427,7 @@ namespace Brevitee.ServiceProxy.Tests
             ValidationResult result = er.Validate();
             Expect.IsFalse(result.Success);
             Expect.IsTrue(result.ValidationFailure.ToList().Contains(ValidationFailures.MethodNameNotSpecified));
-            OutFormat(result.Message);
+            OutLineFormat(result.Message);
         }
 
         [UnitTest]
@@ -119,7 +438,7 @@ namespace Brevitee.ServiceProxy.Tests
             ValidationResult result = er.Validate();
             Expect.IsFalse(result.Success);
             Expect.IsTrue(result.ValidationFailure.ToList().Contains(ValidationFailures.ClassNotRegistered));
-            OutFormat(result.Message);
+            OutLineFormat(result.Message);
         }
 
         [UnitTest]
@@ -130,7 +449,7 @@ namespace Brevitee.ServiceProxy.Tests
             ValidationResult result = er.Validate();
             Expect.IsFalse(result.Success);
             Expect.IsTrue(result.ValidationFailure.ToList().Contains(ValidationFailures.MethodNotFound));
-            OutFormat(result.Message);
+            OutLineFormat(result.Message);
         }
 
         [UnitTest]
@@ -142,7 +461,7 @@ namespace Brevitee.ServiceProxy.Tests
             ValidationResult result = er.Validate();
             Expect.IsFalse(result.Success);
             Expect.IsTrue(result.ValidationFailure.ToList().Contains(ValidationFailures.ParameterCountMismatch));
-            OutFormat(result.Message);
+            OutLineFormat(result.Message);
         }
 
         [UnitTest]
@@ -154,7 +473,289 @@ namespace Brevitee.ServiceProxy.Tests
             Expect.IsTrue(result.Success);
             er.Execute();
             Expect.IsTrue(er.Result.Equals("Yay"));
-            OutFormat(er.Result.ToString());
+            OutLineFormat(er.Result.ToString());
+        }
+
+        [UnitTest(AlwaysAfter = "StopServers")]
+        public void ShouldHaveEncryptAndApiKeyRequired()
+        {
+            Type type = typeof(ApiKeyRequiredEcho);
+            Expect.IsTrue(type.HasCustomAttributeOfType<EncryptAttribute>());
+            Expect.IsTrue(type.HasCustomAttributeOfType<ApiKeyRequiredAttribute>());
+        }
+
+        public class InvalidKeyProvider: ApiKeyProvider
+        {
+            public override string GetApplicationClientId(IApplicationNameProvider nameProvider)
+            {
+                return "InvalidClientId_".RandomLetters(8);
+            }
+
+            public override string GetApplicationApiKey(string applicationClientId, int index)
+            {
+                return "InvalidApiKey_".RandomLetters(4);
+            }
+        }
+
+        [UnitTest(AlwaysAfter = "StopServers")]
+        public void SecureServiceProxyInvokeWithInvalidTokenShouldFail()
+        {
+            BreviteeServer server;
+            SecureChannel.Debug = true;
+            SecureServiceProxyClient<ApiKeyRequiredEcho> sspc;
+            StartSecureChannelTestServerGetApiKeyRequiredEchoClient(out server, out sspc);
+            
+            string value = "InputValue_".RandomLetters(8);
+            bool? thrown = false;
+            sspc.InvocationException += (client, ex) =>
+            {
+                thrown = true;
+            };
+
+            ApiKeyResolver resolver = new ApiKeyResolver(new InvalidKeyProvider());
+            sspc.ApiKeyResolver = resolver;
+            string result = sspc.Invoke<string>("Send", new object[] { value });            
+
+            Expect.IsTrue(thrown.Value);
+        }
+
+        [UnitTest]
+        public void StaticApiKeyProviderShouldAlwaysReturnSameKey()
+        {
+            string id = "TheClientIdGoesHere";
+            string key = "The Api Key Goes Here";
+            StaticApiKeyProvider apiKeyProvider = new StaticApiKeyProvider(id, key);
+
+            ApiKeyInfo keyInfo = apiKeyProvider.GetApiKeyInfo(new DefaultConfigurationApplicationNameProvider());
+            
+            Expect.AreEqual(id, keyInfo.ApplicationClientId);
+            Expect.AreEqual(key, keyInfo.ApiKey);
+        }
+
+        //[UnitTest(Before = "CleanUp", AlwaysAfter = "StopServers")]
+        //public void ApiKeyResolverShouldSetAndGetSameToke()
+        //{
+        //    string methodName = MethodBase.GetCurrentMethod().Name;
+        //    BreviteeServer server;
+        //    SecureChannel.Debug = true;
+
+        //    string baseAddress;
+        //    CreateServer(out baseAddress, out server);
+        //    Servers.Add(server); // makes sure it gets stopped after test run
+        //    SecureServiceProxyClient<ApiKeyRequiredEcho> sspc = new SecureServiceProxyClient<ApiKeyRequiredEcho>(baseAddress);
+
+        //    ApiKeyResolver keyResolver = new ApiKeyResolver();
+        //    keyResolver.ApplicationNameProvider = new TestApplicationNameProvider(methodName);
+        //    keyResolver.ApiKeyProvider = new StaticApiKeyProvider(methodName, "TheKey");//new LocalApiKeyProvider();
+
+        //    SecureChannel channel = new SecureChannel();
+        //    channel.ApiKeyResolver = keyResolver;
+
+        //    server.AddCommonService<SecureChannel>(channel);
+        //    server.AddCommonService<ApiKeyRequiredEcho>();
+        //}
+
+        [UnitTest(Before="CleanUp", AlwaysAfter = "StopServers")]
+        public void SecureServiceProxyInvokeWithApiKeyShouldSucceed()
+        {
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            BreviteeServer server;
+            SecureChannel.Debug = true;
+            
+            string baseAddress;
+            CreateServer(out baseAddress, out server);
+            Servers.Add(server); // makes sure it gets stopped after test run
+            SecureServiceProxyClient<ApiKeyRequiredEcho> sspc = new SecureServiceProxyClient<ApiKeyRequiredEcho>(baseAddress);
+
+            IApplicationNameProvider nameProvider = new TestApplicationNameProvider(methodName);
+            IApiKeyProvider keyProvider = new LocalApiKeyProvider();
+            ApiKeyResolver keyResolver = new ApiKeyResolver(keyProvider, nameProvider);
+
+            SecureChannel channel = new SecureChannel();
+            channel.ApiKeyResolver = keyResolver;
+
+            server.AddCommonService<SecureChannel>(channel);
+            server.AddCommonService<ApiKeyRequiredEcho>();
+
+            server.Start();
+
+            string value = "InputValue_".RandomLetters(8);
+            bool? thrown = false;
+            sspc.InvocationException += (client, ex) =>
+            {
+                thrown = true;
+            };
+
+            sspc.ApiKeyResolver = keyResolver;
+            string result = sspc.Invoke<string>("Send", new object[] { value });
+            
+            Expect.IsFalse(thrown.Value, "Exception was thrown");
+            Expect.AreEqual(value, result);
+        }
+
+
+        [UnitTest(Before = "RegisterDb", AlwaysAfter = "ClearApps")]
+        public void ApiKey_ExecutionRequestShouldValidateApiKey()
+        {
+            ServiceProxySystem.Register<ApiKeyRequiredEcho>();
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            IApplicationNameProvider nameProvider = new TestApplicationNameProvider(methodName);
+            IApiKeyProvider keyProvider = new LocalApiKeyProvider();
+
+            ExecutionRequest er = new ExecutionRequest("ApiKeyRequiredEcho", "Send", "json");
+            er.ApiKeyResolver = new ApiKeyResolver(keyProvider, nameProvider);
+
+            er.Request = new TestRequest();
+            string data = ApiParameters.ParametersToJsonParamsObject("some random data");
+            er.InputString = data;
+
+            ValidationResult result = er.Validate();
+            Expect.IsFalse(result.Success);
+            List<ValidationFailures> failures = new List<ValidationFailures>(result.ValidationFailure);
+            Expect.IsTrue(failures.Contains(ValidationFailures.InvalidApiKeyToken));
+        }
+
+        [UnitTest(Before = "Prepare", AlwaysAfter = "ClearApps")]
+        public void ApiKey_ExecutionRequestValidationShouldSucceedIfGoodToken()
+        {
+            ServiceProxySystem.Register<ApiKeyRequiredEcho>();
+
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            IApplicationNameProvider nameProvider = new TestApplicationNameProvider(methodName);
+            IApiKeyProvider keyProvider = new LocalApiKeyProvider();
+
+            string className = "ApiKeyRequiredEcho";
+            string method= "Send";
+            string data = ApiParameters.ParametersToJsonParamsArray("some random data").ToJson();
+            ExecutionRequest er = new ExecutionRequest(className, method, "json");
+            er.JsonParams = data;
+            er.ApiKeyResolver = new ApiKeyResolver(keyProvider, nameProvider);
+            er.Request = new TestRequest();   
+            
+            er.ApiKeyResolver.SetToken(er.Request.Headers, ApiParameters.GetStringToHash(className, method, data));
+
+            ValidationResult result = er.Validate();
+            Expect.IsTrue(result.Success);
+        }
+
+        [UnitTest(Before = "RegisterDb", AlwaysAfter = "ClearApps")]
+        public void ApiKey_ExecutionRequestValidationShouldFailIfBadToken()
+        {
+            ServiceProxySystem.Register<ApiKeyRequiredEcho>();
+
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            IApplicationNameProvider nameProvider = new TestApplicationNameProvider(methodName);
+            IApiKeyProvider keyProvider = new LocalApiKeyProvider();
+
+            ExecutionRequest er = new ExecutionRequest("ApiKeyRequiredEcho", "GetValue", "json");
+            er.ApiKeyResolver = new ApiKeyResolver(keyProvider, nameProvider);
+
+            er.Request = new TestRequest();
+            string data = ApiParameters.ParametersToJsonParamsObject("some random data");
+            er.InputString = data;
+            ApiKeyResolver resolver = new ApiKeyResolver(keyProvider, nameProvider);
+            resolver.SetToken(er.Request.Headers, data);
+
+            er.Request.Headers[ApiKeyResolver.KeyTokenName] = "bad token value";
+
+            ValidationResult result = er.Validate();
+            
+            Expect.IsFalse(result.Success, "Validation should have failed");
+            List<ValidationFailures> failures = new List<ValidationFailures>(result.ValidationFailure);            
+            Expect.IsTrue(failures.Contains(ValidationFailures.InvalidApiKeyToken), "ValidationFailure should have been InvalidApiKeyToken");
+        }
+
+        static bool? _registeredDb;
+        public static void RegisterDb()
+        {
+            SQLiteRegistrar.Register<Application>();
+            Db.TryEnsureSchema<Application>();
+            _registeredDb = true;
+        }
+
+        [UnitTest("Should be able to create Application", Before="RegisterDb")]
+        public void ShouldBeAbleToCreateApplication()
+        {
+            Expect.IsTrue(_registeredDb.Value);
+            ApplicationCreateResult result = CreateTestApp();
+            Expect.AreEqual(ApplicationCreateStatus.Success, result.Status);
+            Expect.IsNotNull(result.Application);
+            Expect.IsNullOrEmpty(result.Message);
+        }
+
+        [UnitTest(Before="RegisterDb")]
+        public void ShouldReturnNameInUseIfAppNameInUse()
+        {
+            ApplicationCreateResult first = CreateTestApp();
+            ApplicationCreateResult second = Application.Create(first.Application.Name);
+            Expect.AreEqual(ApplicationCreateStatus.NameInUse, second.Status);
+        }
+
+        private static ApplicationCreateResult CreateTestApp()
+        {
+            ApiKeyManager.Default.UserResolver = new TestUserResolver();
+            ApplicationCreateResult result = Application.Create("Test_AppName_".RandomLetters(6));
+            return result;
+        }
+
+        [UnitTest("Application should have key", Before = "RegisterDb")]
+        public void ApplicationShouldHaveKey()
+        {
+            Expect.IsTrue(_registeredDb.Value);
+            ApplicationCreateResult result = CreateTestApp();
+            Expect.IsNotNull(result.Application);
+            Expect.IsTrue(result.Application.ApiKeysByApplicationId.Count > 0);
+        }
+
+        [UnitTest]
+        public void TimeGenerateVsNewGuid()
+        {
+            string generatedId;
+            TimeSpan generateTime = Exec.Time(() =>
+            {
+                generatedId = ServiceProxySystem.GenerateId();
+            });
+
+            string guid;
+            TimeSpan guidTime = Exec.Time(() =>
+            {
+                guid = Guid.NewGuid().ToString();
+            });
+
+            string sha256;
+            TimeSpan guidTimeSha256 = Exec.Time(() =>
+            {
+                sha256 = Guid.NewGuid().ToString().Sha256();
+            });
+
+            OutLineFormat("Generate took: {0}", generateTime.ToString());
+            OutLineFormat("-NewGuid took: {0}", guidTime.ToString());
+            OutLineFormat("HashGuid took: {0}", guidTimeSha256.ToString());
+        }
+
+        [ConsoleAction("Output Keys")]
+        public void GetPublicKeyXml()
+        {
+            OutLine("Public Key", ConsoleColor.Cyan);
+            OutLine(RsaKeyPair.Default.PublicKeyXml, ConsoleColor.Green);
+            OutLine("Private Key", ConsoleColor.Cyan);
+            OutLine(RsaKeyPair.Default.PrivateKeyXml, ConsoleColor.Yellow);
+        }
+
+        [ConsoleAction]
+        public void LookAtGeneratedRsaPemKeys()
+        {
+            AsymmetricCipherKeyPair keys = RsaKeyGen.GenerateKeyPair(RsaKeyLength._1024);
+            OutLine(keys.Public.ToPem());
+        }
+
+        [ConsoleAction]
+        public void OutputDaoUsersContextAssemblyQaulifiedName()
+        {
+            string name = typeof(UserAccountsContext).AssemblyQualifiedName;
+            Out(name);
+            name.SafeWriteToFile(".\\UserAccountsContext", true);
+            "notepad .\\UserAccountsContext".Run();
         }
     }
 

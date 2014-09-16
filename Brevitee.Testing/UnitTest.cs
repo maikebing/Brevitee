@@ -24,41 +24,41 @@ namespace Brevitee.Testing
         {
         }
         
-        public UnitTest(string preInvokeMethodName, bool isNotDescription) // this is ugly, should revisit :b
+        public UnitTest(string before, bool isNotDescription) // this is ugly, should revisit :b
         {
-            this.PreInvokeMethodName = preInvokeMethodName;            
+            this.Before = before;            
         }
 
-        public UnitTest(string preInvokeMethodName, string alwaysPostInvokeMethodName, string postInvokeMethodName)
+        public UnitTest(string before, string alwarsAfter, string afterSuccess)
         {
-            this.PreInvokeMethodName = preInvokeMethodName;
-            this.PostInvokeMethodName = postInvokeMethodName;
-            this.AlwaysPostInvokeMethodName = alwaysPostInvokeMethodName;
+            this.Before = before;
+            this.AfterSuccess = afterSuccess;
+            this.AlwaysAfter = alwarsAfter;
         }
 
-        public UnitTest(string description, string preInvokeMethodName = null, string alwaysPostInvokeMethodName = null, string postInvokeMethodName = null)
+        public UnitTest(string description, string before = null, string alwaysAfter = null, string afterSuccess = null)
             : base(description)
         {
-            this.PreInvokeMethodName = preInvokeMethodName;
-            this.PostInvokeMethodName = postInvokeMethodName;
-            this.AlwaysPostInvokeMethodName = alwaysPostInvokeMethodName;
+            this.Before = before;
+            this.AfterSuccess = afterSuccess;
+            this.AlwaysAfter = alwaysAfter;
         }
         
         #region IPreAndPostInvoke Members
 
-        public string PreInvokeMethodName
+        public string Before
         {
             get;
             set;
         }
 
-        public string PostInvokeMethodName
+        public string AfterSuccess
         {
             get;
             set;
         }
 
-        public string AlwaysPostInvokeMethodName
+        public string AlwaysAfter
         {
             get;
             set;

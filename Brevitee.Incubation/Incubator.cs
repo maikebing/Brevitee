@@ -54,6 +54,38 @@ namespace Brevitee.Incubation
         }
 
         /// <summary>
+        /// Copy the values from the specified incubator to the current
+        /// </summary>
+        /// <param name="incubator">The incubator to copy from</param>
+        /// <param name="overwrite">If true, values in the current incubator
+        /// will be over written by values of the same types from the specified
+        /// incubator otherwise the current value will be kept</param>
+        public void CopyFrom(Incubator incubator, bool overwrite = true)
+        {
+            foreach (Type t in incubator.typeInstanceDictionary.Keys)
+            {
+                if (!this.typeInstanceDictionary.ContainsKey(t) || overwrite)
+                {
+                    this.typeInstanceDictionary[t] = incubator.typeInstanceDictionary[t];
+                }
+            }
+            foreach(string s in incubator.classNameTypeDictionary.Keys)
+            {
+                if (!this.classNameTypeDictionary.ContainsKey(s) || overwrite)
+                {
+                    this.classNameTypeDictionary[s] = incubator.classNameTypeDictionary[s];
+                }
+            }
+            foreach (Type t in incubator.implementations.Keys)
+            {
+                if (!this.implementations.ContainsKey(t) || overwrite)
+                {
+                    this.implementations[t] = incubator.implementations[t];
+                }
+            }
+        }
+
+        /// <summary>
         /// Constructs an instance of type T by finding a constructor
         /// that can take objects of types that have already been 
         /// constructed.  If the constructor parameters have not
@@ -400,18 +432,18 @@ namespace Brevitee.Incubation
             this[typeof(T)] = instance;
         }
 
-        public void Set<T>(Func<T> f, bool throwIfSet = false)
+        public void Set<T>(Func<T> instanciator, bool throwIfSet = false)
         {
             Check<T>(throwIfSet);
 
-            this[typeof(T)] = f;
+            this[typeof(T)] = instanciator;
         }
 
-        public void Set<T>(Func<Type, T> f, bool throwIfSet = false)
+        public void Set<T>(Func<Type, T> instanciator, bool throwIfSet = false)
         {
             Check<T>(throwIfSet);
 
-            this[typeof(T)] = f;
+            this[typeof(T)] = instanciator;
         }
 
         public void Set(Type type, object instance, bool throwIfSet = false)
@@ -420,7 +452,7 @@ namespace Brevitee.Incubation
 
             this[type] = instance;
         }
-
+        
         private void Check(Type t, bool throwIfSet)
         {
             if (throwIfSet && Contains(t))
@@ -484,7 +516,13 @@ namespace Brevitee.Incubation
 
         public void Remove(string className)
         {
-            Type type = this[className];
+            Type ignore;
+            Remove(className, out ignore);
+        }
+
+        public void Remove(string className, out Type type)
+        {
+            type = this[className];
             if (type != null)
             {
                 Remove(type);

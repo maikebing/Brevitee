@@ -215,6 +215,12 @@ namespace Brevitee.Html
             return MethodForm(invocationType, wrapperTagName, methodName, defaults, out paramCount);
         }
 
+		public TagBuilder MethodForm(Type type, string methodName)
+		{
+			int ignore = -1;
+			return MethodForm(type, "fieldset", methodName, null, out ignore);
+		}
+
         /// <summary>
         /// Build a form to be used as parameters for the specified method
         /// </summary>
@@ -284,8 +290,21 @@ namespace Brevitee.Html
 
             return form.DataSet("method", methodName)
                 .FirstChildIf(wrapperTagName.Equals("fieldset"), new TagBuilder("legend")
-                .Text(methodName.PascalSplit(" ")));
+                .Text(GetLegend(method)));
         }
+
+		private string GetLegend(MethodInfo method)
+		{
+			Legend legend;
+			if(method.HasCustomAttributeOfType<Legend>(out legend))
+			{
+				return legend.Value;
+			}
+			else
+			{
+				return method.Name.PascalSplit(" ");
+			}
+		}
 
         private string GetLegend(Type type)
         {
@@ -296,13 +315,12 @@ namespace Brevitee.Html
             }
             else
             {
-                return type.Name;
+                return type.Name.PascalSplit(" ");
             }
         }
 
         private void TryBuildPrimitiveInput(ParameterInfo parameter, object defaultValue, ref bool addValue, ref bool handled, out TagBuilder toAdd, out Type paramType)
         {
-
             toAdd = null;
 
             paramType = parameter.ParameterType;

@@ -31,7 +31,7 @@ namespace Brevitee.Data.MsSql
         public SqlClientSchemaExtractor(string connectionName)
         {
             this._connectionName = connectionName;
-            this._daoDatabase = _.Db[connectionName];
+            this._daoDatabase = Db.For(connectionName);//_.Db[connectionName];
             string connectionString = ConfigurationManager.ConnectionStrings[connectionName].ConnectionString;
             Initialize(connectionString);
         }
@@ -72,13 +72,34 @@ namespace Brevitee.Data.MsSql
             return mgr.GetCurrentSchema();
         }
 
+	    public event EventHandler<SchemaExtractorEventArgs> ProcessingTable;
+	    public event EventHandler<SchemaExtractorEventArgs> ProcessingColumn;
+
+	    protected void OnProcessingTable(Table table) 
+		{
+		    if (ProcessingTable != null) 
+			{
+			    ProcessingTable(this, new SchemaExtractorEventArgs {Table = table});
+		    }
+	    }
+
+	    protected void OnProcessingColumn(Column column) 
+		{
+		    if (ProcessingColumn != null) 
+			{
+			    ProcessingColumn(this, new SchemaExtractorEventArgs {Column = column});
+		    }
+	    }
+
         public void AddTables(BAS.SchemaManager mgr)
         {
-            foreach (Microsoft.SqlServer.Management.Smo.Table table in _database.Tables)
+            foreach (Table table in _database.Tables)
             {
+				OnProcessingTable(table);
                 mgr.AddTable(table.Name);
-                foreach (Microsoft.SqlServer.Management.Smo.Column column in table.Columns)
+                foreach (Column column in table.Columns)
                 {
+					OnProcessingColumn(column);
                     BAS.Column pocoColumn = new BAS.Column();
 
                     if (column.IsForeignKey)
@@ -153,7 +174,7 @@ namespace Brevitee.Data.MsSql
 
         internal static DataTable GetForeignKeyData(string connectionName)
         {
-            return GetForeignKeyData(_.Db[connectionName]);
+            return GetForeignKeyData(Db.For(connectionName));//_.Db[connectionName]);
         }
 
         internal static DataTable GetForeignKeyData(Database db)

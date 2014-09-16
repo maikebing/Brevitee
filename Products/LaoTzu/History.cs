@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace LaoTzu
+namespace laotzu
 {
     [Serializable]
     public class History

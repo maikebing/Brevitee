@@ -11,8 +11,9 @@ using Brevitee.CommandLine;
 
 using System.IO;
 using System.CodeDom.Compiler;
+using System.Reflection;
 
-namespace LaoTze
+namespace laotze
 {
     class Program: CommandLineInterface
     {
@@ -28,22 +29,14 @@ namespace LaoTze
 
         static void Main(string[] args)
         {
-            AddValidArgument("f", false); // the output schema filename
-            AddValidArgument("conn", false); // the name of the connection in the config file to use
-            AddValidArgument("gen", false); // the directory to write generated files to 
-            AddValidArgument("ns", false); // namespace
-            AddValidArgument("dll", false); // if specified the code will be compiled to the dll specified
-            AddValidArgument("?", true); // help
-            AddValidArgument("p", false); // partial folder for custom code
-            AddValidArgument("pause", true);
-            AddValidArgument("v", true);
-            AddValidArgument("s", true);
-            AddValidArgument("root", false);
-            AddValidArgument("keep", true);
-
-            ParseArgs(args);
+            SetArguments(args);
 
             if (Arguments.Contains("?"))
+            {
+                Usage(Assembly.GetExecutingAssembly());
+                return;
+            }
+            else if (Arguments.Contains("examples"))
             {
                 Out("For extraction:\r\n");
                 Out("LaoTze /f:<file> /conn:<connectionNameFromConfig> /gen:<dirPath> /ns:<defaultNamespace> /dll:<assemblyName> [/v|/s]");
@@ -88,16 +81,18 @@ namespace LaoTze
                             OutLineFormat("Processing {0}...", ConsoleColor.Yellow, file.FullName);
                             SchemaManager manager = new SchemaManager();
                             manager.RootDir = rootDirectory.FullName;
+                            manager.PreColumnAugmentations.Add(new AddIdKeyColumnAugmentation());
+                            manager.PreColumnAugmentations.Add(new AddColumnAugmentation { ColumnName = "Uuid", DataType = DataTypes.String, AllowNull = false });                            
+
                             DirectoryInfo fileParent = file.Directory;
-                            string genTo = Arguments.Contains("gen") ? Arguments["gen"] : Path.Combine(file.Directory.FullName, "Generated");
-                            if (Directory.Exists(genTo))
-                            {
-                                Directory.Move(genTo, Path.Combine(genTo, "{0}_{1}"._Format(genTo, DateTime.Now.ToJulianDate().ToString())));
-                            }
-                            DirectoryInfo genToDir = new DirectoryInfo(genTo);
+                            DirectoryInfo genToDir = GetTargetDirectory(file);
+
                             bool keep = Arguments.Contains("keep");
+
+                            DirectoryInfo partialsDir = GetPartialsDir(genToDir);
+
                             bool compile = !keep;
-                            Result result = manager.Generate(file, compile, keep, genToDir.FullName);
+                            Result result = manager.Generate(file, compile, keep, genToDir.FullName, partialsDir.FullName);
                             if (!result.Success)
                             {
                                 throw new Exception(result.Message);
@@ -131,6 +126,48 @@ namespace LaoTze
                     Extract();
                 }
             }
+        }
+
+        private static void SetArguments(string[] args)
+        {
+            AddValidArgument("f", false, "The output schema file name");
+            AddValidArgument("conn", false, "The name of the connection in the config file to use");
+            AddValidArgument("gen", false, "The directory to write generated files to");
+            AddValidArgument("ns", false, "The namespace to place generated code into");
+            AddValidArgument("dll", false, "When generating from an existing database, if specified the code will be compiled to the dll specified");
+            AddValidArgument("examples", true, "Original example usage output");
+            AddValidArgument("p", false, "Partial folder for custom code");
+            AddValidArgument("pause", true, "Prompt for a keypress before processing");
+            AddValidArgument("v", true, "Enable verbose mode, outputs generated code to the console");
+            AddValidArgument("s", true, "Enable silent mode, limited output");
+            AddValidArgument("root", false, "Specifies the root directory to search when generating from *.db.js files");
+            AddValidArgument("keep", true, "If not specified when generating from a *.db.js file the code will be compiled to the dll specified by /dll and the source will be deleted");
+            AddValidArgument("?", true, "Usage");
+
+            ParseArgs(args);
+        }
+
+        private static DirectoryInfo GetTargetDirectory(FileInfo file)
+        {
+            string genTo = Arguments.Contains("gen") ? Arguments["gen"] : Path.Combine(file.Directory.FullName, "Generated");
+            if (Directory.Exists(genTo))
+            {
+                Directory.Move(genTo, Path.Combine(genTo, "{0}_{1}"._Format(genTo, DateTime.Now.ToJulianDate().ToString())));
+            }
+            DirectoryInfo genToDir = new DirectoryInfo(genTo);
+            return genToDir;
+        }
+
+        private static DirectoryInfo GetPartialsDir(DirectoryInfo genToDir)
+        {
+            string partialsDir = Arguments["p"] ?? "*";
+            if (partialsDir.Equals("*"))
+            {
+                DirectoryInfo genToParent = genToDir.Parent;
+                DirectoryInfo partials = new DirectoryInfo(Path.Combine(genToParent.FullName, "Partials"));
+                partialsDir = partials.FullName;
+            }
+            return new DirectoryInfo(partialsDir);
         }
 
         private static void Extract()
@@ -174,7 +211,7 @@ namespace LaoTze
                     dirs.Add(dir);
                     if (!string.IsNullOrEmpty(Arguments["p"]))
                     {
-                        dirs.Add(new DirectoryInfo(Arguments["p"]));
+                        dirs.Add(GetPartialsDir(dir));
                     }
 
                     FileInfo file = new FileInfo(Arguments["dll"]);

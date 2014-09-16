@@ -28,22 +28,31 @@ namespace Brevitee.Server.Renderers
             return script.ToString();
         }
 
-        public static string CompileDirectory(string directoryPath, string fileSearchPattern = "*.*")
+        public static string CompileDirectory(string directoryPath, string fileSearchPattern = "*.dust")
         {
             return CompileDirectory(new DirectoryInfo(directoryPath), fileSearchPattern);
         }
 
-        public static string CompileDirectory(DirectoryInfo directory, string fileSearchPattern = "*.*")
+        public static string CompileDirectory(DirectoryInfo directory, string fileSearchPattern = "*.dust", SearchOption searchOption = SearchOption.TopDirectoryOnly, string templateNamePrefix = "")
         {
             StringBuilder compiled = new StringBuilder();
             if (directory.Exists)
             {
-                FileInfo[] files = directory.GetFiles(fileSearchPattern);
+                FileInfo[] files = directory.GetFiles(fileSearchPattern, searchOption);                                
                 foreach (FileInfo file in files)
                 {
+                    string templateName = Path.GetFileNameWithoutExtension(file.Name);
+                    if (searchOption == SearchOption.AllDirectories)
+                    {
+                        if (file.Directory.FullName.Replace("\\", "/") != directory.FullName.Replace("\\", "/"))
+                        {
+                            string prefix = file.Directory.FullName.TruncateFront(directory.FullName.Length + 1).Replace("\\", "_") + "_";
+                            templateName = prefix + templateName;
+                        }
+                    }
+
                     compiled.Append(";\r\n");
-                    string templateSource = File.ReadAllText(file.FullName, Encoding.UTF8);
-                    compiled.Append(Compile(templateSource, Path.GetFileNameWithoutExtension(file.Name)));
+                    compiled.Append(new CompiledDustTemplate(file.FullName, templateNamePrefix + templateName));
                     compiled.Append(";\r\n");
                 }
             }

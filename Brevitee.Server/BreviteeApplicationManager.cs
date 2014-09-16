@@ -9,11 +9,12 @@ using System.Reflection;
 using Brevitee;
 using Brevitee.Server.Renderers;
 using Brevitee.Logging;
+using Brevitee.ServiceProxy;
 
 namespace Brevitee.Server
 {
     [Proxy("bam")]
-    public class BreviteeApplicationManager//: IInitialize<BreviteeApplicationManager>
+    public class BreviteeApplicationManager: IRequiresHttpContext//: IInitialize<BreviteeApplicationManager>
     {
         string _pagesNamedFormatPath = "~/apps/{appName}/pages";
 
@@ -52,11 +53,13 @@ namespace Brevitee.Server
             private set;
         }
 
-        public string GetTemplates(string appName)
+        public string DustTemplates()
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            AppContentResponder app = BreviteeConf.Server.ContentResponder.AppContentResponders[appName];
-            return Regex.Unescape(app.AppDustRenderer.CompiledDustTypeTemplates);
+            string appName = AppConf.AppNameFromUri(HttpContext.Request.Url);
+            Dictionary<string, AppContentResponder> appResponders = BreviteeConf.Server.ContentResponder.AppContentResponders;            
+            AppContentResponder app = appResponders[appName];
+            return Regex.Unescape(app.AppDustRenderer.CompiledDustTemplates);
         }
 
         /// <summary>
@@ -68,12 +71,23 @@ namespace Brevitee.Server
         {
             try
             {
-                return GetSuccessWrapper(GetPageNames(appName), MethodBase.GetCurrentMethod().Name);
+                return GetSuccessWrapper(GetPageNamesFromDomAppId(appName), MethodBase.GetCurrentMethod().Name);
             }
             catch (Exception ex)
             {
                 return GetErrorWrapper(ex, true, MethodBase.GetCurrentMethod().Name);
             }
+        }
+
+        protected internal string[] GetPageNamesFromDomAppId(string appId)
+        {
+            string appName = appId;
+            if (AppConf.AppNamesByDomAppId.ContainsKey(appId))
+            {
+                appName = AppConf.AppNamesByDomAppId[appId];
+            }
+
+            return GetPageNames(appName);
         }
 
         protected internal string[] GetPageNames(string appName)
@@ -137,7 +151,10 @@ namespace Brevitee.Server
             return string.Format("{0}:\r\n\r\n{1}", ex.Message, st);
         }
 
-
-
+        public IHttpContext HttpContext
+        {
+            get;
+            set;
+        }
     }
 }

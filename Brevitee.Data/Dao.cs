@@ -5,7 +5,6 @@ using System.Text;
 using System.Data.Common;
 using System.Data;
 using Brevitee;
-//using Brevitee.FileExt;
 using Brevitee.Incubation;
 using System.Reflection;
 
@@ -22,6 +21,7 @@ namespace Brevitee.Data
         static Dao()
         {
             _proxiedConnectionNames = new Dictionary<string, string>();
+			PostConstructActions = new Dictionary<Type, Action<Dao>>();
         }
 
         static volatile Incubator _proxyTypeProvider;
@@ -60,6 +60,13 @@ namespace Brevitee.Data
             this.IsNew = true;
             this.DataRow = this.ToDataRow();
             this.AutoDeleteChildren = true;
+            this.EnsureUuid();
+
+			Type currentType = this.GetType();
+			if (PostConstructActions.ContainsKey(currentType))
+			{
+				PostConstructActions[currentType](this);
+			}
         }
 
         public Dao(DataRow row)
@@ -75,11 +82,25 @@ namespace Brevitee.Data
             this.ServiceProvider = serviceProvider;
         }
 
+		public static Dictionary<Type, Action<Dao>> PostConstructActions { get; set; }
+
+        /// <summary>
+        /// Instantiate all dao types found in the assembly that contains the
+        /// specified type and place them into the Incubator.Default
+        /// </summary>
+        /// <param name="daoSibling"></param>
         public static void RegisterDaoTypes(Type daoSibling)
         {
             RegisterDaoTypes(daoSibling.Assembly, Incubator.Default);
         }
 
+        /// <summary>
+        /// Instantiate all Dao types in the assembly that contains the specified
+        /// type and place them into the specified
+        /// serviceProvider
+        /// </summary>
+        /// <param name="daoAssembly"></param>
+        /// <param name="serviceProvider"></param>
         public static void RegisterDaoTypes(Type daoSibling, Incubator serviceProvider)
         {
             RegisterDaoTypes(daoSibling.Assembly, serviceProvider);
@@ -134,6 +155,20 @@ namespace Brevitee.Data
 
             uuidProp = _uuidProp;
             return _hasUuid.Value;
+        }
+
+        Database _database;
+        object _databaseSync = new object();
+        protected internal Database Database
+        {
+            get
+            {
+                return _databaseSync.DoubleCheckLock(ref _database, () => Db.For(this.GetType()));
+            }
+            set
+            {
+                _database = value;
+            }
         }
 
         /// <summary>
@@ -327,7 +362,7 @@ namespace Brevitee.Data
         
         public virtual void Commit()
         {
-            Database db = _.Db.For(this.GetType());
+            Database db = Database;//Db.For(this.GetType());
 
             Commit(db);
         }
@@ -357,6 +392,7 @@ namespace Brevitee.Data
                 querySet.Execute(db);             
                 this.IsNew = false;
                 this.ResetChildren();
+                this.Database = db;
                 OnAfterCommit(db);
             }
         }
@@ -434,7 +470,7 @@ namespace Brevitee.Data
         
         protected internal SqlStringBuilder GetSqlStringBuilder(out Database db)
         {
-            db = _.Db.For(this.GetType());
+            db = Database;// Db.For(this.GetType());
             return GetSqlStringBuilder(db);
         }
 
@@ -452,7 +488,7 @@ namespace Brevitee.Data
 
         protected internal QuerySet GetQuerySet(out Database db)
         {
-            db = _.Db.For(this.GetType());
+            db = Database;// Db.For(this.GetType());
             return GetQuerySet(db);
         }
 
@@ -464,7 +500,7 @@ namespace Brevitee.Data
 
         public virtual void WriteDelete(SqlStringBuilder sql)
         {
-            Database db = _.Db.For(this.GetType());
+            Database db = Database;//Db.For(this.GetType());
             OnBeforeWriteDelete(db);
             sql.Delete(TableName()).Where(new AssignValue(KeyColumnName, IdValue));
             OnAfterWriteDelete(db);
@@ -482,7 +518,7 @@ namespace Brevitee.Data
         /// <param name="sqlStringBuilder"></param>
         public virtual void WriteCommit(SqlStringBuilder sqlStringBuilder)
         {
-            Database db = _.Db.For(this.GetType());
+            Database db = Database;// Db.For(this.GetType());
             WriteCommit(sqlStringBuilder, db);
         }
 
@@ -493,13 +529,6 @@ namespace Brevitee.Data
             {
                 if (this.IsNew)
                 {
-                    PropertyInfo uuid;
-                    if (HasUuidProperty(out uuid))
-                    {
-                        string uui = Guid.NewGuid().ToString();
-                        uuid.SetValue(this, uuid);
-                    }
-
                     sqlStringBuilder
                         .Insert(this)
                         .Go();
@@ -516,16 +545,30 @@ namespace Brevitee.Data
             OnAfterWriteCommit(db);
         }
 
+        private void EnsureUuid()
+        {
+            PropertyInfo uuid;
+            if (HasUuidProperty(out uuid))
+            {
+                string currentUuid = (string)uuid.GetValue(this);
+                if (string.IsNullOrEmpty(currentUuid))
+                {
+                    string uuidVal = Guid.NewGuid().ToString();
+                    uuid.SetValue(this, uuidVal);
+                }
+            }
+        }
+
         public virtual void Undo(Database db = null)
         {
             Type thisType = this.GetType();
             if (db == null)
             {
-                db = _.Db.For(thisType);
+                db = Database;// Db.For(thisType);
             }
             
             SqlStringBuilder sql = GetSqlStringBuilder(db);
-            ColumnAttribute[] columns = _.GetColumns(thisType);
+            ColumnAttribute[] columns = Db.GetColumns(thisType);//_.GetColumns(thisType);
             foreach (ColumnAttribute col in columns)
             {
                 this.SetValue(col.Name, this.GetOriginalValue(col.Name));
@@ -543,11 +586,11 @@ namespace Brevitee.Data
             Type thisType = this.GetType();
             if (db == null)
             {
-                db = _.Db.For(thisType);
+                db = Database;// Db.For(thisType);
             }
 
             this.IsNew = true;
-            ColumnAttribute[] columns = _.GetColumns(thisType);
+            ColumnAttribute[] columns = Db.GetColumns(thisType);
             foreach (ColumnAttribute col in columns)
             {
                 this.SetValue(col.Name, this.GetCurrentValue(col.Name));
@@ -647,6 +690,14 @@ namespace Brevitee.Data
             if (tableAttr != null)
             {
                 value = tableAttr.ConnectionName;
+            }
+            else
+            {
+                PropertyInfo prop = type.GetProperty("ConnectionName");
+                if (prop != null && prop.GetGetMethod().IsStatic && prop.PropertyType == typeof(string))
+                {
+                    value = (string)prop.GetValue(null, null);
+                }
             }
 
             return value;
@@ -800,6 +851,19 @@ namespace Brevitee.Data
 
         [Exclude]
         public string KeyColumnName { get; protected set; }
+
+	    protected void SetKeyColumnName() 
+		{
+		    string name = "Id";
+		    KeyColumnAttribute attribute;
+		    this.GetType().GetFirstProperyWithAttributeOfType<KeyColumnAttribute>(out attribute);
+		    if (attribute != null)
+			{
+			    name = attribute.Name;
+		    }
+
+		    KeyColumnName = name;
+	    }
 
         bool _isNew;
         /// <summary>

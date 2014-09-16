@@ -31,7 +31,7 @@ namespace SampleData
 		}
 
 	// property:Id, columnName:Id	
-	[Brevitee.Data.KeyColumn(Name="Id", ExtractedType="BigInt", MaxLength="8")]
+	[Brevitee.Data.KeyColumn(Name="Id", DbDataType="BigInt", MaxLength="8")]
 	public long? Id
 	{
 		get
@@ -49,7 +49,7 @@ namespace SampleData
 	[Brevitee.Data.ForeignKey(
         Table="UserItemReview",
 		Name="ReviewerId", 
-		ExtractedType="BigInt", 
+		DbDataType="BigInt", 
 		MaxLength="8",
 		AllowNull=false, 
 		ReferencedKey="Id",
@@ -84,7 +84,7 @@ namespace SampleData
 	[Brevitee.Data.ForeignKey(
         Table="UserItemReview",
 		Name="RevieweeId", 
-		ExtractedType="BigInt", 
+		DbDataType="BigInt", 
 		MaxLength="8",
 		AllowNull=false, 
 		ReferencedKey="Id",
@@ -119,7 +119,7 @@ namespace SampleData
 	[Brevitee.Data.ForeignKey(
         Table="UserItemReview",
 		Name="ItemId", 
-		ExtractedType="BigInt", 
+		DbDataType="BigInt", 
 		MaxLength="8",
 		AllowNull=false, 
 		ReferencedKey="Id",
@@ -154,7 +154,7 @@ namespace SampleData
 	[Brevitee.Data.ForeignKey(
         Table="UserItemReview",
 		Name="ReviewId", 
-		ExtractedType="BigInt", 
+		DbDataType="BigInt", 
 		MaxLength="8",
 		AllowNull=false, 
 		ReferencedKey="Id",
@@ -262,7 +262,7 @@ namespace SampleData
             UserItemReviewColumns c = new UserItemReviewColumns();
             IQueryFilter filter = where(c);         
             
-			Database db = database == null ? _.Db.For<UserItemReview>(): database;
+			Database db = database == null ? Db.For<UserItemReview>(): database;
 			QuerySet query = GetQuerySet(db); 
             query.Top<UserItemReview>(count);
             query.Where(filter);
@@ -281,7 +281,7 @@ namespace SampleData
 			UserItemReviewColumns c = new UserItemReviewColumns();
 			IQueryFilter filter = where(c) ;
 
-			Database db = database == null ? _.Db.For<UserItemReview>(): database;
+			Database db = database == null ? Db.For<UserItemReview>(): database;
 			QuerySet query = GetQuerySet(db);	 
 			query.Count<UserItemReview>();
 			query.Where(filter);	  

@@ -36,6 +36,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>bin\Release\Brevitee.Data.SQLite.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -63,6 +64,8 @@
     <Compile Include="SQLiteParameterBuilder.cs" />
     <Compile Include="SQLiteQuerySet.cs" />
     <Compile Include="SQLiteRegistrar.cs" />
+    <Compile Include="SQLiteRegistrarCaller.cs" />
+    <Compile Include="SQLiteSchemaInitializer.cs" />
     <Compile Include="SQLiteSqlStringBuilder.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -40,7 +40,7 @@ namespace Brevitee.Logging
 
 	// property:Id, columnName:Id	
 	[Exclude]
-	[Brevitee.Data.KeyColumn(Name="Id", ExtractedType="BigInt", MaxLength="8")]
+	[Brevitee.Data.KeyColumn(Name="Id", DbDataType="BigInt", MaxLength="8")]
 	public long? Id
 	{
 		get
@@ -54,7 +54,7 @@ namespace Brevitee.Logging
 	}
 
 	// property:Occurred, columnName:Occurred	
-	[Brevitee.Data.Column(Name="Occurred", ExtractedType="DateTime", MaxLength="8", AllowNull=false)]
+	[Brevitee.Data.Column(Name="Occurred", DbDataType="DateTime", MaxLength="8", AllowNull=false)]
 	public DateTime? Occurred
 	{
 		get
@@ -68,7 +68,7 @@ namespace Brevitee.Logging
 	}
 
 	// property:Severity, columnName:Severity	
-	[Brevitee.Data.Column(Name="Severity", ExtractedType="Int", MaxLength="4", AllowNull=true)]
+	[Brevitee.Data.Column(Name="Severity", DbDataType="Int", MaxLength="4", AllowNull=true)]
 	public int? Severity
 	{
 		get
@@ -82,7 +82,7 @@ namespace Brevitee.Logging
 	}
 
 	// property:EventId, columnName:EventId	
-	[Brevitee.Data.Column(Name="EventId", ExtractedType="Int", MaxLength="4", AllowNull=true)]
+	[Brevitee.Data.Column(Name="EventId", DbDataType="Int", MaxLength="4", AllowNull=true)]
 	public int? EventId
 	{
 		get
@@ -96,7 +96,7 @@ namespace Brevitee.Logging
 	}
 
 	// property:ComputerId, columnName:ComputerId	
-	[Brevitee.Data.Column(Name="ComputerId", ExtractedType="BigInt", MaxLength="8", AllowNull=true)]
+	[Brevitee.Data.Column(Name="ComputerId", DbDataType="BigInt", MaxLength="8", AllowNull=true)]
 	public long? ComputerId
 	{
 		get
@@ -110,7 +110,7 @@ namespace Brevitee.Logging
 	}
 
 	// property:CategoryId, columnName:CategoryId	
-	[Brevitee.Data.Column(Name="CategoryId", ExtractedType="BigInt", MaxLength="8", AllowNull=true)]
+	[Brevitee.Data.Column(Name="CategoryId", DbDataType="BigInt", MaxLength="8", AllowNull=true)]
 	public long? CategoryId
 	{
 		get
@@ -124,7 +124,7 @@ namespace Brevitee.Logging
 	}
 
 	// property:SourceId, columnName:SourceId	
-	[Brevitee.Data.Column(Name="SourceId", ExtractedType="BigInt", MaxLength="8", AllowNull=true)]
+	[Brevitee.Data.Column(Name="SourceId", DbDataType="BigInt", MaxLength="8", AllowNull=true)]
 	public long? SourceId
 	{
 		get
@@ -138,7 +138,7 @@ namespace Brevitee.Logging
 	}
 
 	// property:UserId, columnName:UserId	
-	[Brevitee.Data.Column(Name="UserId", ExtractedType="BigInt", MaxLength="8", AllowNull=true)]
+	[Brevitee.Data.Column(Name="UserId", DbDataType="BigInt", MaxLength="8", AllowNull=true)]
 	public long? UserId
 	{
 		get
@@ -157,7 +157,7 @@ namespace Brevitee.Logging
 	[Brevitee.Data.ForeignKey(
         Table="Event",
 		Name="SignatureId", 
-		ExtractedType="BigInt", 
+		DbDataType="BigInt", 
 		MaxLength="",
 		AllowNull=true, 
 		ReferencedKey="Id",
@@ -249,7 +249,7 @@ namespace Brevitee.Logging
 		{
 			SqlStringBuilder sql = new SqlStringBuilder();
 			sql.Select<Event>();
-			Database db = database == null ? _.Db.For<Event>(): database;
+			Database db = database == null ? Db.For<Event>(): database;
 			return new EventCollection(sql.GetDataTable(db));
 		}
 
@@ -413,7 +413,7 @@ namespace Brevitee.Logging
 			EventColumns c = new EventColumns();
 			IQueryFilter filter = where(c);         
 			
-			Database db = database == null ? _.Db.For<Event>(): database;
+			Database db = database == null ? Db.For<Event>(): database;
 			QuerySet query = GetQuerySet(db); 
 			query.Top<Event>(count);
 			query.Where(filter);
@@ -440,7 +440,7 @@ namespace Brevitee.Logging
 			EventColumns c = new EventColumns();
 			IQueryFilter filter = where(c) ;
 
-			Database db = database == null ? _.Db.For<Event>(): database;
+			Database db = database == null ? Db.For<Event>(): database;
 			QuerySet query = GetQuerySet(db);	 
 			query.Count<Event>();
 			query.Where(filter);	  

@@ -35,7 +35,7 @@ namespace SampleData
 		}
 
 	// property:Id, columnName:Id	
-	[Brevitee.Data.KeyColumn(Name="Id", ExtractedType="BigInt", MaxLength="8")]
+	[Brevitee.Data.KeyColumn(Name="Id", DbDataType="BigInt", MaxLength="8")]
 	public long? Id
 	{
 		get
@@ -49,7 +49,7 @@ namespace SampleData
 	}
 
 	// property:Title, columnName:Title	
-	[Brevitee.Data.Column(Name="Title", ExtractedType="VarChar", MaxLength="50", AllowNull=false)]
+	[Brevitee.Data.Column(Name="Title", DbDataType="VarChar", MaxLength="50", AllowNull=false)]
 	public string Title
 	{
 		get
@@ -63,7 +63,7 @@ namespace SampleData
 	}
 
 	// property:Text, columnName:Text	
-	[Brevitee.Data.Column(Name="Text", ExtractedType="VarChar", MaxLength="MAX", AllowNull=false)]
+	[Brevitee.Data.Column(Name="Text", DbDataType="VarChar", MaxLength="MAX", AllowNull=false)]
 	public string Text
 	{
 		get
@@ -77,7 +77,7 @@ namespace SampleData
 	}
 
 	// property:Rating, columnName:Rating	
-	[Brevitee.Data.Column(Name="Rating", ExtractedType="Int", MaxLength="4", AllowNull=false)]
+	[Brevitee.Data.Column(Name="Rating", DbDataType="Int", MaxLength="4", AllowNull=false)]
 	public int? Rating
 	{
 		get
@@ -91,7 +91,7 @@ namespace SampleData
 	}
 
 	// property:Created, columnName:Created	
-	[Brevitee.Data.Column(Name="Created", ExtractedType="DateTime", MaxLength="8", AllowNull=false)]
+	[Brevitee.Data.Column(Name="Created", DbDataType="DateTime", MaxLength="8", AllowNull=false)]
 	public DateTime Created
 	{
 		get
@@ -105,7 +105,7 @@ namespace SampleData
 	}
 
 	// property:Modified, columnName:Modified	
-	[Brevitee.Data.Column(Name="Modified", ExtractedType="DateTime", MaxLength="8", AllowNull=false)]
+	[Brevitee.Data.Column(Name="Modified", DbDataType="DateTime", MaxLength="8", AllowNull=false)]
 	public DateTime Modified
 	{
 		get
@@ -268,7 +268,7 @@ namespace SampleData
             ReviewColumns c = new ReviewColumns();
             IQueryFilter filter = where(c);         
             
-			Database db = database == null ? _.Db.For<Review>(): database;
+			Database db = database == null ? Db.For<Review>(): database;
 			QuerySet query = GetQuerySet(db); 
             query.Top<Review>(count);
             query.Where(filter);
@@ -287,7 +287,7 @@ namespace SampleData
 			ReviewColumns c = new ReviewColumns();
 			IQueryFilter filter = where(c) ;
 
-			Database db = database == null ? _.Db.For<Review>(): database;
+			Database db = database == null ? Db.For<Review>(): database;
 			QuerySet query = GetQuerySet(db);	 
 			query.Count<Review>();
 			query.Where(filter);	  

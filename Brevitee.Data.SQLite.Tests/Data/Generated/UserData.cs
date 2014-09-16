@@ -31,7 +31,7 @@ namespace SampleData
 		}
 
 	// property:Id, columnName:Id	
-	[Brevitee.Data.KeyColumn(Name="Id", ExtractedType="BigInt", MaxLength="8")]
+	[Brevitee.Data.KeyColumn(Name="Id", DbDataType="BigInt", MaxLength="8")]
 	public long? Id
 	{
 		get
@@ -45,7 +45,7 @@ namespace SampleData
 	}
 
 	// property:Name, columnName:Name	
-	[Brevitee.Data.Column(Name="Name", ExtractedType="VarChar", MaxLength="4000", AllowNull=false)]
+	[Brevitee.Data.Column(Name="Name", DbDataType="VarChar", MaxLength="4000", AllowNull=false)]
 	public string Name
 	{
 		get
@@ -59,7 +59,7 @@ namespace SampleData
 	}
 
 	// property:Value, columnName:Value	
-	[Brevitee.Data.Column(Name="Value", ExtractedType="VarBinary", MaxLength="4000", AllowNull=false)]
+	[Brevitee.Data.Column(Name="Value", DbDataType="VarBinary", MaxLength="4000", AllowNull=false)]
 	public byte[] Value
 	{
 		get
@@ -73,7 +73,7 @@ namespace SampleData
 	}
 
 	// property:DataType, columnName:DataType	
-	[Brevitee.Data.Column(Name="DataType", ExtractedType="VarChar", MaxLength="4000", AllowNull=false)]
+	[Brevitee.Data.Column(Name="DataType", DbDataType="VarChar", MaxLength="4000", AllowNull=false)]
 	public string DataType
 	{
 		get
@@ -91,7 +91,7 @@ namespace SampleData
 	[Brevitee.Data.ForeignKey(
         Table="UserData",
 		Name="UserId", 
-		ExtractedType="BigInt", 
+		DbDataType="BigInt", 
 		MaxLength="8",
 		AllowNull=false, 
 		ReferencedKey="Id",
@@ -199,7 +199,7 @@ namespace SampleData
             UserDataColumns c = new UserDataColumns();
             IQueryFilter filter = where(c);         
             
-			Database db = database == null ? _.Db.For<UserData>(): database;
+			Database db = database == null ? Db.For<UserData>(): database;
 			QuerySet query = GetQuerySet(db); 
             query.Top<UserData>(count);
             query.Where(filter);
@@ -218,7 +218,7 @@ namespace SampleData
 			UserDataColumns c = new UserDataColumns();
 			IQueryFilter filter = where(c) ;
 
-			Database db = database == null ? _.Db.For<UserData>(): database;
+			Database db = database == null ? Db.For<UserData>(): database;
 			QuerySet query = GetQuerySet(db);	 
 			query.Count<UserData>();
 			query.Where(filter);	  

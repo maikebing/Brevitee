@@ -31,7 +31,7 @@ namespace SampleData
 		}
 
 	// property:Id, columnName:Id	
-	[Brevitee.Data.KeyColumn(Name="Id", ExtractedType="BigInt", MaxLength="8")]
+	[Brevitee.Data.KeyColumn(Name="Id", DbDataType="BigInt", MaxLength="8")]
 	public long? Id
 	{
 		get
@@ -45,7 +45,7 @@ namespace SampleData
 	}
 
 	// property:UserOneOption, columnName:UserOneOption	
-	[Brevitee.Data.Column(Name="UserOneOption", ExtractedType="VarChar", MaxLength="50", AllowNull=true)]
+	[Brevitee.Data.Column(Name="UserOneOption", DbDataType="VarChar", MaxLength="50", AllowNull=true)]
 	public string UserOneOption
 	{
 		get
@@ -59,7 +59,7 @@ namespace SampleData
 	}
 
 	// property:UserTwoOption, columnName:UserTwoOption	
-	[Brevitee.Data.Column(Name="UserTwoOption", ExtractedType="VarChar", MaxLength="50", AllowNull=true)]
+	[Brevitee.Data.Column(Name="UserTwoOption", DbDataType="VarChar", MaxLength="50", AllowNull=true)]
 	public string UserTwoOption
 	{
 		get
@@ -73,7 +73,7 @@ namespace SampleData
 	}
 
 	// property:LastModifiedBy, columnName:LastModifiedBy	
-	[Brevitee.Data.Column(Name="LastModifiedBy", ExtractedType="BigInt", MaxLength="8", AllowNull=false)]
+	[Brevitee.Data.Column(Name="LastModifiedBy", DbDataType="BigInt", MaxLength="8", AllowNull=false)]
 	public long? LastModifiedBy
 	{
 		get
@@ -87,7 +87,7 @@ namespace SampleData
 	}
 
 	// property:LastModifiedDate, columnName:LastModifiedDate	
-	[Brevitee.Data.Column(Name="LastModifiedDate", ExtractedType="DateTime", MaxLength="8", AllowNull=false)]
+	[Brevitee.Data.Column(Name="LastModifiedDate", DbDataType="DateTime", MaxLength="8", AllowNull=false)]
 	public DateTime LastModifiedDate
 	{
 		get
@@ -105,7 +105,7 @@ namespace SampleData
 	[Brevitee.Data.ForeignKey(
         Table="RockPaperScissors",
 		Name="UserIdOne", 
-		ExtractedType="BigInt", 
+		DbDataType="BigInt", 
 		MaxLength="8",
 		AllowNull=false, 
 		ReferencedKey="Id",
@@ -140,7 +140,7 @@ namespace SampleData
 	[Brevitee.Data.ForeignKey(
         Table="RockPaperScissors",
 		Name="UserIdTwo", 
-		ExtractedType="BigInt", 
+		DbDataType="BigInt", 
 		MaxLength="8",
 		AllowNull=false, 
 		ReferencedKey="Id",
@@ -248,7 +248,7 @@ namespace SampleData
             RockPaperScissorsColumns c = new RockPaperScissorsColumns();
             IQueryFilter filter = where(c);         
             
-			Database db = database == null ? _.Db.For<RockPaperScissors>(): database;
+			Database db = database == null ? Db.For<RockPaperScissors>(): database;
 			QuerySet query = GetQuerySet(db); 
             query.Top<RockPaperScissors>(count);
             query.Where(filter);
@@ -267,7 +267,7 @@ namespace SampleData
 			RockPaperScissorsColumns c = new RockPaperScissorsColumns();
 			IQueryFilter filter = where(c) ;
 
-			Database db = database == null ? _.Db.For<RockPaperScissors>(): database;
+			Database db = database == null ? Db.For<RockPaperScissors>(): database;
 			QuerySet query = GetQuerySet(db);	 
 			query.Count<RockPaperScissors>();
 			query.Where(filter);	  

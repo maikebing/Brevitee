@@ -101,6 +101,13 @@ namespace Brevitee.Data.Schema
             set;
         }
 
+		/// <summary>
+		/// Execute the specified razor resource template
+		/// </summary>
+		/// <param name="templateName">The name of the embedded resource template</param>
+		/// <param name="options">Additional information to pass to the template engine including 
+		/// the Model</param>
+		/// <returns></returns>
         public string ExecuteResource(string templateName, object options = null)
         {
             Type currentType = this.GetType();
@@ -123,62 +130,111 @@ namespace Brevitee.Data.Schema
 
             using (StreamReader resourceTemplate = new StreamReader(assembly.GetManifestResourceStream(resourcePath)))
             {
-                return Execute(resourceTemplate, options, ResultInspector);
+				string hashKey = resourceTemplate.ReadToEnd().Md5();
+				resourceTemplate.BaseStream.Position = 0;
+                return Execute(resourceTemplate, hashKey, options, ResultInspector);
             }
         }
 
+		public string Execute(TextReader input, object options = null, Action<string> inspector = null)
+		{
+			return Execute(input, null, options, inspector);
+		}
+
         /// <summary>
-        /// Execute the 
+        /// Executes the specified input and returns the resulting output
         /// </summary>
         /// <param name="input"></param>
-        /// <param name="options"></param>
+        /// <param name="options">Arguments to pass to the template engine including the Model</param>
+        /// <param name="inspector"></param>
         /// <returns></returns>
-        public string Execute(TextReader input, object options = null, Action<string> inspector = null)
-        {
-            CSharpCodeProvider codeProvider = new CSharpCodeProvider();
-            GeneratorResults results = _engine.GenerateCode(input);
-            CompilerResults compilerResults = codeProvider.CompileAssemblyFromDom(
-                new CompilerParameters(new string[] {
+		public string Execute(TextReader input, string hashKey = null, object options = null, Action<string> inspector = null)
+		{
+			Assembly templateAssembly;
+			if (!string.IsNullOrEmpty(hashKey) && CompiledTemplates.ContainsKey(hashKey))
+			{
+				templateAssembly = CompiledTemplates[hashKey];
+			}
+			else
+			{
+				GeneratorResults results = null;
+				CSharpCodeProvider codeProvider = null;
+				templateAssembly = GetTemplateAssembly(input, hashKey, out codeProvider, out results);
+				OptionallyOutputToInspector(inspector, codeProvider, results);
+			}
+			
+			return GetRazorTemplateResult(options, templateAssembly);
+		}
+
+		private Assembly GetTemplateAssembly(TextReader input, string hashKey, out CSharpCodeProvider codeProvider, out GeneratorResults results)
+		{
+			Assembly templateAssembly;
+			codeProvider = new CSharpCodeProvider();
+			results = _engine.GenerateCode(input);
+			CompilerResults compilerResults = codeProvider.CompileAssemblyFromDom(
+				new CompilerParameters(new string[] {
                     typeof(TBaseTemplate).Assembly.CodeBase.Replace("file:///", "").Replace("/", "\\"),
                     typeof(ServiceProxyController).Assembly.CodeBase.Replace("file:///", "").Replace("/", "\\"),
                     typeof(Providers).Assembly.CodeBase.Replace("file:///", "").Replace("/", "\\")
                 }),
-                results.GeneratedCode);
+				results.GeneratedCode);
 
-            using (StringWriter sw = new StringWriter())
-            {
-                codeProvider.GenerateCodeFromCompileUnit(results.GeneratedCode, sw, new CodeGeneratorOptions());
-                if (inspector != null)
-                {
-                    inspector(sw.GetStringBuilder().ToString());
-                }
-            }
+			if (compilerResults.Errors.HasErrors)
+			{
+				throw new Exception(compilerResults.Errors[0].ErrorText);
+			}
+			templateAssembly = compilerResults.CompiledAssembly;
+			if (!string.IsNullOrEmpty(hashKey))
+			{
+				CompiledTemplates[hashKey] = templateAssembly;
+			}
+			return templateAssembly;
+		}
 
-            if (compilerResults.Errors.HasErrors)
-            {
-                throw new Exception(compilerResults.Errors[0].ErrorText);
-            }
-            else
-            {
-                Assembly asm = compilerResults.CompiledAssembly;//Assembly.LoadFrom(outputAssemblyName);
+		private static void OptionallyOutputToInspector(Action<string> inspector, CSharpCodeProvider codeProvider, GeneratorResults results)
+		{
+			if (inspector != null)
+			{
+				using (StringWriter sw = new StringWriter())
+				{
+					codeProvider.GenerateCodeFromCompileUnit(results.GeneratedCode, sw, new CodeGeneratorOptions());
+					inspector(sw.GetStringBuilder().ToString());
+				}
+			}
+		}
 
-                Type templateType = asm.GetType(string.Format("{0}.{1}", _engine.Host.DefaultNamespace, _engine.Host.DefaultClassName));
-                ConstructorInfo ctor = templateType.GetConstructor(Type.EmptyTypes);
-                object instance = ctor.Invoke(null);
+		private string GetRazorTemplateResult(object options, Assembly templateAssembly)
+		{
+			Type templateType = templateAssembly.GetType(string.Format("{0}.{1}", _engine.Host.DefaultNamespace, _engine.Host.DefaultClassName));
+			ConstructorInfo ctor = templateType.GetConstructor(Type.EmptyTypes);
+			object templateInstance = ctor.Invoke(null);
 
-                if (options != null)
-                {
-                    Type setType = options.GetType();
-                    foreach (PropertyInfo prop in setType.GetProperties())
-                    {
-                        templateType.GetProperty(prop.Name).SetValue(instance, prop.GetValue(options, null), null);
-                    }
-                }
+			if (options != null)
+			{
+				Type setType = options.GetType();
+				foreach (PropertyInfo prop in setType.GetProperties())
+				{
+					templateType.GetProperty(prop.Name).SetValue(templateInstance, prop.GetValue(options, null), null);
+				}
+			}
 
-                templateType.GetMethod("Execute").Invoke(instance, null);
+			templateType.GetMethod("Execute").Invoke(templateInstance, null);
 
-                return ((StringBuilder)templateType.GetProperty("Generated").GetValue(instance, null)).ToString();
-            }
-        }
+			return ((StringBuilder)templateType.GetProperty("Generated").GetValue(templateInstance, null)).ToString();
+		}
+
+		static Dictionary<string, Assembly> _compiledTemplates;
+		private static Dictionary<string, Assembly> CompiledTemplates
+		{
+			get
+			{
+				if (_compiledTemplates == null)
+				{
+					_compiledTemplates = new Dictionary<string, Assembly>();
+				}
+
+				return _compiledTemplates;
+			}
+		}
     }
 }

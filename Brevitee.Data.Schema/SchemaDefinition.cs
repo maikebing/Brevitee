@@ -16,8 +16,10 @@ namespace Brevitee.Data.Schema
         Dictionary<string, Table> _tables = new Dictionary<string, Table>();
         Dictionary<string, ColumnAttribute> _columns = new Dictionary<string, ColumnAttribute>();
 
-        public SchemaDefinition() 
-        { 
+        public SchemaDefinition()
+        {
+            this.Name = "Default";
+            this.DbType = "UnSpecified";
         }
 
         /// <summary>
@@ -348,10 +350,7 @@ namespace Brevitee.Data.Schema
 
         private static void Save(SchemaDefinition schema)
         {
-            JavaScriptSerializer serializer = new JavaScriptSerializer();
-            StringBuilder builder = new StringBuilder();
-            serializer.Serialize(schema, builder);
-            builder.ToString().SafeWriteToFile(schema.File, true);
+            schema.ToJsonFile(schema.File);
         }
     }
 }

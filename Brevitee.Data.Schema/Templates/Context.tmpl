@@ -1,21 +1,29 @@
-﻿// model is SchemaDefinition
+// model is SchemaDefinition
 using System;
 using System.Data;
 using System.Data.Common;
-using Bryan.Apellanes;
-using Bryan.Apellanes.Data;
-using Bryan.Apellanes.Data.Qi;
+using Brevitee;
+using Brevitee.Data;
+using Brevitee.Data.Qi;
 
 namespace @Namespace
 {
 	// schema = @Model.Name 
     public static class @(Model.Name)Context
     {
+		public static string ConnectionName
+		{
+			get
+			{
+				return "@(Model.Name)";
+			}
+		}
+
 		public static Database Db
 		{
 			get
 			{
-				return _.Db.For("@(Model.Name)");
+				return Brevitee.Data.Db.For(ConnectionName);
 			}
 		}
 

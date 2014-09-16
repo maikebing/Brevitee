@@ -1,0 +1,26 @@
+{
+  "WorkerTypeName": "Brevitee.Automation.ContinuousIntegration.AllProjectsBuildWorker, Brevitee.Automation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+  "Name": "Test_ProjectBuildWorker",
+  "Properties": [
+    {
+      "Key": "SourceDirectory",
+      "Value": null
+    },
+    {
+      "Key": "OutputDirectory",
+      "Value": null
+    },
+    {
+      "Key": "BuildTarget",
+      "Value": "Build"
+    },
+    {
+      "Key": "LoggerTypeName",
+      "Value": "Brevitee.Automation.ContinuousIntegration.Loggers.CsvBuildLogger, Brevitee.Automation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+    },
+    {
+      "Key": "StepNumber",
+      "Value": "0"
+    }
+  ]
+}

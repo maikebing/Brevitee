@@ -37,7 +37,7 @@ namespace Brevitee.Logging
 
 	// property:Id, columnName:Id	
 	[Exclude]
-	[Brevitee.Data.KeyColumn(Name="Id", ExtractedType="BigInt", MaxLength="8")]
+	[Brevitee.Data.KeyColumn(Name="Id", DbDataType="BigInt", MaxLength="8")]
 	public long? Id
 	{
 		get
@@ -56,7 +56,7 @@ namespace Brevitee.Logging
 	[Brevitee.Data.ForeignKey(
         Table="EventParam",
 		Name="EventId", 
-		ExtractedType="BigInt", 
+		DbDataType="BigInt", 
 		MaxLength="",
 		AllowNull=false, 
 		ReferencedKey="Id",
@@ -91,7 +91,7 @@ namespace Brevitee.Logging
 	[Brevitee.Data.ForeignKey(
         Table="EventParam",
 		Name="ParamId", 
-		ExtractedType="BigInt", 
+		DbDataType="BigInt", 
 		MaxLength="",
 		AllowNull=false, 
 		ReferencedKey="Id",
@@ -145,7 +145,7 @@ namespace Brevitee.Logging
 		{
 			SqlStringBuilder sql = new SqlStringBuilder();
 			sql.Select<EventParam>();
-			Database db = database == null ? _.Db.For<EventParam>(): database;
+			Database db = database == null ? Db.For<EventParam>(): database;
 			return new EventParamCollection(sql.GetDataTable(db));
 		}
 
@@ -309,7 +309,7 @@ namespace Brevitee.Logging
 			EventParamColumns c = new EventParamColumns();
 			IQueryFilter filter = where(c);         
 			
-			Database db = database == null ? _.Db.For<EventParam>(): database;
+			Database db = database == null ? Db.For<EventParam>(): database;
 			QuerySet query = GetQuerySet(db); 
 			query.Top<EventParam>(count);
 			query.Where(filter);
@@ -336,7 +336,7 @@ namespace Brevitee.Logging
 			EventParamColumns c = new EventParamColumns();
 			IQueryFilter filter = where(c) ;
 
-			Database db = database == null ? _.Db.For<EventParam>(): database;
+			Database db = database == null ? Db.For<EventParam>(): database;
 			QuerySet query = GetQuerySet(db);	 
 			query.Count<EventParam>();
 			query.Where(filter);	  

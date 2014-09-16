@@ -21,7 +21,7 @@ namespace Brevitee.Data
         /// </summary>
         public static void Register(string connectionName)
         {
-            Register(_.Db.For(connectionName).ServiceProvider);
+            Register(Db.For(connectionName).ServiceProvider);
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace Brevitee.Data
         /// </summary>
         public static void Register(Type daoType)
         {
-            Register(_.Db.For(daoType).ServiceProvider);
+            Register(Db.For(daoType).ServiceProvider);
         }
 
         /// <summary>
@@ -40,7 +40,12 @@ namespace Brevitee.Data
         /// <typeparam name="T"></typeparam>
         public static void Register<T>() where T: Dao
         {
-            Register(_.Db.For<T>().ServiceProvider);
+            Register(Db.For<T>().ServiceProvider);
+        }
+
+        public static void Register(Database database)
+        {
+            Register(database.ServiceProvider);
         }
 
         /// <summary>

@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CommandLineMenuInterface")]
+[assembly: AssemblyTitle("Brevitee.ServiceProxy.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("K&L Gates")]
-[assembly: AssemblyProduct("CommandLineMenuInterface")]
+[assembly: AssemblyProduct("Brevitee.ServiceProxy.Tests")]
 [assembly: AssemblyCopyright("Copyright © K&L Gates 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

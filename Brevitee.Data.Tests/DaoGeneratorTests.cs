@@ -71,19 +71,24 @@ namespace Brevitee.Data.Tests
         [UnitTest]
         public static void GenerateShouldUseSpecifiedTargetResolver()
         {
-            MemoryStream stream = new MemoryStream();
+            string filePath = MethodBase.GetCurrentMethod().Name;
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
             DaoGenerator generator = new DaoGenerator("Test");
 
             SchemaDefinition schema = GetTestSchema();
             generator.DisposeOnComplete = false;
             generator.Generate(schema, (s) => {
-                return stream;
+                return new FileStream(filePath, FileMode.Create);
             });
 
-            stream.Seek(0, SeekOrigin.Begin);
-            Expect.IsGreaterThan(stream.Length, 0);
+            string output = File.ReadAllText(filePath);
+
+            Expect.IsGreaterThan(output.Length, 0);            
             
-            Out(Encoding.UTF8.GetString(stream.GetBuffer()), ConsoleColor.Cyan);
+            OutLine(output, ConsoleColor.Cyan);
             SchemaTests.DeleteSchema(schema);
         }
         
@@ -230,8 +235,8 @@ namespace Brevitee.Data.Tests
         {
             foreach (CompilerError error in results.Errors)
             {
-                OutFormat("File=>{0}", ConsoleColor.Yellow, error.FileName);
-                OutFormat("{0}, {1}::{2}", error.Line, error.Column, error.ErrorText);
+                OutLineFormat("File=>{0}", ConsoleColor.Yellow, error.FileName);
+                OutLineFormat("{0}, {1}::{2}", error.Line, error.Column, error.ErrorText);
             }
         }
     }

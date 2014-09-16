@@ -20,7 +20,7 @@ namespace Brevitee
         protected static string displayName;
         protected static string description;
 
-        public ServiceInfo Info
+        public static ServiceInfo Info
         {
             get
             {
@@ -58,7 +58,8 @@ namespace Brevitee
         {
             lock (lastDitchLock)
             {
-                using (StreamWriter lastDitch = new StreamWriter("c:\\" + serviceName + ".fatal.log", true))
+                string logPath = Path.Combine(ExtensionsClass.GetAppDataFolder(null), "{0}.fatal.log"._Format(serviceName));
+                using (StreamWriter lastDitch = new StreamWriter(logPath, true))
                 {
                     lastDitch.WriteLine(DateTime.Now.ToLongDateString() + ":\tFATAL ERROR STARTING SERVICE:\r\n\t" + fatalEx.Message);
                     lastDitch.WriteLine("\t" + fatalEx.StackTrace);

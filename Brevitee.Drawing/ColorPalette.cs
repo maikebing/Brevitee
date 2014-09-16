@@ -9,7 +9,6 @@ using System.Drawing;
 using System.Net;
 using System.Web;
 using Brevitee;
-using Brevitee.Testing;
 using Brevitee.Yaml;
 using Brevitee.Configuration;
 

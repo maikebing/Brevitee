@@ -51,13 +51,18 @@ namespace nuver
             AddValidArgument("patch", true, "Set or increment the patch version", "<value> or /patch to to increment");
             AddValidArgument("p", false, "The path to the .nuspec file");
             AddValidArgument("path", false, "The path to the .nuspec file");
-            DefaultMethod = typeof(Program).GetMethod("Start");            
+            AddValidArgument("a", false, "If specified, will set the authors value", "<authors>");
+            AddValidArgument("authors", false, "If specified, will set the author value", "<authors>");
+            AddValidArgument("o", false, "If specified, will set the owners value", "<owners>");
+            AddValidArgument("owners", false, "If specified, will set the owners value", "<owners>");
+			AddValidArgument("show", true, "Show information in the specified nuspec file");
+            DefaultMethod = typeof(Program).GetMethod("Start");
         }
 
         #region do not modify
         public static void Start()
         {
-            if(!Arguments.Contains("p") && !Arguments.Contains("path"))
+            if (!Arguments.Contains("p") && !Arguments.Contains("path"))
             {
                 Out("/p:<path> must be specified", ConsoleColor.Red);
                 Exit(1);
@@ -70,53 +75,131 @@ namespace nuver
 
             if (!File.Exists(path))
             {
-                OutFormat("file not found: {0}", ConsoleColor.Red, path);
+                OutLineFormat("file not found: {0}", ConsoleColor.Red, path);
                 Exit(1);
             }
 
             NuspecFile file = new NuspecFile(path);
-            if (Arguments.Contains("major"))
-            {
-                string major = Arguments["major"];
-                if (!string.IsNullOrEmpty(major))
-                {
-                    file.Version.Major = major;
-                }
-                else
-                {
-                    file.Version.IncrementMajor();
-                }
-            }
+            SetAuthors(file);
+            SetOwners(file);
 
-            if (Arguments.Contains("minor"))
-            {
-                string minor = Arguments["minor"];
-                if (!string.IsNullOrEmpty(minor))
-                {
-                    file.Version.Minor = minor;
-                }
-                else
-                {
-                    file.Version.IncrementMinor();
-                }
-            }
+			if (Arguments.Contains("show"))
+			{
+				string show = Arguments["show"].Or("").ToLowerInvariant();
 
-            if (Arguments.Contains("patch"))
-            {
-                string patch = Arguments["patch"];
-                if (!string.IsNullOrEmpty(patch))
-                {
-                    file.Version.Patch = patch;
-                }
-                else
-                {
-                    file.Version.IncrementPatch();
-                }
-            }
+				OutFormat("Id: {0}\r\n", ConsoleColor.Cyan, file.Id);
 
-            file.Save();
+				if (show.Contains("version"))
+				{
+					OutFormat("Version: {0}\r\n", ConsoleColor.DarkBlue, file.Version.Value);
+					show = show.Replace("version", "");
+				}
+
+				if (show.Contains("id"))
+				{
+					show = show.Replace("id", "");
+				}
+
+				string infoToShow = show.Or("authors, owners, description, releaseNotes, copyright");
+				string[] infos = infoToShow.DelimitSplit(",");
+				infos.Each(info =>
+				{
+					string propName = info.PascalCase();
+					string value = file.Property<string>(propName);
+					OutFormat("{0}: {1}\r\n", ConsoleColor.Cyan, propName, value);
+				});
+
+				OutLine();
+			}
+			else
+			{
+				if (Arguments.Contains("major"))
+				{
+					IncrementMajor(file);
+				}
+
+				if (Arguments.Contains("minor"))
+				{
+					IncrementMinor(file);
+				}
+
+				if (Arguments.Contains("patch"))
+				{
+					IncrementPatch(file);
+				}
+
+				file.Save();
+			}
         }
-        #endregion
-    }
 
+		private static void IncrementPatch(NuspecFile file)
+		{
+			string patch = Arguments["patch"];
+			if (!string.IsNullOrEmpty(patch))
+			{
+				file.Version.Patch = patch;
+			}
+			else
+			{
+				file.Version.IncrementPatch();
+			}
+		}
+
+		private static void IncrementMinor(NuspecFile file)
+		{
+			string minor = Arguments["minor"];
+			if (!string.IsNullOrEmpty(minor))
+			{
+				file.Version.Minor = minor;
+			}
+			else
+			{
+				file.Version.IncrementMinor();
+			}
+		}
+
+		private static void IncrementMajor(NuspecFile file)
+		{
+			string major = Arguments["major"];
+			if (!string.IsNullOrEmpty(major))
+			{
+				file.Version.Major = major;
+			}
+			else
+			{
+				file.Version.IncrementMajor();
+			}
+		}
+        #endregion
+
+        private static void SetAuthors(NuspecFile file)
+        {
+            string authors = file.Authors;
+            if (Arguments.Contains("a"))
+            {
+                authors = Arguments["a"];
+            }
+            else if (Arguments.Contains("authors"))
+            {
+                authors = Arguments["authors"];
+            }
+
+            file.Authors = authors;
+        }
+
+        private static void SetOwners(NuspecFile file)
+        {
+            string owners = file.Owners;
+            if (Arguments.Contains("o"))
+            {
+                owners = Arguments["o"];
+            }
+            else if (Arguments.Contains("owners"))
+            {
+                owners = Arguments["owners"];
+            }
+
+            file.Owners = owners;
+        }
+    }
 }

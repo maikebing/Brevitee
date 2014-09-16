@@ -5,7 +5,8 @@ using System.Text;
 using System.Reflection;
 using System.IO;
 using Brevitee;
-//using Brevitee.Testing;
+using System.Diagnostics;
+using Brevitee.Logging;
 
 namespace Brevitee.CommandLine
 {
@@ -16,6 +17,12 @@ namespace Brevitee.CommandLine
         static event ExitDelegate Exited;
 
         static ParsedArguments arguments;
+
+        static CommandLineInterface()
+        {
+            IsolateMethodCalls = true;
+            ValidArgumentInfo = new List<ArgumentInfo>();
+        }
 
         /// <summary>
         /// Represents arguments after parsing with a call to ParseArgs.  Arguments should be 
@@ -43,6 +50,18 @@ namespace Brevitee.CommandLine
                 otherMenus = value;
             }
         }
+
+        /// <summary>
+        /// If false a prompt to confirm to the last menu will be presented
+        /// after every selection, if true the last menu will be presented
+        /// automatically
+        /// </summary>
+        protected static bool AutoReturn
+        {
+            get;
+            set;
+        }
+
         /// <summary>
         /// Event fired after command line arguments are parsed by a call to ParseArgs.
         /// </summary>
@@ -54,9 +73,49 @@ namespace Brevitee.CommandLine
         /// </summary>
         protected static event ConsoleArgsParsedDelegate ArgsParsedError;
 
-        static CommandLineInterface()
+        
+        /// <summary>
+        /// Checks if the owner of the current process has admin rights,
+        /// if not the original command line is rebuilt and run with 
+        /// the runas verb set on the startinfo.  The current
+        /// process will exit.
+        /// </summary>
+        public static void EnsureAdminRights()
         {
-            ValidArgumentInfo = new List<ArgumentInfo>();
+            if (!WeHaveAdminRights())
+            {
+                Elevate();
+            }
+        }
+
+        /// <summary>
+        /// Determines if the current process is being run by a user with administrative 
+        /// rights
+        /// </summary>
+        /// <returns></returns>
+        public static bool WeHaveAdminRights()
+        {
+            return UserUtil.CurrentWindowsUserHasAdminRights();
+        }
+
+        /// <summary>
+        /// Runs the current process again, prompting for admin rights
+        /// </summary>
+        public static void Elevate()
+        {
+            Process current = Process.GetCurrentProcess();
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            startInfo.Verb = "runas";
+            startInfo.FileName = current.MainModule.FileName;
+            StringBuilder arguments = new StringBuilder();
+            Environment.GetCommandLineArgs().Rest(1, arg =>
+            {
+                arguments.Append(arg);
+                arguments.Append(" ");
+            });
+            startInfo.Arguments = arguments.ToString();
+            Process.Start(startInfo);
+            Environment.Exit(0);
         }
 
         public static bool ConfirmFormat(string format, params object[] args)
@@ -140,13 +199,33 @@ namespace Brevitee.CommandLine
             return false;
         }
 
-        public static int NumberPrompt(string message)
+        public static int NumberPrompt(string message, ConsoleColor color = ConsoleColor.Cyan)
         {
-            string value = Prompt(message);
+            string value = Prompt(message, color);
             int result = -1;
             int.TryParse(value, out result);
             return result;
         }
+
+		public static string[] ArrayPrompt(string message, params string[] quitters)
+		{
+			return ArrayPrompt(message, (IEnumerable<string>)quitters);
+		}
+
+		public static string[] ArrayPrompt(string message, IEnumerable<string> quitters)
+		{
+			List<string> results = new List<string>();
+			string entry = Prompt(message);
+			while (!quitters.Contains(entry))
+			{
+				if (!results.Contains(entry) && !string.IsNullOrEmpty(entry))
+				{
+					results.Add(entry);
+				}
+			}
+
+			return results.ToArray();
+		}
 
         public static string Prompt(string message)
         {
@@ -244,8 +323,8 @@ namespace Brevitee.CommandLine
 
             foreach (ArgumentInfo argInfo in ValidArgumentInfo)
             {
-                string valEx = string.IsNullOrEmpty(argInfo.ValueExample) ? "" : string.Format(":{0}\r\n", argInfo.ValueExample);
-                OutLineFormat("/{0}{1}\t\t{2}", argInfo.Name, valEx, argInfo.Description);
+                string valueExample = string.IsNullOrEmpty(argInfo.ValueExample) ? string.Empty : string.Format(":{0}\r\n", argInfo.ValueExample);
+                OutLineFormat("/{0}{1}\t\t{2}", argInfo.Name, valueExample, argInfo.Description);
             }
         }
 
@@ -331,7 +410,11 @@ namespace Brevitee.CommandLine
                 }
             }
 
-            if (ConfirmFormat("Return to {0}? [y][N] ", headerText))
+            if (AutoReturn)
+            {
+                ShowMenu(otherMenus, headerText, actions);
+            }
+            else if (ConfirmFormat("Return to {0}? [y][N] ", headerText))
             {
                 ShowMenu(otherMenus, headerText, actions);
             }
@@ -376,6 +459,11 @@ namespace Brevitee.CommandLine
             }
         }
 
+        public static void OutLine()
+        {
+            Out();
+        }
+
         /// <summary>
         /// Writes a newline character to the console using Console.WriteLine()
         /// </summary>
@@ -401,6 +489,15 @@ namespace Brevitee.CommandLine
             OutLine(string.Format(message, formatArgs), color);
         }
 
+		/// <summary>
+		/// Print the specified message in the specified
+		/// colors to the console using the specified string.format
+		/// args to format the message.
+		/// </summary>
+		/// <param name="message"></param>
+		/// <param name="foreground"></param>
+		/// <param name="background"></param>
+		/// <param name="formatArgs"></param>
         public static void OutLineFormat(string message, ConsoleColor foreground, ConsoleColor background, params object[] formatArgs)
         {
             OutLine(string.Format(message, formatArgs), new ConsoleColorCombo(foreground, background));
@@ -503,17 +600,27 @@ namespace Brevitee.CommandLine
             }
         }
 
-        protected internal static void InvokeInSeparateAppDomain(MethodInfo method, object instance, object[] ps = null)
+        protected internal static void InvokeInCurrentAppDomain(MethodInfo method, object instance, object[] ps = null)
         {
-            AppDomain testDomain = AppDomain.CreateDomain("TestAppDomain");
+            // added this method for consistency with InvokeInSeparateAppDomain method
             _methodToInvoke = method;
             invokeOn = instance;
             parameters = ps;
 
-            testDomain.SetData("Method", method);
-            testDomain.SetData("Instance", instance);
-            testDomain.SetData("Parameters", parameters);
-            testDomain.DoCallBack(InvokeMethod);
+            InvokeMethod();
+        }
+		
+        protected internal static void InvokeInSeparateAppDomain(MethodInfo method, object instance, object[] ps = null)
+        {
+            AppDomain isolationDomain = AppDomain.CreateDomain("TestAppDomain");
+            _methodToInvoke = method;
+            invokeOn = instance;
+            parameters = ps;
+
+            isolationDomain.SetData("Method", method);
+            isolationDomain.SetData("Instance", instance);
+            isolationDomain.SetData("Parameters", parameters);
+            isolationDomain.DoCallBack(InvokeMethod);
         }
 
         protected internal static void InvokeSelection(List<ConsoleInvokeableMethod> actions, string answer, string header, string footer, out int selectedNumber)
@@ -528,6 +635,17 @@ namespace Brevitee.CommandLine
                 Console.WriteLine("Invalid entry");
                 Environment.Exit(1);
             }
+        }
+
+        /// <summary>
+        /// If true will cause all calls to InvokeSelection to be 
+        /// run in a separate AppDomain.  This is primarily for 
+        /// UnitTest isolation.
+        /// </summary>
+        protected internal static bool IsolateMethodCalls
+        {
+            get;
+            set;
         }
 
         protected internal static int InvokeSelection(List<ConsoleInvokeableMethod> actions, string header, string footer, int selectedNumber)
@@ -555,7 +673,14 @@ namespace Brevitee.CommandLine
                     action.Provider = ctor.Invoke(null);
                 }
 
-                InvokeInSeparateAppDomain(invoke, action);
+                if (IsolateMethodCalls)
+                {
+                    InvokeInSeparateAppDomain(invoke, action, parameters);
+                }
+                else
+                {
+                    InvokeInCurrentAppDomain(invoke, action, parameters);
+                }
             }
             catch (Exception ex)
             {
@@ -709,6 +834,73 @@ namespace Brevitee.CommandLine
                 }
             }
         }
+
+		/// <summary>
+		/// Execute the methods on the specified instance that are addorned with ConsoleAction
+		/// attributes that have CommandLineSwitch(es) defined that match keys in the
+		/// specified ParsedArguments using the specified ILogger to report any switches not
+		/// found.  An ExpectFailedException will be thrown if more than one method is found
+		/// with a matching CommandLineSwitch defined in ConsoleAction attributes
+		/// </summary>
+		/// <param name="arguments"></param>
+		/// <param name="instance"></param>
+		/// <param name="logger"></param>
+		public static void ExecuteSwitches(ParsedArguments arguments, object instance, ILogger logger = null)
+		{
+			Expect.IsNotNull(instance, "instance can't be null, use a Type if executing static method");
+			ExecuteSwitches(arguments, instance.GetType(), instance, logger);
+		}
+
+		/// <summary>
+		/// Execute the methods on the specified instance that are addorned with ConsoleAction
+		/// attributes that have CommandLineSwitch(es) defined that match keys in the
+		/// specified ParsedArguments using the specified ILogger to report any switches not
+		/// found.  An ExpectFailedException will be thrown if more than one method is found
+		/// with a matching CommandLineSwitch defined in ConsoleAction attributes
+		/// </summary>
+		/// <param name="arguments"></param>
+		/// <param name="instance"></param>
+		/// <param name="logger"></param>
+		public static void ExecuteSwitches(ParsedArguments arguments, Type type, object instance = null, ILogger logger = null)
+		{
+			foreach (string key in arguments.Keys)
+			{
+				string commandLineSwitch = key;
+				string switchValue = arguments[key];
+				MethodInfo[] methods = type.GetMethods();
+				List<ConsoleInvokeableMethod> toExecute = new List<ConsoleInvokeableMethod>();
+				foreach (MethodInfo method in methods)
+				{
+					ConsoleAction consoleAction;
+					if (method.HasCustomAttributeOfType<ConsoleAction>(out consoleAction))
+					{
+						if (consoleAction.CommandLineSwitch.Or("").Equals(commandLineSwitch))
+						{
+							toExecute.Add(new ConsoleInvokeableMethod(method, consoleAction, instance, switchValue));
+						}
+					}
+				}
+
+				Expect.IsFalse(toExecute.Count > 1, "Multiple ConsoleActions found with the specified command line switch: {0}"._Format(commandLineSwitch));
+
+				if (toExecute.Count == 0)
+				{
+					logger = logger ?? Log.Default;
+					logger.AddEntry("Specified command line switch was not found: {0}"._Format(commandLineSwitch));
+					continue;
+				}
+
+				ConsoleInvokeableMethod methodToInvoke = toExecute[0];
+				if (IsolateMethodCalls)
+				{
+					methodToInvoke.InvokeInSeparateAppDomain();
+				}
+				else
+				{
+					methodToInvoke.InvokeInCurrentAppDomain();
+				}
+			}
+		}
 
         /// <summary>
         /// Makes the specified name a valid command line argument.  Command line

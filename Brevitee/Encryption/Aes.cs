@@ -7,7 +7,7 @@ using System.IO;
 using Brevitee.Configuration;
 
 namespace Brevitee.Encryption
-{
+{ 
     public static class Aes
     {
         /// <summary>
@@ -32,7 +32,7 @@ namespace Brevitee.Encryption
             return Encrypt(value, key.Key, key.IV);
         }
 
-        private static string Encrypt(string value, string base64EncodedKey, string base64EncodedIV)
+        public static string Encrypt(string value, string base64EncodedKey, string base64EncodedIV)
         {
             AesManaged aes = new AesManaged();
             aes.IV = Convert.FromBase64String(base64EncodedIV);
@@ -45,13 +45,17 @@ namespace Brevitee.Encryption
 
         private static string Encrypt(string value, ICryptoTransform encryptor)
         {
-            MemoryStream encryptBuffer = new MemoryStream();
-            CryptoStream encryptStream = new CryptoStream(encryptBuffer, encryptor, CryptoStreamMode.Write);
-            byte[] data = Encoding.UTF8.GetBytes(value);
-            encryptStream.Write(data, 0, data.Length);
-            encryptStream.FlushFinalBlock();
+            using(MemoryStream encryptBuffer = new MemoryStream())
+            {
+                using (CryptoStream encryptStream = new CryptoStream(encryptBuffer, encryptor, CryptoStreamMode.Write))
+                {
+                    byte[] data = Encoding.UTF8.GetBytes(value);
+                    encryptStream.Write(data, 0, data.Length);
+                    encryptStream.FlushFinalBlock();
 
-            return Convert.ToBase64String(encryptBuffer.ToArray());
+                    return Convert.ToBase64String(encryptBuffer.ToArray());
+                }
+            }
         }
 
         public static string Decrypt(string base64EncodedValue)
@@ -64,7 +68,7 @@ namespace Brevitee.Encryption
             return Decrypt(base64EncodedValue, key.Key, key.IV);
         }
 
-        private static string Decrypt(string base64EncodedValue, string base64EncodedKey, string base64EncodedIV)
+        public static string Decrypt(string base64EncodedValue, string base64EncodedKey, string base64EncodedIV)
         {
             AesManaged aes = new AesManaged();
             aes.IV = Convert.FromBase64String(base64EncodedIV);
@@ -73,27 +77,31 @@ namespace Brevitee.Encryption
             ICryptoTransform decryptor = aes.CreateDecryptor();
 
             byte[] encData = Convert.FromBase64String(base64EncodedValue);
-            MemoryStream decryptBuffer = new MemoryStream(encData);
-            CryptoStream decryptStream = new CryptoStream(decryptBuffer, decryptor, CryptoStreamMode.Read);
-
-            byte[] decrypted = new byte[encData.Length];
-
-            decryptStream.Read(decrypted, 0, encData.Length);
-
-            // This seems like a cheesy way to remove trailing 0 bytes
-            // but unless I know the expected length of the decrypted data
-            // I can't think of another way to do this effectively
-            List<byte> retBytes = new List<byte>();
-            foreach (byte b in decrypted)
+            using (MemoryStream decryptBuffer = new MemoryStream(encData))
             {
-                if (b == 0)
-                    break;
-                //{
-                retBytes.Add(b);
-                //}
-            }
 
-            return Encoding.UTF8.GetString(retBytes.ToArray());
+                using(CryptoStream decryptStream = new CryptoStream(decryptBuffer, decryptor, CryptoStreamMode.Read))
+                {
+                    byte[] decrypted = new byte[encData.Length];
+
+                    decryptStream.Read(decrypted, 0, encData.Length);
+
+                    // This seems like a cheesy way to remove trailing 0 bytes
+                    // but unless I know the expected length of the decrypted data
+                    // I can't think of another way to do this effectively
+                    List<byte> retBytes = new List<byte>();
+                    foreach (byte b in decrypted)
+                    {
+                        if (b == 0)
+                            break;
+                        //{
+                        retBytes.Add(b);
+                        //}
+                    }
+
+                    return Encoding.UTF8.GetString(retBytes.ToArray());
+                }
+            }
         }
 
         public static AesKeyVectorPair Encrypt(this object target, string filePath)

@@ -117,5 +117,13 @@ namespace Brevitee.CommandLine
                 return parsedArguments.Keys.ToArray();
             }
         }
+
+		public int Length
+		{
+			get
+			{
+				return parsedArguments.Count;
+			}
+		}
     }
 }

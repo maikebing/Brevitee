@@ -43,9 +43,9 @@ namespace Brevitee.Data.Tests
 
             Dao.ProxyConnection(typeof(Item), "CRUD_SqlClient");
             SqlClientRegistrar.Register<Item>();
-            Database db = _.Db[typeof(Item)];
-            Database check = _.Db["CRUD_SqlClient"];
-            Database forCheck = _.Db.For<Item>();
+            Database db = Db.For(typeof(Item));//_.Db[typeof(Item)];
+            Database check = Db.For("CRUD_SqlClient");//_.Db["CRUD_SqlClient"];
+            Database forCheck = Db.For<Item>();
 
             Expect.AreSame(db, check);
             Expect.AreSame(check, forCheck);
@@ -57,7 +57,7 @@ namespace Brevitee.Data.Tests
         {
             Dao.ProxyConnection(typeof(Item), "CRUD_SqlClient");
             SqlClientRegistrar.Register<Item>();
-            Database db = _.Db.For<Item>();
+            Database db = Db.For<Item>();
             SchemaWriter sw = db.ServiceProvider.GetNew<SchemaWriter>();
             sw.EnableDrop = true;
             sw.DropAllTables<Item>();
@@ -125,7 +125,7 @@ namespace Brevitee.Data.Tests
         {
             Dao.ProxyConnection(typeof(Item), newConnectionName);
             SQLiteRegistrar.Register<Item>();
-            Database reproduceIn = _.Db[newConnectionName];
+            Database reproduceIn = Db.For(newConnectionName);//_.Db[newConnectionName];
 
             SetupSQLiteDatabase(reproduceIn);
             return reproduceIn;
@@ -135,7 +135,7 @@ namespace Brevitee.Data.Tests
         {
             Dao.ProxyConnection(typeof(Item), connection);
             SqlClientRegistrar.Register<Item>();
-            Database db = _.Db[connection];
+            Database db = Db.For(connection);//_.Db[connection];
 
             SetupSqlClientDatabase(db);
             return db;
@@ -157,9 +157,9 @@ namespace Brevitee.Data.Tests
         public static void ShouldRecreateSchemaSqlClient()
         {
             SqlClientRegistrar.Register<Item>();
-            Database reproduceIn = _.Db["ReproSchemaSqlClient"];
+            Database reproduceIn = Db.For("ReproSchemaSqlClient");//_.Db["ReproSchemaSqlClient"];
 
-            Database db = _.Db.For<Item>();
+            Database db = Db.For<Item>();
 
             SetupDatabases<SqlClientSqlStringBuilder, SqlClientSqlStringBuilder>
                 (reproduceIn, db.ServiceProvider.Get<IParameterBuilder>());
@@ -201,7 +201,7 @@ namespace Brevitee.Data.Tests
         [UnitTest]
         public static void AddShouldSetAssociation()
         {
-            SqlClientRegistrar.Register(_.Db.For<DaoReferenceObject>().ServiceProvider);
+            SqlClientRegistrar.Register(Db.For<DaoReferenceObject>().ServiceProvider);
 
             DaoReferenceObject d = new DaoReferenceObject();
             d.StringProperty = "".RandomString(8);
@@ -218,7 +218,7 @@ namespace Brevitee.Data.Tests
         [UnitTest]
         public static void ParentOfCollectionShouldBeRootDao()
         {
-            SqlClientRegistrar.Register(_.Db.For<DaoReferenceObject>().ServiceProvider);
+            SqlClientRegistrar.Register(Db.For<DaoReferenceObject>().ServiceProvider);
 
             DaoReferenceObject d = new DaoReferenceObject();
             d.StringProperty = "".RandomString(8);
@@ -299,7 +299,7 @@ namespace Brevitee.Data.Tests
         [UnitTest]
         public static void CommitShouldSetId()
         {
-            SqlClientRegistrar.Register(_.Db.For<DaoReferenceObject>().ServiceProvider);
+            SqlClientRegistrar.Register(Db.For<DaoReferenceObject>().ServiceProvider);
 
             DaoReferenceObject test = new DaoReferenceObject();
             test.BoolProperty = true;
@@ -341,7 +341,7 @@ namespace Brevitee.Data.Tests
         [UnitTest]
         public static void DeleteShouldWork()
         {
-            SqlClientRegistrar.Register(_.Db.For<DaoReferenceObject>().ServiceProvider);
+            SqlClientRegistrar.Register(Db.For<DaoReferenceObject>().ServiceProvider);
 
             DaoReferenceObject test = new DaoReferenceObject();
             test.StringProperty = "".RandomString(8);
@@ -360,7 +360,7 @@ namespace Brevitee.Data.Tests
         [UnitTest]
         public static void WhereShortCutShouldWork()
         {
-            SqlClientRegistrar.Register(_.Db.For<DaoReferenceObject>().ServiceProvider);
+            SqlClientRegistrar.Register(Db.For<DaoReferenceObject>().ServiceProvider);
 
             DaoReferenceObject test = new DaoReferenceObject();
             test.StringProperty = "".RandomString(8);
@@ -373,7 +373,7 @@ namespace Brevitee.Data.Tests
         [UnitTest]
         public static void ShortcutShouldWorkLikeLongcut()
         {
-            SqlClientRegistrar.Register(_.Db.For<DaoReferenceObject>().ServiceProvider);
+            SqlClientRegistrar.Register(Db.For<DaoReferenceObject>().ServiceProvider);
 
             DaoReferenceObject test = new DaoReferenceObject();
             string val = "".RandomString(8);
@@ -388,7 +388,7 @@ namespace Brevitee.Data.Tests
         [UnitTest]
         public static void ShouldBeAbleToQueryById()
         {
-            SqlClientRegistrar.Register(_.Db.For<DaoReferenceObject>().ServiceProvider);
+            SqlClientRegistrar.Register(Db.For<DaoReferenceObject>().ServiceProvider);
 
             DaoReferenceObject test = new DaoReferenceObject();
 
@@ -486,7 +486,7 @@ namespace Brevitee.Data.Tests
         public void ShouldRetrievePortEighty()
         {
             SQLiteRegistrar.Register("Crawlers");
-            _.TryEnsureSchema("Crawlers");
+            Db.TryEnsureSchema("Crawlers");
 
             Cr.Port _80 = Cr.Port.OneWhere(c => c.Value == 80);
             Expect.IsNotNull(_80);
@@ -496,7 +496,7 @@ namespace Brevitee.Data.Tests
         public static void FromUriShouldReturnSameUrlIfSameUri()
         {
             SQLiteRegistrar.Register("Crawlers");
-            _.TryEnsureSchema("Crawlers");
+            Db.TryEnsureSchema("Crawlers");
 
             string uri = "http://monkey.cxm/some/path/here?querystring=value";
             Cr.Url url = Cr.Url.FromUri(uri);
@@ -509,7 +509,7 @@ namespace Brevitee.Data.Tests
         public static void XrefAddAndDeleteTest()
         {
             SQLiteRegistrar.Register("Crawlers");
-            _.TryEnsureSchema("Crawlers");
+            Db.TryEnsureSchema("Crawlers");
             string testUri = "http://monkey.cxm/bananas?are=yummy";
 
 
@@ -544,7 +544,7 @@ namespace Brevitee.Data.Tests
         public static void XrefAddNewAndDeleteTest()
         {
             SQLiteRegistrar.Register("Crawlers");
-            _.TryEnsureSchema("Crawlers");
+            Db.TryEnsureSchema("Crawlers");
             string testUri = "http://monkey.cxm/bananas?are=yummy&random=".RandomLetters(4);
 
 
@@ -578,7 +578,7 @@ namespace Brevitee.Data.Tests
         public static void XrefAddToBothSidesTest()
         {
             SQLiteRegistrar.Register("Crawlers");
-            _.TryEnsureSchema("Crawlers");
+            Db.TryEnsureSchema("Crawlers");
             string testUri = "http://monkey.cxm/some/path?querystring=".RandomLetters(6);
 
             Cr.Url url = Cr.Url.FromUri(testUri);

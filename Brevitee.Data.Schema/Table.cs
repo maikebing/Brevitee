@@ -108,13 +108,13 @@ namespace Brevitee.Data.Schema
         }
         
         [Exclude]
-        public KeyColumn Key
+        public Column Key
         {
             get
             {
-                KeyColumn key = (from col in Columns
+                Column key = (from col in Columns
                         where (col is KeyColumn || col.Key)
-                        select col).FirstOrDefault() as KeyColumn;
+                        select col).FirstOrDefault();
                 
                 if (key == null)
                 {

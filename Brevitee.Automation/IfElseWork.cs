@@ -13,8 +13,8 @@ namespace Brevitee.Automation
         public IfElseWork(string name, Worker workIfTrue, Worker elseWork)
             : base(name)
         {
-            this.WorkIfTrue = workIfTrue;
-            this.ElseWork = elseWork;
+            this.IfTrueWorker = workIfTrue;
+            this.ElseWorker = elseWork;
         }
 
         public override string[] RequiredProperties
@@ -22,12 +22,12 @@ namespace Brevitee.Automation
             get { return new string[] { "Name" }; }
         }
         public bool Condition { get; set; }
-        public Worker WorkIfTrue { get; set; }
-        public Worker ElseWork { get; set; }
+        public Worker IfTrueWorker { get; set; }
+        public Worker ElseWorker { get; set; }
 
         protected override WorkState Do()
         {
-            return Condition ? WorkIfTrue.Do(this.Job) : ElseWork.Do(this.Job);
+            return Condition ? IfTrueWorker.Do(this.Job) : ElseWorker.Do(this.Job);
         }
     }
 }

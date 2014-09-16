@@ -87,9 +87,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Brevitee.Incubation\Brevitee.Incubation.csproj">
-      <Project>{AA186331-A0D0-4F77-BEA2-E7B7650D3FF5}</Project>
-      <Name>Brevitee.Incubation</Name>
+    <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Brevitee.CommandLine\Brevitee.CommandLine.csproj">
+      <Project>{ea9863a9-8e0b-4497-b7fd-abf450a3e468}</Project>
+      <Name>Brevitee.CommandLine</Name>
     </ProjectReference>
     <ProjectReference Include="..\Brevitee.Schema.Org\Brevitee.Schema.Org.csproj">
       <Project>{8d98e22b-3c6d-47c0-b028-0c3e3fc6b4fd}</Project>
@@ -99,17 +102,10 @@
       <Project>{85212881-c676-4b40-b311-37c2d1706042}</Project>
       <Name>Brevitee.Testing</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Brevitee.CommandLine\Brevitee.CommandLine.csproj">
-      <Project>{EA9863A9-8E0B-4497-B7FD-ABF450A3E468}</Project>
-      <Name>Brevitee.CommandLine</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Brevitee\Brevitee.csproj">
       <Project>{8794c09d-d72c-420c-812f-bfda251b64c9}</Project>
       <Name>Brevitee</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

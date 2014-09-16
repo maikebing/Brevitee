@@ -11,10 +11,10 @@ namespace Brevitee.Analytics.Data
     {
         public static void EnsureOne(Brevitee.Analytics.Crawlers.ImageCrawler crawler)
         {
-            ImageCrawler value = ImageCrawler.OneWhere(c => c.Name == crawler.Name);
+            Crawler value = Crawler.OneWhere(c => c.Name == crawler.Name);
             if (value == null)
             {
-                value = new ImageCrawler();
+                value = new Crawler();
                 value.Name = crawler.Name;
                 value.RootUrl = crawler.Root;
                 value.Save();

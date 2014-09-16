@@ -32,7 +32,7 @@ namespace SampleData
 		}
 
 	// property:Id, columnName:Id	
-	[Brevitee.Data.KeyColumn(Name="Id", ExtractedType="BigInt", MaxLength="8")]
+	[Brevitee.Data.KeyColumn(Name="Id", DbDataType="BigInt", MaxLength="8")]
 	public long? Id
 	{
 		get
@@ -46,7 +46,7 @@ namespace SampleData
 	}
 
 	// property:Name, columnName:Name	
-	[Brevitee.Data.Column(Name="Name", ExtractedType="NVarChar", MaxLength="16", AllowNull=false)]
+	[Brevitee.Data.Column(Name="Name", DbDataType="NVarChar", MaxLength="16", AllowNull=false)]
 	public string Name
 	{
 		get
@@ -60,7 +60,7 @@ namespace SampleData
 	}
 
 	// property:Value, columnName:Value	
-	[Brevitee.Data.Column(Name="Value", ExtractedType="NVarChar", MaxLength="255", AllowNull=true)]
+	[Brevitee.Data.Column(Name="Value", DbDataType="NVarChar", MaxLength="255", AllowNull=true)]
 	public string Value
 	{
 		get
@@ -169,7 +169,7 @@ namespace SampleData
             SettingColumns c = new SettingColumns();
             IQueryFilter filter = where(c);         
             
-			Database db = database == null ? _.Db.For<Setting>(): database;
+			Database db = database == null ? Db.For<Setting>(): database;
 			QuerySet query = GetQuerySet(db); 
             query.Top<Setting>(count);
             query.Where(filter);
@@ -188,7 +188,7 @@ namespace SampleData
 			SettingColumns c = new SettingColumns();
 			IQueryFilter filter = where(c) ;
 
-			Database db = database == null ? _.Db.For<Setting>(): database;
+			Database db = database == null ? Db.For<Setting>(): database;
 			QuerySet query = GetQuerySet(db);	 
 			query.Count<Setting>();
 			query.Where(filter);	  

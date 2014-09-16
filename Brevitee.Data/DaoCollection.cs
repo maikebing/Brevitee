@@ -40,12 +40,31 @@ namespace Brevitee.Data
 
             SetDataTable(table);
         }
+        
+        public DaoCollection(Database database, DataTable table, Dao parent = null, string referencingColumn = null)
+        {
+            this._parent = parent;
+            this._table = table;
+            this.ReferencingColumn = referencingColumn;
+            this.Database = database;
+
+            SetDataTable(table);
+        }
+
 
         public DaoCollection(Query<C, T> query, Dao parent = null, string referencingColumn = null): this()
         {
             this._parent = parent;
             this.Query = query;
             this.ReferencingColumn = referencingColumn;
+        }
+
+        public DaoCollection(Database db, Query<C, T> query, bool load = false): this(query, null, null)
+        {
+            if (load)
+            {
+                Load(db);
+            }
         }
 
         public DaoCollection(Query<C, T> query, bool load = false): this(query, null, null)
@@ -84,6 +103,31 @@ namespace Brevitee.Data
             set { }
         }
 
+        Database _database;
+        public Database Database
+        {
+            get
+            {
+                if (_database == null)
+                {
+                    if (Parent != null)
+                    {
+                        _database = Parent.Database;
+                    }
+                    else
+                    {
+                        _database = Db.For<T>();
+                    }
+                }
+
+                return _database;
+            }
+            set
+            {
+                _database = value;
+            }
+        }
+
         /// <summary>
         /// Instantiates a new instance of T and calls SetDataTable passing
         /// in the DataTable from the current instance
@@ -105,14 +149,23 @@ namespace Brevitee.Data
 
         public void Load()
         {
+            Load(Database);
+        }
+
+        public void Load(Database db)
+        {
             if (Query == null)
             {
                 throw new ArgumentNullException("Query is not set");
             }
-
-            SetDataTable(Query.GetDataTable());            
+            Database = db;
+            SetDataTable(Query.GetDataTable(db));
         }
 
+        /// <summary>
+        /// Reload the current collection using the original query
+        /// used to populate it
+        /// </summary>
         public void Reload()
         {
             Load();
@@ -144,6 +197,7 @@ namespace Brevitee.Data
             foreach (DataRow row in table.Rows)
             {
                 T dao = (T)_ctor.Invoke(new object[] { row });
+                dao.Database = Database;
                 _values.Add(dao);
             }
             this._book = new Book<T>(_values);
@@ -166,6 +220,8 @@ namespace Brevitee.Data
         public T AddNew()
         {
             T dao = new T();
+            
+            dao.Database = Database;
 
             Add(dao);
 
@@ -249,7 +305,12 @@ namespace Brevitee.Data
 
         public void Commit()
         {
-            Database db = _.Db.For<T>();
+            Database db = Db.For<T>();
+            Commit(db);
+        }
+
+        public void Commit(Database db)
+        {
             SqlStringBuilder sql = db.ServiceProvider.Get<SqlStringBuilder>();
             WriteCommit(sql);
 
@@ -268,7 +329,7 @@ namespace Brevitee.Data
         {
             if (db == null)
             {
-                db = _.Db.For<T>();
+                db = Db.For<T>();
             }
             SqlStringBuilder sql = db.ServiceProvider.Get<SqlStringBuilder>();
             WriteDelete(sql);
@@ -321,13 +382,20 @@ namespace Brevitee.Data
 
             return sorter;
         }
+        
+        public T JustOne(bool saveIfNew = false)
+        {
+            return JustOne(Database, saveIfNew);
+        }
 
         /// <summary>
         /// Gets one value if it exists, creates it if it doesn't.  Throws MultipleEntriesFoundException
         /// if more than one value is in this collection.
         /// </summary>
+        /// <param name="saveIfNew">If true and a new entry is required, the Dao value will 
+        /// be saved prior to being returned </param>
         /// <returns></returns>
-        public T JustOne(bool saveIfNew = false)
+        public T JustOne(Database db, bool saveIfNew = false)
         {
             if (this.Count > 1)
             {
@@ -340,7 +408,7 @@ namespace Brevitee.Data
                 result = AddNew();
                 if (saveIfNew)
                 {
-                    result.Save();
+                    result.Save(db);
                 }
             }
 

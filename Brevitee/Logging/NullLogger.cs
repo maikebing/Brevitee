@@ -5,6 +5,10 @@ using System.Text;
 
 namespace Brevitee.Logging
 {
+    /// <summary>
+    /// The logger that gets created for Log.Default when
+    /// logging is not configured in the configuration file
+    /// </summary>
     public class NullLogger: Logger
     {
         public NullLogger()

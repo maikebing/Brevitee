@@ -1,27 +1,27 @@
-﻿// Model is Table
+// Model is Table
 using System;
 using System.Data;
 using System.Data.Common;
-using Bryan.Apellanes;
-using Bryan.Apellanes.Data;
-using Bryan.Apellanes.Data.Qi;
+using Brevitee;
+using Brevitee.Data;
+using Brevitee.Data.Qi;
 
 namespace @Namespace
 {
 	// schema = @Schema.Name
 	// connection Name = @Model.ConnectionName
-	[Bryan.Apellanes.Data.Table("@Model.Name", "@Schema.Name")]
+	[Brevitee.Data.Table("@Model.Name", "@Schema.Name")]
 	public partial class @Model.ClassName: Dao
 	{
 		public @(Model.ClassName)():base()
 		{
-			this.KeyColumnName = "@(Model.Key.Name)";
+			this.SetKeyColumnName();
 			this.SetChildren();
 		}
 
 		public @(Model.ClassName)(DataRow data): base(data)
 		{
-			this.KeyColumnName = "@(Model.Key.Name)";
+			this.SetKeyColumnName();
 			this.SetChildren();
 		}
 
@@ -83,7 +83,7 @@ namespace @Namespace
 		public override IQueryFilter GetUniqueFilter()
 		{
 			var colFilter = new @(Model.ClassName)Columns();
-			return (colFilter.@(Model.Key.PropertyName) == IdValue);
+			return (colFilter.KeyColumn == IdValue);
 		}
 		/// <summary>
 		/// Return every record in the @(Model.ClassName) table.
@@ -95,8 +95,10 @@ namespace @Namespace
 		{
 			SqlStringBuilder sql = new SqlStringBuilder();
 			sql.Select<@(Model.ClassName)>();
-			Database db = database == null ? _.Db.For<@(Model.ClassName)>(): database;
-			return new @(Model.ClassName)Collection(sql.GetDataTable(db));
+			Database db = database ?? Db.For<@(Model.ClassName)>();
+			var results = new @(Model.ClassName)Collection(sql.GetDataTable(db));
+			results.Database = db;
+			return results;
 		}
 
 		/// <summary>
@@ -122,7 +124,8 @@ namespace @Namespace
 		/// <param name="db"></param>
 		public static @(Model.ClassName)Collection Where(WhereDelegate<@(Model.ClassName)Columns> where, Database db = null)
 		{
-			return new @(Model.ClassName)Collection(new Query<@(Model.ClassName)Columns, @(Model.ClassName)>(where, db), true);
+			var results = new @(Model.ClassName)Collection(db, new Query<@(Model.ClassName)Columns, @(Model.ClassName)>(where, db), true);
+			return results;
 		}
 		   
 		/// <summary>
@@ -138,7 +141,8 @@ namespace @Namespace
 		/// <param name="db"></param>
 		public static @(Model.ClassName)Collection Where(WhereDelegate<@(Model.ClassName)Columns> where, OrderBy<@(Model.ClassName)Columns> orderBy = null, Database db = null)
 		{
-			return new @(Model.ClassName)Collection(new Query<@(Model.ClassName)Columns, @(Model.ClassName)>(where, orderBy, db), true);
+			var results = new @(Model.ClassName)Collection(db, new Query<@(Model.ClassName)Columns, @(Model.ClassName)>(where, orderBy, db), true);
+			return results;
 		}
 
 		/// <summary>
@@ -151,7 +155,8 @@ namespace @Namespace
 		/// <param name="db"></param>
 		public static @(Model.ClassName)Collection Where(QiQuery where, Database db = null)
 		{
-			return new @(Model.ClassName)Collection(Select<@(Model.ClassName)Columns>.From<@(Model.ClassName)>().Where(where, db));
+			var results = new @(Model.ClassName)Collection(db, Select<@(Model.ClassName)Columns>.From<@(Model.ClassName)>().Where(where, db));
+			return results;
 		}
 
 		/// <summary>
@@ -167,7 +172,7 @@ namespace @Namespace
 		/// <param name="db"></param>
 		public static @(Model.ClassName) OneWhere(WhereDelegate<@(Model.ClassName)Columns> where, Database db = null)
 		{
-			var results = new @(Model.ClassName)Collection(Select<@(Model.ClassName)Columns>.From<@(Model.ClassName)>().Where(where, db));
+			var results = new @(Model.ClassName)Collection(db, Select<@(Model.ClassName)Columns>.From<@(Model.ClassName)>().Where(where, db));
 			return OneOrThrow(results);
 		}
 			 
@@ -181,7 +186,7 @@ namespace @Namespace
 		/// <param name="db"></param>
 		public static @(Model.ClassName) OneWhere(QiQuery where, Database db = null)
 		{
-			var results = new @(Model.ClassName)Collection(Select<@(Model.ClassName)Columns>.From<@(Model.ClassName)>().Where(where, db));
+			var results = new @(Model.ClassName)Collection(db, Select<@(Model.ClassName)Columns>.From<@(Model.ClassName)>().Where(where, db));
 			return OneOrThrow(results);
 		}
 
@@ -209,7 +214,7 @@ namespace @Namespace
 		/// <param name="db"></param>
 		public static @(Model.ClassName) FirstOneWhere(WhereDelegate<@(Model.ClassName)Columns> where, Database db = null)
 		{
-			var results = new @(Model.ClassName)Collection(Select<@(Model.ClassName)Columns>.From<@(Model.ClassName)>().Where(where, db));
+			var results = new @(Model.ClassName)Collection(db, Select<@(Model.ClassName)Columns>.From<@(Model.ClassName)>().Where(where, db));
 			if(results.Count > 0)
 			{
 				return results[0];
@@ -259,7 +264,7 @@ namespace @Namespace
 			@(Model.ClassName)Columns c = new @(Model.ClassName)Columns();
 			IQueryFilter filter = where(c);         
 			
-			Database db = database == null ? _.Db.For<@(Model.ClassName)>(): database;
+			Database db = database == null ? Db.For<@(Model.ClassName)>(): database;
 			QuerySet query = GetQuerySet(db); 
 			query.Top<@(Model.ClassName)>(count);
 			query.Where(filter);
@@ -270,7 +275,9 @@ namespace @Namespace
 			}
 
 			query.Execute(db);
-			return query.Results.As<@(Model.ClassName)Collection>(0);
+			var results = query.Results.As<@(Model.ClassName)Collection>(0);
+			results.Database = db;
+			return results;
 		}
 
 		/// <summary>
@@ -286,7 +293,7 @@ namespace @Namespace
 			@(Model.ClassName)Columns c = new @(Model.ClassName)Columns();
 			IQueryFilter filter = where(c) ;
 
-			Database db = database == null ? _.Db.For<@(Model.ClassName)>(): database;
+			Database db = database == null ? Db.For<@(Model.ClassName)>(): database;
 			QuerySet query = GetQuerySet(db);	 
 			query.Count<@(Model.ClassName)>();
 			query.Where(filter);	  

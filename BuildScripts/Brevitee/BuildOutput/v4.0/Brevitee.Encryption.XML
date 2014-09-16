@@ -1,0 +1,465 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Brevitee.Encryption</name>
+    </assembly>
+    <members>
+        <member name="T:Brevitee.Encryption.Crypto">
+            <summary>
+            This class was taken verbatim from the highest ranked answer from 
+            http://stackoverflow.com/questions/202011/encrypt-and-decrypt-a-string
+            although it wasn't marked as the answer it appears to be sufficient
+            </summary>
+        </member>
+        <member name="M:Brevitee.Encryption.Crypto.EncryptStringAES(System.String,System.String)">
+            <summary>
+            Encrypt the given string using AES.  The string can be decrypted using 
+            DecryptStringAES().  The sharedSecret parameters must match.
+            </summary>
+            <param name="plainText">The text to encrypt.</param>
+            <param name="sharedSecret">A password used to generate a key for encryption.</param>
+        </member>
+        <member name="M:Brevitee.Encryption.Crypto.DecryptStringAES(System.String,System.String)">
+            <summary>
+            Decrypt the given string.  Assumes the string was encrypted using 
+            EncryptStringAES(), using an identical sharedSecret.
+            </summary>
+            <param name="cipherText">The text to decrypt.</param>
+            <param name="sharedSecret">A password used to generate a key for decryption.</param>
+        </member>
+        <member name="M:Brevitee.Encryption.Encrypted.#ctor(System.String,System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="data">The plain text data to be encrypted</param>
+            <param name="b64Key">A plaintext value to derive a key from</param>
+            <param name="b64IV">A plain text vlaue to derive 
+            the initialization vector from</param>
+        </member>
+        <member name="M:Brevitee.Encryption.Extensions.EncryptWithPublicKey(System.String,Org.BouncyCastle.Crypto.AsymmetricCipherKeyPair,System.Text.Encoding)">
+            <summary>
+            Encrypt with the Public key of the specified keyPair
+            </summary>
+            <param name="input"></param>
+            <param name="keyPair"></param>
+            <param name="encoding"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brevitee.Encryption.Extensions.EncryptWithPrivateKey(System.String,Org.BouncyCastle.Crypto.AsymmetricCipherKeyPair,System.Text.Encoding)">
+            <summary>
+            Encrypt the specified input and return the encrypted byte[] converted to 
+            base 64
+            </summary>
+            <param name="input"></param>
+            <param name="keyPair"></param>
+            <param name="encoding"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Brevitee.Encryption.Vault">
+            <summary>
+            An encrypted key value store used to prevent
+            casual access to sensitive data like passwords.
+            </summary>
+        </member>
+        <member name="M:Brevitee.Encryption.Vault.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Encryption.Vault.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the Vault table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Encryption.Vault.Where(System.Func{Brevitee.Encryption.VaultColumns,Brevitee.Data.QueryFilter{Brevitee.Encryption.VaultColumns}},Brevitee.Data.OrderBy{Brevitee.Encryption.VaultColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a VaultColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between VaultColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Encryption.Vault.Where(Brevitee.Data.WhereDelegate{Brevitee.Encryption.VaultColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a VaultColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between VaultColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Encryption.Vault.Where(Brevitee.Data.WhereDelegate{Brevitee.Encryption.VaultColumns},Brevitee.Data.OrderBy{Brevitee.Encryption.VaultColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a VaultColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between VaultColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Encryption.Vault.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Encryption.Vault.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Encryption.VaultColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single Vault instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a VaultColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between VaultColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Encryption.Vault.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Encryption.Vault.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Encryption.VaultColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a VaultColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between VaultColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Encryption.Vault.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Encryption.VaultColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a VaultColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between VaultColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Encryption.Vault.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Encryption.VaultColumns},Brevitee.Data.OrderBy{Brevitee.Encryption.VaultColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a VaultColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between VaultColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Encryption.Vault.Count(Brevitee.Data.WhereDelegate{Brevitee.Encryption.VaultColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a VaultColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between VaultColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Encryption.Vault.Retrieve(System.String,System.String)">
+            <summary>
+            Get the Vault with the specified name using the
+            specified password to create it if it doesn't exist
+            </summary>
+            <param name="name"></param>
+            <param name="password"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brevitee.Encryption.Vault.Create(System.IO.FileInfo,System.String)">
+            <summary>
+            Create a vault in the specified file by the 
+            specified name.  If the vault already exists
+            in the specified file the existing vault
+            will be returned
+            </summary>
+            <param name="file"></param>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brevitee.Encryption.VaultItem.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Encryption.VaultItem.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the VaultItem table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Encryption.VaultItem.Where(System.Func{Brevitee.Encryption.VaultItemColumns,Brevitee.Data.QueryFilter{Brevitee.Encryption.VaultItemColumns}},Brevitee.Data.OrderBy{Brevitee.Encryption.VaultItemColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a VaultItemColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between VaultItemColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Encryption.VaultItem.Where(Brevitee.Data.WhereDelegate{Brevitee.Encryption.VaultItemColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a VaultItemColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between VaultItemColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Encryption.VaultItem.Where(Brevitee.Data.WhereDelegate{Brevitee.Encryption.VaultItemColumns},Brevitee.Data.OrderBy{Brevitee.Encryption.VaultItemColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a VaultItemColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between VaultItemColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Encryption.VaultItem.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Encryption.VaultItem.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Encryption.VaultItemColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single VaultItem instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a VaultItemColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between VaultItemColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Encryption.VaultItem.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Encryption.VaultItem.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Encryption.VaultItemColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a VaultItemColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between VaultItemColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Encryption.VaultItem.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Encryption.VaultItemColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a VaultItemColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between VaultItemColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Encryption.VaultItem.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Encryption.VaultItemColumns},Brevitee.Data.OrderBy{Brevitee.Encryption.VaultItemColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a VaultItemColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between VaultItemColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Encryption.VaultItem.Count(Brevitee.Data.WhereDelegate{Brevitee.Encryption.VaultItemColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a VaultItemColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between VaultItemColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Encryption.VaultKey.GetUniqueFilter">
+            <summary>
+            Gets a query filter that should uniquely identify
+            the current instance.  The default implementation
+            compares the Id/key field to the current instance.
+            </summary> 
+        </member>
+        <member name="M:Brevitee.Encryption.VaultKey.LoadAll(Brevitee.Data.Database)">
+            <summary>
+            Return every record in the VaultKey table.
+            </summary>
+            <param name="database">
+            The database to load from or null
+            </param>
+        </member>
+        <member name="M:Brevitee.Encryption.VaultKey.Where(System.Func{Brevitee.Encryption.VaultKeyColumns,Brevitee.Data.QueryFilter{Brevitee.Encryption.VaultKeyColumns}},Brevitee.Data.OrderBy{Brevitee.Encryption.VaultKeyColumns})">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A Func delegate that recieves a VaultKeyColumns 
+            and returns a QueryFilter which is the result of any comparisons
+            between VaultKeyColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Encryption.VaultKey.Where(Brevitee.Data.WhereDelegate{Brevitee.Encryption.VaultKeyColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a VaultKeyColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between VaultKeyColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Encryption.VaultKey.Where(Brevitee.Data.WhereDelegate{Brevitee.Encryption.VaultKeyColumns},Brevitee.Data.OrderBy{Brevitee.Encryption.VaultKeyColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the results. 
+            </summary>
+            <param name="where">A WhereDelegate that recieves a VaultKeyColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between VaultKeyColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Encryption.VaultKey.Where(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Encryption.VaultKey.OneWhere(Brevitee.Data.WhereDelegate{Brevitee.Encryption.VaultKeyColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query that should return only one result.  If more
+            than one result is returned a MultipleEntriesFoundException will 
+            be thrown.  This method is most commonly used to retrieve a
+            single VaultKey instance by its Id/Key value
+            </summary>
+            <param name="where">A WhereDelegate that recieves a VaultKeyColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between VaultKeyColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Brevitee.Encryption.VaultKey.OneWhere(Brevitee.Data.Qi.QiQuery,Brevitee.Data.Database)" -->
+        <member name="M:Brevitee.Encryption.VaultKey.FirstOneWhere(Brevitee.Data.WhereDelegate{Brevitee.Encryption.VaultKeyColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the first result
+            </summary>
+            <param name="where">A WhereDelegate that recieves a VaultKeyColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between VaultKeyColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Encryption.VaultKey.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Encryption.VaultKeyColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified number
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a VaultKeyColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between VaultKeyColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Encryption.VaultKey.Top(System.Int32,Brevitee.Data.WhereDelegate{Brevitee.Encryption.VaultKeyColumns},Brevitee.Data.OrderBy{Brevitee.Encryption.VaultKeyColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the specified count
+            of values
+            </summary>
+            <param name="count">The number of values to return.
+            This value is used in the sql query so no more than this 
+            number of values will be returned by the database.
+            </param>
+            <param name="where">A WhereDelegate that recieves a VaultKeyColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between VaultKeyColumns and other values
+            </param>
+            <param name="orderBy">
+            Specifies what column and direction to order the results by
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Encryption.VaultKey.Count(Brevitee.Data.WhereDelegate{Brevitee.Encryption.VaultKeyColumns},Brevitee.Data.Database)">
+            <summary>
+            Execute a query and return the number of results
+            </summary>
+            <param name="where">A WhereDelegate that recieves a VaultKeyColumns 
+            and returns a IQueryFilter which is the result of any comparisons
+            between VaultKeyColumns and other values
+            </param>
+            <param name="db"></param>
+        </member>
+        <member name="M:Brevitee.Encryption.Pem.PublicKeyToPem(Org.BouncyCastle.Crypto.AsymmetricCipherKeyPair)">
+            <summary>
+            Returns the public portion of the specified keyPair in 
+            pem format (compatible with openssl)
+            </summary>
+            <param name="keyPair"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brevitee.Encryption.Pem.FromPublicKey(Org.BouncyCastle.Crypto.AsymmetricCipherKeyPair)">
+            <summary>
+            Returns the public portion of the specified keyPair in 
+            pem format (compatible with openssl)
+            </summary>
+            <param name="keyPair"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brevitee.Encryption.Pem.ToPem(Org.BouncyCastle.Crypto.AsymmetricCipherKeyPair)">
+            <summary>
+            Returns the specified keyPair in
+            pem format (compatible with openssl)
+            </summary>
+            <param name="keyPair"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Brevitee.Encryption.Pem.FromPrivateKey(Org.BouncyCastle.Crypto.AsymmetricCipherKeyPair)">
+            <summary>
+            Returns the private portion of the specified keyPair in
+            pem format (compaitble with openssl)
+            </summary>
+            <param name="keyPair"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

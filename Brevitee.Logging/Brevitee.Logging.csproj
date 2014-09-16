@@ -33,6 +33,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>bin\Release\Brevitee.Logging.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -90,21 +91,21 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DaoLogger2.db.js" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Brevitee.Data.Schema\Brevitee.Data.Schema.csproj">
       <Project>{d2c2b1c0-1047-4211-92fc-37f332861161}</Project>
       <Name>Brevitee.Data.Schema</Name>
     </ProjectReference>
     <ProjectReference Include="..\Brevitee.Data\Brevitee.Data.csproj">
-      <Project>{3B52B739-58FD-4B49-B815-6B317E701520}</Project>
+      <Project>{3b52b739-58fd-4b49-b815-6b317e701520}</Project>
       <Name>Brevitee.Data</Name>
     </ProjectReference>
     <ProjectReference Include="..\Brevitee\Brevitee.csproj">
-      <Project>{8794C09D-D72C-420C-812F-BFDA251B64C9}</Project>
+      <Project>{8794c09d-d72c-420c-812f-bfda251b64c9}</Project>
       <Name>Brevitee</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="dao.db.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

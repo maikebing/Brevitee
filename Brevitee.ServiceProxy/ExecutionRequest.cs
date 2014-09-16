@@ -14,6 +14,8 @@ using Brevitee;
 using Brevitee.Web;
 using Brevitee.Data;
 using Brevitee.Incubation;
+using Brevitee.ServiceProxy.Secure;
+using Brevitee.Encryption;
 using Newtonsoft.Json;
 
 namespace Brevitee.ServiceProxy
@@ -33,6 +35,7 @@ namespace Brevitee.ServiceProxy
 
         public ExecutionRequest(string className, string methodName, string ext)
         {
+            this.Context = new HttpContextWrapper();
             this.ViewName = "Default";
             this.ClassName = className;
             this.MethodName = methodName;
@@ -43,12 +46,14 @@ namespace Brevitee.ServiceProxy
 
         public ExecutionRequest(RequestWrapper request, ResponseWrapper response)
         {
+            this.Context = new HttpContextWrapper();
             this.Request = request;
             this.Response = response;
         }
 
         public ExecutionRequest(RequestWrapper request, ResponseWrapper response, ProxyAlias[] aliases)
         {
+            this.Context = new HttpContextWrapper();
             this.Request = request;
             this.Response = response;
             this.ProxyAliases = aliases;
@@ -57,7 +62,16 @@ namespace Brevitee.ServiceProxy
         public ExecutionRequest(RequestWrapper request, ResponseWrapper response, ProxyAlias[] aliases, Incubator serviceProvider)
             : this(request, response, aliases)
         {
+            this.Context = new HttpContextWrapper();
             this.ServiceProvider = serviceProvider;
+        }
+
+        public ExecutionRequest(IHttpContext context, ProxyAlias[] aliases, Incubator serviceProvider, string inputString = null)
+        {
+            this.Context = context;
+            this.ProxyAliases = aliases;
+            this.ServiceProvider = serviceProvider;
+            this.InputString = inputString;
         }
 
         protected internal ProxyAlias[] ProxyAliases
@@ -90,23 +104,29 @@ namespace Brevitee.ServiceProxy
         /// The input stream of the request read in as 
         /// a string
         /// </summary>
-        protected string InputString
+        protected internal string InputString
         {
             get
             {
-                if (Request == null || Request.InputStream == null)
+                if (string.IsNullOrEmpty(_inputString))
                 {
-                    _inputString = string.Empty;
-                }
-                else if (string.IsNullOrEmpty(_inputString))
-                {
-                    using (StreamReader sr = new StreamReader(Request.InputStream))
+                    if (Request == null || Request.InputStream == null)
                     {
-                        _inputString = sr.ReadToEnd();
+                        _inputString = string.Empty;
+                    }
+                    else
+                    {
+                        using (StreamReader sr = new StreamReader(Request.InputStream))
+                        {
+                            _inputString = sr.ReadToEnd();
+                        }
                     }
                 }
-
                 return _inputString;
+            }
+            set
+            {
+                _inputString = value;
             }
         }
 
@@ -131,12 +151,14 @@ namespace Brevitee.ServiceProxy
         }
 
         object _initLock = new object();
-        protected internal void Initialize()
+        protected internal virtual void Initialize()
         {
             lock(_initLock)
             {
                 if (!IsInitialized)
-                {                   
+                {
+                    OnInitializing();
+
                     if (HttpMethod.Equals("POST") && string.IsNullOrEmpty(Path.GetExtension(Request.Url.AbsolutePath)))
                     {
                         HttpArgs args = HttpArgs;
@@ -146,15 +168,54 @@ namespace Brevitee.ServiceProxy
                             JsonParams = jsonParams;
                         }
                     }
-                    else if (InputString.StartsWith("{"))
+                    else if (InputString.StartsWith("{")) // TODO: this should be reviewed for validity
                     {
                         JsonParams = InputString;
+                    }
+                    else if (!string.IsNullOrEmpty(Request.Headers[ServiceProxySystem.SecureSessionName]) && !IsUnencrypted)
+                    {
+                        SecureSession session = GetSecureSession();
+
+                        Decrypted decrypted = new Decrypted(InputString, session.PlainSymmetricKey, session.PlainSymmetricIV);
+                        HttpArgs args = new HttpArgs();
+                        args.ParseJson(decrypted.Value);
+                        JsonParams = args["jsonParams"];
+                        Decrypted = decrypted;
                     }
 
                     ParseRequestUrl();
                     IsInitialized = true;
+
+                    OnInitialized();
                 }
             }
+        }
+
+        private SecureSession GetSecureSession()
+        {
+            string sessionId = Request.Headers[ServiceProxySystem.SecureSessionName];
+            SecureSession session = SecureSession.Get(sessionId);
+            return session;
+        }
+
+        Decrypted _decrypted;
+        internal Decrypted Decrypted
+        {
+            get
+            {
+                return _decrypted;
+            }
+            private set
+            {
+                _decrypted = value;
+                InputString = value;
+            }
+        }
+
+        internal bool IsUnencrypted
+        {
+            get;
+            set;
         }
 
         Uri _requestUrl;
@@ -175,19 +236,38 @@ namespace Brevitee.ServiceProxy
             }
         }
 
-        protected internal void ParseRequestUrl()
+        ApiKeyResolver _apiKeyResolver;
+        object _apiKeyResolverSync = new object();
+        public ApiKeyResolver ApiKeyResolver
+        {
+            get
+            {
+                return _apiKeyResolverSync.DoubleCheckLock(ref _apiKeyResolver, () => new ApiKeyResolver());
+            }
+            set
+            {
+                _apiKeyResolver = value;
+            }
+        }
+        
+        protected internal virtual void ParseRequestUrl()
         {
             // parse the request url to set the className, methodName and ext
-            //string[] split = Request.Url.AbsolutePath.DelimitSplit("/");
-            Queue<string> split = new Queue<string>(RequestUrl.AbsolutePath.DelimitSplit("/", "."));
+            string path = RequestUrl.AbsolutePath;
+            if (path.ToLowerInvariant().StartsWith("/get"))
+            {
+                path = path.TruncateFront(4);
+            }
+            else if (path.ToLowerInvariant().StartsWith("/post"))
+            {
+                path = path.TruncateFront(5);
+            }
+
+            Queue<string> split = new Queue<string>(path.DelimitSplit("/", "."));
             while (split.Count > 0)
             {
                 string currentChunk = split.Dequeue();
                 string upperred = currentChunk.ToUpperInvariant();
-                if (upperred.Equals("GET") || upperred.Equals("POST"))
-                {
-                    continue;
-                }
 
                 if (string.IsNullOrEmpty(_className))
                 {
@@ -280,7 +360,7 @@ namespace Brevitee.ServiceProxy
         }
 
         /// <summary>
-        /// An array of strings stringified twice.  Parsing as Json will return an array of strings,
+        /// Should be set to an array of strings stringified twice.  Parsing as Json will return an array of strings,
         /// each string can be individually parsed into separate objects
         /// </summary>
         public string JsonParams { get; set; }
@@ -324,7 +404,12 @@ namespace Brevitee.ServiceProxy
             {
                 if (_instance == null)
                 {
-                    _instance = ServiceProvider.Get(ClassName, out _targetType);//ServiceProxySystem.Incubator.Get(ClassName, out _targetType);
+                    _instance = ServiceProvider.Get(ClassName, out _targetType);
+                    if (_targetType.HasCustomAttributeOfType<SerializableAttribute>()) // if its Serializable clone it so we're not acting on a single instance
+                    {
+                        byte[] bytes = _instance.ToBinaryBytes();
+                        _instance = bytes.FromBinaryBytes();
+                    }
                 }
                 return _instance;
             }
@@ -386,9 +471,19 @@ namespace Brevitee.ServiceProxy
 
         protected object[] GetParameters()
         {
-            object[] result = new object[] { }; ;
+            // This method is becoming a little bloated
+            // due to accomodating too many input paths.
+            // This will need to be refactored IF
+            // changes continue to be necessary
 
-            if (HttpArgs.Ordered.Length > 0)
+            object[] result = new object[] { }; ;
+            string jsonParams;
+            if (HttpArgs.Has("jsonParams", out jsonParams))
+            {
+                string[] jsonStrings = jsonParams.FromJson<string[]>();
+                result = GetJsonParameters(jsonStrings);
+            }
+            else if (HttpArgs.Ordered.Length > 0)
             {
                 result = new object[HttpArgs.Ordered.Length];
                 HttpArgs.Ordered.Each((val, i) =>
@@ -419,7 +514,7 @@ namespace Brevitee.ServiceProxy
                     ViewName = "Default";
                 }
 
-                string jsonParams = Request.QueryString["jsonParams"];
+                jsonParams = Request.QueryString["jsonParams"];
                 bool numbered = !string.IsNullOrEmpty(Request.QueryString["numbered"]) ? true : false;
                 bool named = !numbered;
 
@@ -511,7 +606,7 @@ namespace Brevitee.ServiceProxy
             for (int i = 0; i < ParameterInfos.Length; i++)
             {
                 Type paramType = ParameterInfos[i].ParameterType;
-                string value = Request.QueryString[i.ToString()];
+                string value = WebUtility.UrlDecode(Request.QueryString[i.ToString()]);
                 SetValue(results, i, paramType, value);
 
                 SetDefault(results, i);
@@ -673,16 +768,44 @@ namespace Brevitee.ServiceProxy
         }
         public string ViewName { get; set; }
 
-        protected internal RequestWrapper Request
+        protected internal IHttpContext Context
         {
             get;
             set;
         }
 
-        protected internal ResponseWrapper Response
+        protected internal IRequest Request
         {
-            get;
-            set;
+            get
+            {
+                if (Context != null)
+                {
+                    return Context.Request;
+                }
+
+                return null;
+            }
+            set
+            {
+                Context.Request = value;
+            }
+        }
+
+        protected internal IResponse Response
+        {
+            get
+            {
+                if (Context != null)
+                {
+                    return Context.Response;
+                }
+
+                return null;
+            }
+            set
+            {
+                Context.Response = value;
+            }
         }
 
         public bool Success
@@ -704,7 +827,7 @@ namespace Brevitee.ServiceProxy
         {
             Initialize();
             ValidationResult result = new ValidationResult(this);
-            result.Execute();
+            result.Execute(Context, Decrypted);
             return result;
         }
 
@@ -729,8 +852,67 @@ namespace Brevitee.ServiceProxy
             get;
             private set;
         }
-        
 
+        public event EventHandler<ExecutionRequest> Initializing;
+        protected void OnInitializing()
+        {
+            if (Initializing != null)
+            {
+                Initializing(this, this);
+            }
+        }
+        public event EventHandler<ExecutionRequest> Initialized;
+        protected void OnInitialized()
+        {
+            if (Initialized != null)
+            {
+                Initialized(this, this);
+            }
+        }
+
+        public static event Action<ExecutionRequest, object> AnyExecuting;
+        protected void OnAnyExecuting(object target)
+        {
+            if (AnyExecuting != null)
+            {
+                Executing(this, target);
+            }
+        }
+        public static event Action<ExecutionRequest, object> AnyExecuted;
+        protected void OnAnyExecuted(object target)
+        {
+            if (AnyExecuted != null)
+            {
+                Executing(this, target);
+            }
+        }
+
+        public event Action<ExecutionRequest, object> Executing;
+        protected void OnExecuting(object target)
+        {
+            if (Executing != null)
+            {
+                Executing(this, target);
+            }
+        }
+
+        public event Action<ExecutionRequest, object> Executed;
+        protected void OnExecuted(object target)
+        {
+            if (Executed != null)
+            {
+                Executed(this, target);
+            }
+        }
+
+        public event Action<ExecutionRequest, object> ContextSet;
+        protected void OnContextSet(object target)
+        {
+            if (ContextSet != null)
+            {
+                ContextSet(this, target);
+            }
+        }
         public bool Execute(object target, bool validate = true)
         {
             bool result = false;
@@ -748,12 +930,17 @@ namespace Brevitee.ServiceProxy
                 try
                 {
                     Initialize();
+                    SetContext(target);
+                    OnAnyExecuting(target);
+                    OnExecuting(target);
                     Result = MethodInfo.Invoke(target, Parameters);
+                    OnExecuted(target);
+                    OnAnyExecuted(target);
                     result = true;
                 }
                 catch (Exception ex)
                 {
-                    Result = ex;
+                    Result = ex.Message;
                     result = false;
                 }
             }
@@ -761,6 +948,16 @@ namespace Brevitee.ServiceProxy
             WasExecuted = true;
             Success = result;
             return result;
+        }
+
+        protected internal void SetContext(object target)
+        {
+            IRequiresHttpContext takesContext = target as IRequiresHttpContext;
+            if (takesContext != null)
+            {                
+                takesContext.HttpContext = Context;
+                OnContextSet(target);
+            }
         }
     }
 }

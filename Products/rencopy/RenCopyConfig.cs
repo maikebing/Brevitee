@@ -8,6 +8,13 @@ namespace rencopy
 {
     public class RenCopyConfig
     {
+		public RenCopyConfig()
+		{
+			this.TextReplacementFileExtensions = new string[] { };
+			this.CopyExtensions = new string[] { };
+			this.Ignore = new string[] { };
+		}
+
         /// <summary>
         /// The file extensions to do text replacements on
         /// </summary>
@@ -35,5 +42,10 @@ namespace rencopy
         public string TargetFolder { get; set; }
 
         public TextReplacement[] TextReplacements { get; set; }
+
+		/// <summary>
+		/// The names or patterns of file names or folder names to ignore
+		/// </summary>
+		public string[] Ignore { get; set; }
     }
 }

@@ -1,8 +1,7 @@
 var database = {
     nameSpace: "Brevitee.Automation.Data",
     schemaName: "Automation",
-    xrefs: [
-       // ["StickerizableList", "Stickerizable"],       
+    xrefs: [       
     ],
     tables: [
         {

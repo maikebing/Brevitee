@@ -6,6 +6,7 @@ using System.IO;
 using System.Reflection;
 using System.CodeDom.Compiler;
 using Microsoft.CSharp;
+using Brevitee.ServiceProxy;
 using Ionic.Zip;
 using Ionic.Zlib;
 
@@ -101,6 +102,9 @@ namespace Brevitee.Data.Schema
         public event TargetTableEventDelegate BeforeClassParse;
         public event TargetTableEventDelegate AfterClassParse;
 
+        public event TargetTableEventDelegate BeforePartialParse;
+        public event TargetTableEventDelegate AfterPartialParse;
+
         public event TargetTableEventDelegate BeforeQiClassParse;
         public event TargetTableEventDelegate AfterQiClassParse;
 
@@ -160,7 +164,7 @@ namespace Brevitee.Data.Schema
         public event TargetTableEventDelegate BeforeCollectionStreamResolved;
 
         /// <summary>
-        /// Thre event that fires after resolving the stream to write each ccollection to
+        /// The event that fires after resolving the stream to write each ccollection to
         /// </summary>
         public event TargetTableEventDelegate AfterCollectionStreamResolved;
 
@@ -177,6 +181,9 @@ namespace Brevitee.Data.Schema
         public event ResultStreamEventDelegate BeforeWriteClass;
 
         public event ResultStreamEventDelegate BeforeWriteQiClass;
+
+        public event ResultStreamEventDelegate BeforeWritePartial;
+        public event ResultStreamEventDelegate AfterWritePartial;
 
         /// <summary>
         /// The event that fires after writing code to the target stream
@@ -338,6 +345,22 @@ namespace Brevitee.Data.Schema
             }
         }
 
+        protected void OnBeforePartialParse(string ns, Table table)
+        {
+            if (BeforePartialParse != null)
+            {
+                BeforePartialParse(ns, table);
+            }
+        }
+
+        protected void OnAfterPartialParse(string ns, Table table)
+        {
+            if (AfterPartialParse != null)
+            {
+                AfterPartialParse(ns, table);
+            }
+        }
+
         protected void OnBeforeWriteQiClass(string code, Stream stream)
         {
             if (BeforeWriteQiClass != null)
@@ -359,6 +382,22 @@ namespace Brevitee.Data.Schema
             if (BeforeWriteClass != null)
             {
                 BeforeWriteClass(code, stream);
+            }
+        }
+
+        protected void OnBeforeWritePartial(string code, Stream stream)
+        {
+            if (BeforeWritePartial != null)
+            {
+                BeforeWritePartial(code, stream);
+            }
+        }
+
+        protected void OnAfterWritePartial(string code, Stream stream)
+        {
+            if (AfterWritePartial != null)
+            {
+                AfterWritePartial(code, stream);
             }
         }
 
@@ -496,25 +535,9 @@ namespace Brevitee.Data.Schema
             {
                 referenceAssemblies = this._referenceAssemblies.ToArray();
             }
-
-            CSharpCodeProvider codeProvider = new CSharpCodeProvider();
-            CompilerParameters parameters = GetCompilerParameters(assemblyFileName, referenceAssemblies, executable);
-
-            List<string> fileNames = new List<string>();
-
-            foreach (DirectoryInfo directory in directories)
-            {
-                foreach (FileInfo fileInfo in directory.GetFiles("*.cs", SearchOption.AllDirectories))
-                {
-                    if (!fileNames.Contains(fileInfo.FullName))
-                    {
-                        fileNames.Add(fileInfo.FullName);
-                    }
-                }
-            }
-            return codeProvider.CompileAssemblyFromFile(parameters, fileNames.ToArray());            
+            return AdHocCSharpCompiler.CompileDirectories(directories, assemblyFileName, referenceAssemblies, executable);        
         }
-
+        
         public CompilerResults Compile(string[] sources, string assemblyFileName, string[] referenceAssemblies = null, bool executable = false)
         {
             if (referenceAssemblies == null)
@@ -522,33 +545,11 @@ namespace Brevitee.Data.Schema
                 referenceAssemblies = new string[0];
             }
             CSharpCodeProvider codeProvider = new CSharpCodeProvider();
-            CompilerParameters parameters = GetCompilerParameters(assemblyFileName, referenceAssemblies, executable);
+            CompilerParameters parameters = AdHocCSharpCompiler.GetCompilerParameters(assemblyFileName, referenceAssemblies, executable);
 
             return codeProvider.CompileAssemblyFromSource(parameters, sources);
         }
-
-        private static CompilerParameters GetCompilerParameters(string assemblyFileName, string[] referenceAssemblies, bool executable)
-        {
-            CompilerParameters parameters = new CompilerParameters();
-            parameters.GenerateExecutable = executable;
-            parameters.OutputAssembly = assemblyFileName;
-
-            SetCompilerOptions(referenceAssemblies, parameters);
-            return parameters;
-        }
-
-        private static void SetCompilerOptions(string[] referenceAssemblies, CompilerParameters parameters)
-        {
-
-            StringBuilder compilerOptions = new StringBuilder();
-
-            foreach (string referenceAssembly in referenceAssemblies)
-            {
-                compilerOptions.AppendFormat("/reference:{0} ", referenceAssembly);
-            }
-            parameters.CompilerOptions = compilerOptions.ToString();
-        }
-
+        
         public void Generate(SchemaDefinition schema)
         {
             Generate(schema, ".\\");
@@ -561,7 +562,12 @@ namespace Brevitee.Data.Schema
         /// <param name="root"></param>
         public void Generate(SchemaDefinition schema, string root)
         {
-            Generate(schema, null, root);
+            Generate(schema, null, root, null);
+        }
+
+        public void Generate(SchemaDefinition schema, string root, string partialsDir)
+        {
+            Generate(schema, null, root, partialsDir);
         }
 
         /// <summary>
@@ -571,7 +577,7 @@ namespace Brevitee.Data.Schema
         /// <param name="targetResolver">If specified, generated code will be 
         /// written to the stream returned by this function</param>
         /// <param name="root">The root file path to use if no target resolver is specified</param>
-        public void Generate(SchemaDefinition schema, Func<string, Stream> targetResolver = null, string root = ".\\")
+        public void Generate(SchemaDefinition schema, Func<string, Stream> targetResolver = null, string root = ".\\", string partialsDir = null)
         {
             if (string.IsNullOrEmpty(Namespace))
             {
@@ -580,10 +586,20 @@ namespace Brevitee.Data.Schema
 
             OnGenerateStarted(schema);            
             
-            WriteContext(schema, targetResolver, root);            
+            WriteContext(schema, targetResolver, root);
+            
+            bool writePartial = !string.IsNullOrEmpty(partialsDir);
+            if (writePartial)
+            {
+                EnsurePartialsDir(partialsDir);
+            }
 
             foreach (Table table in schema.Tables)
             {
+                if (writePartial)
+                {
+                    WritePartial(schema, partialsDir, table);
+                }
                 WriteClass(schema, targetResolver, root, table);
                 WriteQiClass(schema, targetResolver, root, table);
                 WriteCollection(schema, targetResolver, root, table);
@@ -591,6 +607,15 @@ namespace Brevitee.Data.Schema
             }
 
             OnGenerateComplete(schema);
+        }
+
+        private static void EnsurePartialsDir(string partialsDir)
+        {
+            DirectoryInfo partials = new DirectoryInfo(partialsDir);
+            if (!partials.Exists)
+            {
+                partials.Create();
+            }
         }
 
         private void WriteColumnsClass(SchemaDefinition schema, Func<string, Stream> targetResolver, string root, Table table)
@@ -657,6 +682,23 @@ namespace Brevitee.Data.Schema
             WriteClassToStream(result, s);
         }
 
+        private void WritePartial(SchemaDefinition schema, string partialsDir, Table table)
+        {
+            RazorParser<TableTemplate> parser = new RazorParser<TableTemplate>(RazorResultInspector);
+            Stream s = null;
+
+            OnBeforePartialParse(Namespace, table);
+            string result = parser.ExecuteResource("Partial.tmpl", new { Model = table, Schema = schema, Namespace = Namespace });
+            OnAfterPartialParse(Namespace, table);
+
+            FileInfo partial = new FileInfo(Path.Combine(partialsDir, "{0}.cs"._Format(table.Name)));
+            if (!partial.Exists)
+            {
+                s = partial.OpenWrite();
+                WritePartialToStream(result, s);
+            }
+        }
+
         private void WriteQiClass(SchemaDefinition schema, Func<string, Stream> targetResolver, string root, Table table)
         {
             RazorParser<TableTemplate> parser = new RazorParser<TableTemplate>(RazorResultInspector);
@@ -684,7 +726,7 @@ namespace Brevitee.Data.Schema
             string parameterValue = table.ClassName;
             return GetTargetStream(targetResolver, root, s, parameterValue);
         }
-
+        
         private static Stream GetTargetQiClassStream(Func<string, Stream> targetResolver, string root, Table table, Stream s)
         {
             string paramaterValue = string.Format("Qi/{0}", table.ClassName);
@@ -733,6 +775,13 @@ namespace Brevitee.Data.Schema
             OnBeforeWriteContext(code, s);
             WriteToStream(code, s);
             OnAfterWriteContext(code, s);
+        }
+
+        protected virtual void WritePartialToStream(string code, Stream s)
+        {
+            OnBeforeWritePartial(code, s);
+            WriteToStream(code, s);
+            OnAfterWritePartial(code, s);
         }
 
         protected virtual void WriteClassToStream(string code, Stream s)

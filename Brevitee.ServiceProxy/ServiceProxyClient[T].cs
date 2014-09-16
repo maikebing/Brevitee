@@ -3,8 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Brevitee;
+using System.Net;
+using Brevitee.Logging;
+using Brevitee.Encryption;
+using Brevitee.Configuration;
+using Brevitee.ServiceProxy;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Engines;
+using Org.BouncyCastle.Crypto.Generators;
+using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Math;
+using Org.BouncyCastle.Security;
+using System.IO;
 using System.Reflection;
+using System.Collections;
 
 namespace Brevitee.ServiceProxy
 {
@@ -18,13 +30,16 @@ namespace Brevitee.ServiceProxy
                 BaseAddress = string.Format("{0}/", BaseAddress);
             }
 
-            this.MethodUrlFormat = "{BaseAddress}{Verb}/{ClassName}/{MethodName}.json?{Parameters}";
+            this.Format = "json";
+            this.MethodUrlFormat = "{BaseAddress}{Verb}/{ClassName}/{MethodName}.{Format}?{Parameters}{NamedOrNumberd}";
+            this.Numbered = true;
         }
 
         public ServiceProxyClient(string baseAddress, string implementingClassName)
             : this(baseAddress)
         {
             this.ClassName = implementingClassName;
+            this.Numbered = true;
         }
 
         string _className;
@@ -70,6 +85,10 @@ namespace Brevitee.ServiceProxy
         }
 
         bool _numbered;
+        /// <summary>
+        /// If true, get requests will have numbered querystring parameters, for example
+        /// 0=value1&1=value2&2={"some":"jsonValue"}
+        /// </summary>
         public bool Numbered
         {
             get
@@ -84,6 +103,10 @@ namespace Brevitee.ServiceProxy
         }
 
         bool _named;
+        /// <summary>
+        /// If true, get requests will have named querystring parameters, for example
+        /// first=value1&another=value2&complex={"some":"jsonValue"}
+        /// </summary>
         public bool Named
         {
             get
@@ -99,56 +122,483 @@ namespace Brevitee.ServiceProxy
 
         public string LastResponse { get; private set; }
 
+        /// <summary>
+        /// Invoke the specified methodName on the server side
+        /// type T returning value of type T1
+        /// </summary>
+        /// <typeparam name="T1">The return type of the specified method</typeparam>
+        /// <param name="methodName">The name of the method to invoke</param>
+        /// <param name="parameters">parameters to be passed to the method</param>
+        /// <returns></returns>
         public T1 Invoke<T1>(string methodName, params object[] parameters)
         {
             string result = Invoke(methodName, parameters);
             return result.FromJson<T1>();
         }
 
-        public string Invoke(string methodName, object[] parameters)
+        /// <summary>
+        /// Invoke the specified methodName on the specified
+        /// server side className specified returning value of 
+        /// type T1
+        /// </summary>
+        /// <typeparam name="T1">The return type of the specified method</typeparam>
+        /// <param name="className">The name of the server side class to invoke the method on</param>
+        /// <param name="methodName">The name of the method to invoke</param>
+        /// <param name="parameters">parameters to be passed to the method</param>
+        /// <returns></returns>
+        public T1 Invoke<T1>(string className, string methodName, params object[] parameters)
         {
-            if (!Methods.Contains(methodName))
+            string result = Invoke(className, methodName, parameters);
+            return result.FromJson<T1>();
+        }
+
+        /// <summary>
+        /// Invoke the specified methodName on the specified
+        /// server side className at the specified baseAddress
+        /// returning value of type T1
+        /// </summary>
+        /// <typeparam name="T1">The return type of the specified method</typeparam>
+        /// <param name="baseAddress">The base uri to send the request to</param>
+        /// <param name="className">The name of the server side class to invoke the method on</param>
+        /// <param name="methodName">The name of the method to invoke</param>
+        /// <param name="parameters">parameters to be passed to the method</param>
+        /// <returns></returns>
+        public T1 Invoke<T1>(string baseAddress, string className, string methodName, params object[] parameters)
+        {
+            string result = Invoke(baseAddress, className, methodName, parameters);
+            return result.FromJson<T1>();
+        }
+
+        /// <summary>
+        /// Invoke the specified methodName on the server side
+        /// type T
+        /// </summary>
+        /// <param name="methodName"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public override string Invoke(string methodName, params object[] parameters)
+        {
+            return Invoke(ClassName, methodName, parameters);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="className"></param>
+        /// <param name="methodName"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public string Invoke(string className, string methodName, params object[] parameters)
+        {
+            return Invoke(BaseAddress, className, methodName, parameters);
+        }
+
+        /// <summary>
+        /// This method provides core method invoke functionality.  
+        /// </summary>
+        /// <param name="baseAddress"></param>
+        /// <param name="className"></param>
+        /// <param name="methodName"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public string Invoke(string baseAddress, string className, string methodName, params object[] parameters)
+        {
+            if (!Methods.Contains(methodName) && typeof(T).Name.Equals(className))
             {
-                throw Args.Exception<InvalidOperationException>("{0} is not proxied from type {1}", methodName, typeof(T).Name);
+                throw Args.Exception<InvalidOperationException>("{0} is not proxied from type {1}", methodName, className);
             }
 
-            string result = string.Empty;
-            string queryStringParameters = Numbered ? ParametersToQueryString(parameters) : ParametersToQueryString(NameParameters(methodName, parameters));
-            ServiceProxyVerbs verb = queryStringParameters.Length > 2048 ? ServiceProxyVerbs.POST : ServiceProxyVerbs.GET;
-
-            if (verb == ServiceProxyVerbs.POST)
+            if (!baseAddress.EndsWith("/"))
             {
-                string requestUrl = MethodUrlFormat.NamedFormat(new { BaseAddress = BaseAddress, Verb = verb.ToString(), ClassName = ClassName, MethodName = methodName, Parameters = "nocache=".RandomLetters(4) });
+                baseAddress = string.Format("{0}", baseAddress);
+            }
 
-                // create a string array
-                string[] jsonParams = new string[parameters.Length];
+            ServiceProxyEventArgs args = new ServiceProxyEventArgs { BaseAddress = baseAddress, ClassName = className, Client = this, MethodName = methodName, PostParameters = parameters };
+            OnInvokingMethod(args);
 
-                // for each parameter stringify it and shove it into the array
-                parameters.Each((o, i) =>
-                {
-                    jsonParams[i] = parameters[i].ToJson();
-                });
-
-                // stringify the array
-                string jsonParamsString = (new { jsonParams = jsonParams.ToJson() }).ToJson();
-
-                // post the jsonArrayOfJsonStrings
-                Headers.Add("Content-Type", "application/json; charset=utf-8");
-                result = UploadString(requestUrl, jsonParamsString);
+            string result = string.Empty;
+            if (args.CancelInvoke)
+            {
+                OnInvokeCanceled(args);
             }
             else
             {
-                string requestUrl = MethodUrlFormat.NamedFormat(new { BaseAddress = BaseAddress, Verb = verb.ToString(), ClassName = ClassName, MethodName = methodName, Parameters = queryStringParameters });
-                requestUrl = "{0}&{1}&nocache={2}"._Format(requestUrl, Numbered ? "numbered=1" : "named=1", "".RandomLetters(4));
+                string tmp = DoInvoke(baseAddress, className, methodName, parameters);
 
-                result = DownloadString(requestUrl);
+                result = tmp;
+                LastResponse = result;
+
+                OnInvokedMethod(args);
             }
-
-            LastResponse = result;
             return result;
         }
 
-        private Dictionary<string, object> NameParameters(string methodName, object[] parameters)
+        protected internal virtual string DoInvoke(string baseAddress, string className, string methodName, object[] parameters)
+        {
+            string tmp = string.Empty;
+            string queryStringParameters;
+            ServiceProxyVerbs verb;
+            GetQueryStringAndVerb(methodName, parameters, out queryStringParameters, out verb);
+
+            if (verb == ServiceProxyVerbs.POST)
+            {
+                tmp = Post(baseAddress, className, methodName, parameters);
+
+            }
+            else
+            {
+                tmp = Get(baseAddress, className, methodName, queryStringParameters);
+            }
+            return tmp;
+        }
+
+        /// <summary>
+        /// Get an HttpWebRequest instance that represents a call to the 
+        /// specified methodName of the current generic type T
+        /// </summary>
+        /// <param name="methodName"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        protected internal HttpWebRequest GetServiceProxyRequest(string methodName, params object[] parameters)
+        {
+            return GetServiceProxyRequest<T>(methodName, parameters);
+        }
+
+        protected internal HttpWebRequest GetServiceProxyRequest(ServiceProxyVerbs verb, string methodName, string queryStringParameters = "")
+        {
+            return GetServiceProxyRequest<T>(verb, methodName, queryStringParameters);
+        }
+
+        /// <summary>
+        /// Get an HttpWebRequest for the specified server generic type ST
+        /// </summary>
+        /// <typeparam name="ST"></typeparam>
+        /// <param name="methodName"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        protected internal HttpWebRequest GetServiceProxyRequest<ST>(string methodName, params object[] parameters)
+        {
+            ServiceProxyVerbs verb;
+            string queryStringParameters;
+            GetQueryStringAndVerb(methodName, parameters, out queryStringParameters, out verb);
+            return GetServiceProxyRequest<ST>(verb, methodName, queryStringParameters);
+        }
+
+        protected internal HttpWebRequest GetServiceProxyRequest<ST>(ServiceProxyVerbs verb, string methodName, params object[] parameters)
+        {
+            ServiceProxyVerbs ignore;
+            string queryStringParameters;
+            GetQueryStringAndVerb(methodName, parameters, out queryStringParameters, out ignore);
+            return GetServiceProxyRequest<ST>(verb, methodName, queryStringParameters);
+        }
+
+        /// <summary>
+        /// Get an HttpWebRequest for the specified server generic type ST
+        /// </summary>
+        /// <typeparam name="ST">The server type that will execute the request</typeparam>
+        /// <param name="verb"></param>
+        /// <param name="methodName"></param>
+        /// <param name="queryStringParameters"></param>
+        /// <returns></returns>
+        protected internal HttpWebRequest GetServiceProxyRequest<ST>(ServiceProxyVerbs verb, string methodName, string queryStringParameters = "")
+        {
+            return GetServiceProxyRequest(verb, typeof(ST).Name, methodName, queryStringParameters);
+        }
+
+        /// <summary>
+        /// Get an HttpWebRequest for the specified server type of the specified className
+        /// </summary>
+        /// <param name="verb"></param>
+        /// <param name="className"></param>
+        /// <param name="methodName"></param>
+        /// <param name="queryStringParameters"></param>
+        /// <returns></returns>
+        protected virtual internal HttpWebRequest GetServiceProxyRequest(ServiceProxyVerbs verb, string className, string methodName, string queryStringParameters = "")
+        {
+            string namedOrNumbered = this.Numbered ? "&numbered=1" : "&named=1";
+            string methodUrl = MethodUrlFormat.NamedFormat(new { BaseAddress = BaseAddress, Verb = verb, ClassName = className, MethodName = methodName, Format = Format, Parameters = queryStringParameters, NamedOrNumberd = namedOrNumbered });
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(methodUrl);
+            request.CookieContainer = Cookies ?? new CookieContainer();
+            request.Proxy = null;
+            request.Method = verb.ToString();
+            
+            if (!string.IsNullOrEmpty(Referer))
+            {
+                request.Referer = Referer;
+            }
+
+            return request;
+        }
+        
+        private void GetQueryStringAndVerb(string methodName, object[] parameters, out string queryStringParameters, out ServiceProxyVerbs verb)
+        {
+            queryStringParameters = Numbered ? ParametersToQueryString(parameters) : ParametersToQueryString(NameParameters(methodName, parameters));
+            verb = queryStringParameters.Length > 2048 ? ServiceProxyVerbs.POST : ServiceProxyVerbs.GET;
+        }
+
+        /// <summary>
+        /// Gets the response for the specified request.  All ServiceProxy Post and Get calls result
+        /// in this method being called.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        protected virtual internal HttpWebResponse GetServiceProxyResponse(HttpWebRequest request)
+        {
+            if (request.CookieContainer == null)
+            {
+                request.CookieContainer = Cookies;
+            }
+
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            foreach (Cookie cookie in response.Cookies)
+            {
+                Cookies.Add(cookie);                
+            }
+
+            return response;
+        }
+
+        public string GetServiceProxyResponseString(HttpWebRequest request)
+        {
+            HttpWebResponse response = GetServiceProxyResponse(request);
+            string result = string.Empty;
+            using (StreamReader sr = new StreamReader(response.GetResponseStream()))
+            {
+                result = sr.ReadToEnd();
+            }
+
+            return result;
+        }
+
+        public RT GetServiceProxyResponse<RT>(HttpWebRequest request)
+        {
+            return GetServiceProxyResponseString(request).FromJson<RT>();
+        }
+
+        public event EventHandler<ServiceProxyEventArgs<T>> Getting;
+        public event EventHandler<ServiceProxyEventArgs<T>> Got;
+
+        /// <summary>
+        /// Fires the Getting event 
+        /// </summary>
+        /// <param name="args"></param>
+        protected void OnGetting(ServiceProxyEventArgs<T> args)
+        {
+            if (Getting != null)
+            {
+                Getting(this, args);
+            }
+        }
+
+        public event EventHandler<ServiceProxyEventArgs> GetCanceled;
+        protected void OnGetCanceled(ServiceProxyEventArgs args)
+        {
+            if (GetCanceled != null)
+            {
+                GetCanceled(this, args);
+            }
+
+            OnInvokeCanceled(args);
+        }
+
+        /// <summary>
+        /// Fires the Got event
+        /// </summary>
+        /// <param name="args"></param>
+        protected void OnGot(ServiceProxyEventArgs<T> args)
+        {
+            if (Got != null)
+            {
+                Got(this, args);
+            }
+        }
+
+        public event EventHandler<ServiceProxyEventArgs<T>> Posting;
+        public event EventHandler<ServiceProxyEventArgs<T>> Posted;
+
+        /// <summary>
+        /// Fires the Getting event 
+        /// </summary>
+        /// <param name="args"></param>
+        protected void OnPosting(ServiceProxyEventArgs<T> args)
+        {
+            if (Posting != null)
+            {
+                Posting(this, args);
+            }
+        }
+
+
+        public event EventHandler<ServiceProxyEventArgs> PostCanceled;
+        protected void OnPostCanceled(ServiceProxyEventArgs args)
+        {
+            if (PostCanceled != null)
+            {
+                PostCanceled(this, args);
+            }
+
+            OnInvokeCanceled(args);
+        }
+        /// <summary>
+        /// Fires the Got event
+        /// </summary>
+        /// <param name="args"></param>
+        protected void OnPosted(ServiceProxyEventArgs<T> args)
+        {
+            if (Posted != null)
+            {
+                Posted(this, args);
+            }
+        }
+
+        public R Get<R>(string methodName, params object[] parameters)
+        {
+            return Get(methodName, parameters).FromJson<R>();
+        }
+
+        public R Get<R>(string className, string methodName, params object[] parameters)
+        {
+            return Get(BaseAddress, className, methodName, parameters).FromJson<R>();
+        }
+
+        public R Get<R>(string baseAddress, string className, string methodName, string queryStringParameters)
+        {
+            return Get(baseAddress, className, methodName, queryStringParameters).FromJson<R>();
+        }
+
+        public string Get(string methodName, params object[] parameters)
+        {
+            this.Numbered = true;
+            return Get(BaseAddress, typeof(T).Name, methodName, new ServiceProxyParameters(parameters).NumberedQueryStringParameters);
+        }
+
+        public string Get(string className, string methodName, params object[] parameters)
+        {
+            return Get(BaseAddress, className, methodName, parameters);
+        }
+
+        public string Get(string baseAddress, string className, string methodName, params object[] parameters)
+        {
+            ServiceProxyParameters proxyParameters = new ServiceProxyParameters(parameters);
+            string queryStringParameters = proxyParameters.NumberedQueryStringParameters;//Numbered ? proxyParameters.NumberedQueryStringParameters: proxyParameters.NamedQueryStringParameters;
+
+            return Get(baseAddress, className, methodName, queryStringParameters);
+        }
+
+        protected virtual string Get(string baseAddress, string className, string methodName, string queryStringParameters)
+        {
+            ServiceProxyEventArgs<T> args = new ServiceProxyEventArgs<T> { BaseAddress = baseAddress, ClassName = className, Client = this, GenericClient = this, MethodName = methodName, QueryStringParameters = queryStringParameters };
+            OnGetting(args);
+            string result = string.Empty;
+            if (args.CancelInvoke)
+            {
+                OnGetCanceled(args);
+            }
+            else
+            {
+                HttpWebRequest request = GetServiceProxyRequest(ServiceProxyVerbs.GET, className, methodName, queryStringParameters);
+                result = GetServiceProxyResponseString(request);
+                OnGot(args);
+            }
+            return result; ;
+        }
+
+        public R Post<R>(string methodName, params object[] parameters)
+        {
+            return Post(BaseAddress, ClassName, methodName, parameters).FromJson<R>();
+        }
+
+        public R Post<R>(string className, string methodName, params object[] parameters)
+        {
+            return Post(BaseAddress, className, methodName, parameters).FromJson<R>();
+        }
+
+        public string Post(string methodName, params object[] parameters)
+        {
+            return Post(BaseAddress, typeof(T).Name, methodName, parameters);
+        }
+
+        public string Post(string className, string methodName, params object[] parameters)
+        {
+            return Post(BaseAddress, className, methodName, parameters);
+        }
+
+        /// <summary>
+        /// Post to the url representing the specified method call.  Content type used
+        /// will be "application/json; charset=utf-8";.  This can be overridden in a derived
+        /// class by overriding WriteJsonParams or GetServiceProxyResponse, each of which
+        /// is called after the ContentType is set on the request.
+        /// </summary>
+        /// <param name="baseAddress"></param>
+        /// <param name="className"></param>
+        /// <param name="methodName"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public virtual string Post(string baseAddress, string className, string methodName, params object[] parameters)
+        {
+            HttpWebRequest request = GetServiceProxyRequest(ServiceProxyVerbs.POST, className, methodName, "nocache=".RandomLetters(4));
+
+            return Post(baseAddress, className, methodName, parameters, request);
+        }
+
+        protected virtual string Post(string baseAddress, string className, string methodName, object[] parameters, HttpWebRequest request)
+        {
+            ServiceProxyEventArgs<T> args = new ServiceProxyEventArgs<T>
+            {
+                BaseAddress = baseAddress,
+                ClassName = className,
+                Client = this,
+                GenericClient = this,
+                MethodName = methodName,
+                PostParameters = parameters,
+                Request = request
+            };
+
+            OnPosting(args);
+            string result = string.Empty;
+            if (args.CancelInvoke)
+            {
+                OnPostCanceled(args);
+            }
+            else
+            {
+                string jsonParamsString = ApiParameters.ParametersToJsonParamsObject(parameters);
+
+                request.ContentType = "application/json; charset=utf-8";
+
+                WriteJsonParams(jsonParamsString, request);
+
+                result = GetServiceProxyResponseString(request);
+                OnPosted(args);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Writes the specified jsonParamsString to the request stream of the
+        /// specified request.
+        /// </summary>
+        /// <param name="jsonParamsString"></param>
+        /// <param name="request"></param>
+        protected internal virtual void WriteJsonParams(string jsonParamsString, HttpWebRequest request)
+        {
+            using (StreamWriter sw = new StreamWriter(request.GetRequestStream()))
+            {
+                sw.Write(jsonParamsString);
+            }
+        }
+
+        /// <summary>
+        /// Names the specified parameters by aligning them with the
+        /// parameters of the specified methodName.  The keys of 
+        /// the resulting dictionary are the names of the parameters
+        /// defined in the specified methodName
+        /// </summary>
+        /// <param name="methodName"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        protected internal Dictionary<string, object> NameParameters(string methodName, object[] parameters)
         {
             if (!Methods.Contains(methodName))
             {
@@ -157,19 +607,7 @@ namespace Brevitee.ServiceProxy
 
             MethodInfo method = typeof(T).GetMethod(methodName);
 
-            List<ParameterInfo> parameterInfos = new List<ParameterInfo>(method.GetParameters());
-            parameterInfos.Sort((l, r) => l.MetadataToken.CompareTo(r.MetadataToken));
-
-            if (parameters.Length != parameterInfos.Count)
-            {
-                throw new InvalidOperationException("Parameter count mismatch");
-            }
-
-            Dictionary<string, object> result = new Dictionary<string, object>();
-            parameterInfos.Each((pi, i) =>
-            {
-                result[pi.Name] = parameters[i];
-            });
+            Dictionary<string, object> result = NameParameters(method, parameters);
 
             return result;
         }

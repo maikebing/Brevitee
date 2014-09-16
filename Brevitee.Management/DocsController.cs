@@ -19,7 +19,7 @@ namespace Brevitee.Management
     {
         static DocsController()
         {
-            DocResult.DefaultAttributeRenderer = (infos, output) =>
+            DocResult.DefaultRenderer = (infos, output) =>
             {
                 Tag container = new Tag("div");
                 infos.Keys.Each(type =>
@@ -28,11 +28,6 @@ namespace Brevitee.Management
                     //container.Child(new Tag("h1").Text(type.FullName));
                     //infos[type]
                 });
-            };
-
-            DocResult.DefaultXmlRenderer = (infos, output) =>
-            {
-
             };
         }
         public ActionResult Get(string[] classNames = null)

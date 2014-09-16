@@ -67,9 +67,9 @@ namespace Brevitee.Data
         /// <typeparam name="T">The type to analyse</typeparam>
         /// <returns>False if the Assembly that the specified type 
         /// is defined in has already been analysed, true otherwise</returns>
-        public bool WriteSchemaScript<T>() where T: Dao
+        public bool WriteSchemaScript<T>(bool skipIfDone = true) where T: Dao
         {
-            if (_done.Contains(typeof(T).Assembly))
+            if (_done.Contains(typeof(T).Assembly) && skipIfDone)
             {
                 return false;
             }
@@ -81,9 +81,9 @@ namespace Brevitee.Data
             return true;
         }
 
-        public bool WriteSchemaScript(Type type)
+        public bool WriteSchemaScript(Type type, bool skipIfDone = true)
         {
-            if (_done.Contains(type.Assembly))
+            if (_done.Contains(type.Assembly) && skipIfDone)
             {
                 return false;
             }
@@ -240,12 +240,12 @@ IF EXISTS (
 
         protected ColumnAttribute[] GetColumns(Type daoType)
         {
-            return _.GetColumns(daoType);
+            return Db.GetColumns(daoType);
         }
 
         protected ForeignKeyAttribute[] GetForeignKeys(Type daoType)
         {
-            return _.GetForeignKeys(daoType);
+            return Db.GetForeignKeys(daoType);
         }
     }
 }

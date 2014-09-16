@@ -31,7 +31,7 @@ namespace Brevitee.DaoRef
 
         // property:Id, columnName:Id	
         [Exclude]
-        [Brevitee.Data.KeyColumn(Name = "Id", ExtractedType = "BigInt", MaxLength = "8")]
+        [Brevitee.Data.KeyColumn(Name = "Id", DbDataType = "BigInt", MaxLength = "8")]
         public long? Id
         {
             get
@@ -45,7 +45,7 @@ namespace Brevitee.DaoRef
         }
 
         // property:Name, columnName:Name	
-        [Brevitee.Data.Column(Name = "Name", ExtractedType = "NVarChar", MaxLength = "255", AllowNull = false)]
+        [Brevitee.Data.Column(Name = "Name", DbDataType = "NVarChar", MaxLength = "255", AllowNull = false)]
         public string Name
         {
             get
@@ -63,7 +63,7 @@ namespace Brevitee.DaoRef
         [Brevitee.Data.ForeignKey(
             Table = "TestFkTable",
             Name = "TestTableId",
-            ExtractedType = "BigInt",
+            DbDataType = "BigInt",
             MaxLength = "8",
             AllowNull = false,
             ReferencedKey = "Id",
@@ -171,7 +171,7 @@ namespace Brevitee.DaoRef
             TestFkTableColumns c = new TestFkTableColumns();
             IQueryFilter filter = where(c);
 
-            Database db = database == null ? _.Db.For<TestFkTable>() : database;
+            Database db = database == null ? Db.For<TestFkTable>() : database;
             QuerySet query = GetQuerySet(db);
             query.Top<TestFkTable>(count);
             query.Where(filter);
@@ -190,7 +190,7 @@ namespace Brevitee.DaoRef
             TestFkTableColumns c = new TestFkTableColumns();
             IQueryFilter filter = where(c);
 
-            Database db = database == null ? _.Db.For<TestFkTable>() : database;
+            Database db = database == null ? Db.For<TestFkTable>() : database;
             QuerySet query = GetQuerySet(db);
             query.Count<TestFkTable>();
             query.Where(filter);

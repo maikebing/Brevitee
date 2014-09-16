@@ -18,6 +18,7 @@ namespace Brevitee.Server
         public TemplateInitializerBase(BreviteeServer server)
         {
             this.Server = server;
+            this._subscribers = new List<ILogger>();
         }
 
         public BreviteeServer Server
@@ -42,25 +43,7 @@ namespace Brevitee.Server
                 Initialized(this);
             }
         }
-
-        public event Action<AppConf> InitializingAppTemplates;
-        protected void OnInitializingAppTemplates(AppConf conf)
-        {
-            if (InitializingAppTemplates != null)
-            {
-                InitializingAppTemplates(conf);
-            }
-        }
-
-        public event Action<AppConf> InitializedAppTemplates;
-        protected void OnInitializedAppTemplates(AppConf conf)
-        {
-            if (InitializedAppTemplates != null)
-            {
-                InitializedAppTemplates(conf);
-            }
-        }
-
+        
         public event Action<DaoProxyRegistration> InitializingCommonDaoTemplates;
         protected void OnInitializingCommonDaoTemplates(DaoProxyRegistration reg)
         {
@@ -157,7 +140,7 @@ namespace Brevitee.Server
                     _subscribers.Add(logger);
                 }
 
-                string className = typeof(TemplateInitializerBase).Name;
+                string className = this.GetType().Name;//typeof(TemplateInitializerBase).Name;
                 Initializing += (ti) =>
                 {
                     logger.AddEntry("{0}::Initializ(ING)", className);
@@ -168,14 +151,29 @@ namespace Brevitee.Server
                     logger.AddEntry("{0}::Initialz(ED)", className);
                 };
 
-                InitializingAppTemplates += (appConf) =>
+                InitializingAppDaoTemplates += (appName, daoReg) =>
                 {
-                    logger.AddEntry("{0}::Initializ(ING) App Templates for ({1})", className, appConf.Name);
+                    logger.AddEntry("{0}::Initializ(ING) App[{1}] Templates for ({2})", className, appName, daoReg.ContextName);
                 };
 
-                InitializedAppTemplates += (appConf) =>
+                InitializedAppDaoTemplates += (appName, daoReg) =>
                 {
-                    logger.AddEntry("{0}::Initializ(ED) App Templates for ({1})", className, appConf.Name);
+                    logger.AddEntry("{0}::Initializ(ED) App[{1}] Templates for ({2})", className, appName, daoReg.ContextName);
+                };
+
+                InitializingCommonDaoTemplates += (daoReg) =>
+                {
+                    logger.AddEntry("{0}::Initializ(ING) Common Templates for ({0})", className, daoReg.ContextName);
+                };
+
+                InitializedCommonDaoTemplates += (daoReg) =>
+                {
+                    logger.AddEntry("{0}::Initializ(ED) Common Templates for ({0})", className, daoReg.ContextName);
+                };
+
+                InitializationException += (ex) =>
+                {
+                    logger.AddEntry("{0}::Initialization EXCEPTION: {1}", LogEventType.Warning, ex.Message);
                 };
             }
         }

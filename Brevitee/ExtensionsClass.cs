@@ -12,8 +12,11 @@ using System.Data;
 using System.IO;
 using Brevitee.Configuration;
 using System.Security.Cryptography;
+using System.Security.Principal;
 using System.Web.Script.Serialization;
 using System.Xml;
+using System.CodeDom;
+using System.CodeDom.Compiler;
 using Ionic.Zip;
 using Newtonsoft.Json;
 
@@ -21,6 +24,51 @@ namespace Brevitee
 {
     public static class ExtensionsClass
     {
+        static Dictionary<HashAlgorithms, Func<HashAlgorithm>> _hashAlgorithms;
+        static ExtensionsClass()
+        {
+            _hashAlgorithms = new Dictionary<HashAlgorithms, Func<HashAlgorithm>>();
+            _hashAlgorithms.Add(HashAlgorithms.MD5, () => MD5.Create());
+            _hashAlgorithms.Add(HashAlgorithms.RIPEMD160, () => RIPEMD160.Create());
+            _hashAlgorithms.Add(HashAlgorithms.SHA1, () => SHA1.Create());
+            _hashAlgorithms.Add(HashAlgorithms.SHA256, () => SHA256.Create());
+            _hashAlgorithms.Add(HashAlgorithms.SHA384, () => SHA384.Create());
+            _hashAlgorithms.Add(HashAlgorithms.SHA512, () => SHA512.Create());
+        }
+
+        public static string ToBase64(this byte[] data)
+        {
+            return Convert.ToBase64String(data);
+        }
+
+        public static byte[] FromBase64(this string data)
+        {
+            return Convert.FromBase64String(data);
+        }
+
+        public static FileInfo GetFileInfo(this Assembly assembly)
+        {
+            return new FileInfo(assembly.CodeBase.Replace("file:///", ""));
+        }
+
+        public static bool HasAdminRights(this WindowsIdentity identity)
+        {
+            WindowsPrincipal principal = new WindowsPrincipal(identity);
+            return principal.IsInRole(WindowsBuiltInRole.Administrator);
+        }
+
+        public static T Clone<T>(this T from) where T : class, new()
+        {
+            return from.CopyTo<T, T>();
+        }
+
+        public static T2 CopyTo<T1, T2>(this T1 from) where T2: class, new()
+        {
+            T2 result = new T2();
+            result.CopyProperties(from);
+            return result;
+        }
+
         public static bool UnzipResource(this Assembly assembly, Type siblingOfResource, string resourceName, string extractTo, ExtractExistingFileAction existingFileAction = ExtractExistingFileAction.DoNotOverwrite)
         {
             return UnzipResource(assembly, Path.Combine(siblingOfResource.Namespace, resourceName).Replace("\\", "."), extractTo, existingFileAction);
@@ -96,18 +144,7 @@ namespace Brevitee
 
             return zipFile;
         }
-
-        static Dictionary<HashAlgorithms, Func<HashAlgorithm>> _hashAlgorithms;        
-        static ExtensionsClass()
-        {
-            _hashAlgorithms = new Dictionary<HashAlgorithms, Func<HashAlgorithm>>();
-            _hashAlgorithms.Add(HashAlgorithms.MD5, () => MD5.Create());
-            _hashAlgorithms.Add(HashAlgorithms.RIPEMD160, () => RIPEMD160.Create());
-            _hashAlgorithms.Add(HashAlgorithms.SHA1, () => SHA1.Create());
-            _hashAlgorithms.Add(HashAlgorithms.SHA256, () => SHA256.Create());
-            _hashAlgorithms.Add(HashAlgorithms.SHA384, () => SHA384.Create());
-        }
-
+        
         public static T ToEnum<T>(this string value)
         {
             return (T)Enum.Parse(typeof(T), value);
@@ -302,6 +339,24 @@ namespace Brevitee
             return results;
         }
 
+        public static T ParseKeyValuePairs<T>(this string input, bool pascalCasify = true, string keyValueSeparator = ":", string elementSeparator = ";") where T: class, new()
+        {
+            T result = new T();
+            string[] elements = input.DelimitSplit(elementSeparator);
+            elements.Each(element =>
+            {
+                string[] kvp = element.DelimitSplit(keyValueSeparator);
+                Args.ThrowIf<ArgumentException>(kvp.Length != 2, "Unrecognized Key Value pair format: ({0})", element);
+
+                string key = pascalCasify ? kvp[0].PascalCase() : kvp[0];
+                string value = pascalCasify ? kvp[1].PascalCase() : kvp[1];
+                
+                result.Property(key, value);
+            });
+
+            return result;
+        }
+
         /// <summary>
         /// Iterate over the current IEnumerable passing
         /// each element to the specified action
@@ -399,7 +454,7 @@ namespace Brevitee
                 }
             }
         }
-
+        
         /// <summary>
         /// Iterate over the current IEnumerable passing
         /// each element to the specified action
@@ -476,7 +531,8 @@ namespace Brevitee
         }
 
         /// <summary>
-        /// Iterate over the current array passing
+        /// Iterate over the current array from the specified
+        /// startIndex passing
         /// each element to the specified action
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -484,7 +540,7 @@ namespace Brevitee
         /// <param name="action"></param>
         public static void Rest<T>(this T[] arr, int startIndex, Action<T> action)
         {
-            if (arr != null)
+            if (arr != null && startIndex <= arr.Length - 1)
             {
                 int l = arr.Length;
                 for (int i = startIndex; i < l; i++)
@@ -652,8 +708,39 @@ namespace Brevitee
             }
             return result;
         }
-        
-        
+
+        public static bool TryConstruct(this Type type, out object constructed, params object[] ctorParams)
+        {
+            bool result = true;
+            constructed = null;
+            try
+            {
+                constructed = Construct(type, ctorParams);
+            }
+            catch
+            {
+                result = false;
+            }
+
+            return result;
+        }
+
+        public static bool TryConstruct<T>(this Type type, out T constructed, params object[] ctorParams)
+        {
+            bool result = true;
+            constructed = default(T);
+            try
+            {
+                constructed = Construct<T>(type, ctorParams);
+            }
+            catch //(Exception ex)
+            {
+                result = false;
+            }
+
+            return result;
+        }
+
         /// <summary>
         /// Construct an instance of the type
         /// </summary>
@@ -666,6 +753,13 @@ namespace Brevitee
             return (T)type.Construct(ctorParams);
         }
 
+		/// <summary>
+		/// Construct an instance of the specified type passing in the
+		/// specified parameters to the constructor.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="ctorParams"></param>
+		/// <returns></returns>
         public static object Construct(this Type type, params object[] ctorParams)
         {
             List<Type> paramTypes = new List<Type>();
@@ -702,6 +796,13 @@ namespace Brevitee
             return valueOrNull;
         }
 
+        /// <summary>
+        /// An extension method to enable functional programming access
+        /// to string.Format.
+        /// </summary>
+        /// <param name="format"></param>
+        /// <param name="formatArgs"></param>
+        /// <returns></returns>
         public static string _Format(this string format, params object[] formatArgs)
         {
             return string.Format(format, formatArgs);
@@ -753,6 +854,12 @@ namespace Brevitee
             return JsonConvert.SerializeObject(value);
         }
 
+        public static string ToJson(this object value, bool pretty)
+        {
+            Newtonsoft.Json.Formatting formatting = pretty ? Newtonsoft.Json.Formatting.Indented: Newtonsoft.Json.Formatting.None;
+            return value.ToJson(formatting);
+        }
+
         public static string ToJson(this object value, Newtonsoft.Json.Formatting formatting)
         {
             return JsonConvert.SerializeObject(value, formatting);
@@ -796,6 +903,13 @@ namespace Brevitee
             }
         }
 
+        /// <summary>
+        /// Deserialize the current string as the specified
+        /// generic type T.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="json"></param>
+        /// <returns></returns>
         public static T FromJson<T>(this string json)
         {
             return JsonConvert.DeserializeObject<T>(json);
@@ -873,6 +987,11 @@ namespace Brevitee
             return file.ContentHash(HashAlgorithms.SHA384, encoding);
         }
 
+        public static string Sha512(this FileInfo file, Encoding encoding = null)
+        {
+            return file.ContentHash(HashAlgorithms.SHA512, encoding);
+        }
+
         public static string Hash(this string toBeHashed, HashAlgorithms algorithm, Encoding encoding = null)
         {
             if (encoding == null)
@@ -911,6 +1030,10 @@ namespace Brevitee
             return toBeHashed.Hash(HashAlgorithms.SHA256, encoding);
         }
 
+        public static string Sha512(this string toBeHashed, Encoding encoding = null)
+        {
+            return toBeHashed.Hash(HashAlgorithms.SHA512, encoding);
+        }
 
         public static byte[] HexToBytes(this string hexString)
         {
@@ -933,6 +1056,16 @@ namespace Brevitee
             return bs;
         }
 
+        /// <summary>
+        /// Attempts to determine if the file is a text file
+        /// by reading the first 5000 bytes and testing 
+        /// each byte to see if it is a valid Unicode 
+        /// character.  If a byte is found that doesn't have
+        /// a Unicode representation the return value will
+        /// be false
+        /// </summary>
+        /// <param name="fileInfo"></param>
+        /// <returns></returns>
         public static bool IsText(this FileInfo fileInfo)
         {
             if (!fileInfo.Exists)
@@ -1310,6 +1443,10 @@ namespace Brevitee
             {
                 return stringToPluralize + "es";
             }
+            else if (stringToPluralize.ToLowerInvariant().EndsWith("ey"))
+            {
+                return stringToPluralize + "s";
+            }
             else if (stringToPluralize.ToLowerInvariant().EndsWith("y"))
             {
                 return stringToPluralize.Substring(0, stringToPluralize.Length - 1) + "ies";
@@ -1320,6 +1457,12 @@ namespace Brevitee
             }
         }
 
+        /// <summary>
+        /// Gets the full path to the App_Data folder if HttpContext.Current is not null.
+        /// Otherwise returns the full path to Environment.SpecialFolder.ApplicationData
+        /// </summary>
+        /// <param name="any"></param>
+        /// <returns></returns>
         public static string GetAppDataFolder(this object any)
         {
             StringBuilder path = new StringBuilder();
@@ -1415,6 +1558,20 @@ namespace Brevitee
             }
 
             return stringToTrim.Substring(0, count);
+        }
+
+        public static string TryPropertiesToString(this object obj, string separator = "\r\n")
+        {
+            try
+            {
+                return obj.PropertiesToString(separator);
+            }
+            catch //(Exception ex)
+            {
+
+            }
+
+            return string.Empty;
         }
 
         public static string PropertiesToString(this object obj, string separator = "\r\n")

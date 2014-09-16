@@ -31,7 +31,7 @@ namespace SampleData
 		}
 
 	// property:Id, columnName:Id	
-	[Brevitee.Data.KeyColumn(Name="Id", ExtractedType="BigInt", MaxLength="8")]
+	[Brevitee.Data.KeyColumn(Name="Id", DbDataType="BigInt", MaxLength="8")]
 	public long? Id
 	{
 		get
@@ -45,7 +45,7 @@ namespace SampleData
 	}
 
 	// property:SHA256, columnName:SHA256	
-	[Brevitee.Data.Column(Name="SHA256", ExtractedType="Binary", MaxLength="32", AllowNull=false)]
+	[Brevitee.Data.Column(Name="SHA256", DbDataType="Binary", MaxLength="32", AllowNull=false)]
 	public byte[] SHA256
 	{
 		get
@@ -59,7 +59,7 @@ namespace SampleData
 	}
 
 	// property:Modified, columnName:Modified	
-	[Brevitee.Data.Column(Name="Modified", ExtractedType="DateTime", MaxLength="8", AllowNull=false)]
+	[Brevitee.Data.Column(Name="Modified", DbDataType="DateTime", MaxLength="8", AllowNull=false)]
 	public DateTime Modified
 	{
 		get
@@ -73,7 +73,7 @@ namespace SampleData
 	}
 
 	// property:Verified, columnName:Verified	
-	[Brevitee.Data.Column(Name="Verified", ExtractedType="Bit", MaxLength="1", AllowNull=false)]
+	[Brevitee.Data.Column(Name="Verified", DbDataType="Bit", MaxLength="1", AllowNull=false)]
 	public bool? Verified
 	{
 		get
@@ -91,7 +91,7 @@ namespace SampleData
 	[Brevitee.Data.ForeignKey(
         Table="Password",
 		Name="UserId", 
-		ExtractedType="BigInt", 
+		DbDataType="BigInt", 
 		MaxLength="8",
 		AllowNull=false, 
 		ReferencedKey="Id",
@@ -199,7 +199,7 @@ namespace SampleData
             PasswordColumns c = new PasswordColumns();
             IQueryFilter filter = where(c);         
             
-			Database db = database == null ? _.Db.For<Password>(): database;
+			Database db = database == null ? Db.For<Password>(): database;
 			QuerySet query = GetQuerySet(db); 
             query.Top<Password>(count);
             query.Where(filter);
@@ -218,7 +218,7 @@ namespace SampleData
 			PasswordColumns c = new PasswordColumns();
 			IQueryFilter filter = where(c) ;
 
-			Database db = database == null ? _.Db.For<Password>(): database;
+			Database db = database == null ? Db.For<Password>(): database;
 			QuerySet query = GetQuerySet(db);	 
 			query.Count<Password>();
 			query.Where(filter);	  

@@ -15,7 +15,7 @@ namespace Brevitee.Logging
 		{
 			get
 			{
-				return _.Db.For("DaoLogger2");
+                return Brevitee.Data.Db.For("DaoLogger2");
 			}
 		}
 

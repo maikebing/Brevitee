@@ -1,0 +1,1 @@
+{"TextReplacementFileExtensions":[".cmd",".nuspec",".txt",".xml",".transform"],"CopyAllFiles":true,"CopyExtensions":[],"SourceFolder":".\\Brevitee","TargetFolder":".\\Brevitee","TextReplacements":[{"OldText":"Brevitee","NewText":"Brevitee"},{"OldText":"Core","NewText":"Apellanes"}]}

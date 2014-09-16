@@ -35,7 +35,7 @@ namespace Brevitee.ServiceProxy
         public override void ExecuteResult(ControllerContext context)
         {
             Uri uri = context.HttpContext.Request.Url;
-            string defaultBaseAddress = string.Format("{0}://{1}{2}", uri.Scheme, uri.Host, uri.IsDefaultPort ? "/" : string.Format(":{0}/", uri.Port));
+            string defaultBaseAddress = ServiceProxySystem.GetBaseAddress(uri);
 
             StringBuilder code = GenerateCSharpProxyCode(defaultBaseAddress);
 
@@ -44,6 +44,7 @@ namespace Brevitee.ServiceProxy
 
             context.HttpContext.Response.Write(code.ToString());
         }
+
         private StringBuilder GenerateCSharpProxyCode(string defaultBaseAddress)
         {
             return ServiceProxySystem.GenerateCSharpProxyCode(defaultBaseAddress, ClassNames, Namespace, ContractNamespace);

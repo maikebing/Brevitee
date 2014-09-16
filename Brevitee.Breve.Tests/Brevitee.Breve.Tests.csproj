@@ -91,6 +91,10 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Brevitee.Breve\Brevitee.Breve.csproj">
+      <Project>{0d88453f-ea32-48f4-91ce-634705c063a6}</Project>
+      <Name>Brevitee.Breve</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Brevitee.CommandLine\Brevitee.CommandLine.csproj">
       <Project>{ea9863a9-8e0b-4497-b7fd-abf450a3e468}</Project>
       <Name>Brevitee.CommandLine</Name>

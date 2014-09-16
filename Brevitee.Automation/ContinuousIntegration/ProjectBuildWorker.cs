@@ -23,8 +23,15 @@ namespace Brevitee.Automation.ContinuousIntegration
         protected override FileInfo[] GetBuildFiles()
         {
             DirectoryInfo sourceDir = new DirectoryInfo(SourceDirectory);
-            FileInfo[] results = sourceDir.GetFiles(ProjectFileName, SearchOption.AllDirectories);
-            
+			InvalidOperationException invalidOperationException = new InvalidOperationException("The specified ProjectFileName ({0}) was not found (additional searches for {0}.csproj and {0}.vbproj were also done with no results)"._Format(ProjectFileName));
+
+			if (!sourceDir.Exists)
+			{
+				throw invalidOperationException;
+			}
+
+            FileInfo[] results = sourceDir.GetFiles(ProjectFileName, SearchOption.AllDirectories);            
+
             if (results.Length == 0)
             {
                 results = sourceDir.GetFiles("{0}.csproj"._Format(ProjectFileName), SearchOption.AllDirectories);
@@ -37,7 +44,7 @@ namespace Brevitee.Automation.ContinuousIntegration
 
             if (results.Length == 0)
             {
-                throw new InvalidOperationException("The specified ProjectFileName ({0}) was not found (additional searches for {0}.csproj and {0}.vbproj were also done with no results)"._Format(ProjectFileName));
+				throw invalidOperationException;
             }
 
             return results;

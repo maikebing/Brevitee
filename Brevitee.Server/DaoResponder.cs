@@ -137,7 +137,7 @@ namespace Brevitee.Server
 
         #region IResponder Members
 
-        public override bool TryRespond(IContext context)
+        public override bool TryRespond(IHttpContext context)
         {
             if (!this.IsInitialized)
             {
@@ -272,9 +272,18 @@ namespace Brevitee.Server
                     format.AppendLine("*** APP Dao Generation FAILED ***");
                     format.AppendLine("{0}::AppName::{1}");
                     format.AppendLine("\t{0}::DbJSFile::{2}");
-                    format.AppendLine("\t{0}::Exception::{3}");
+                    format.AppendLine("\t{0}::Message::{3}");
+                    format.AppendLine("\t{0}::Exception::{4}");
                     format.AppendLine("*** /end APP Dao Generation FAILED ***");
-                    logger.AddEntry(format.ToString(), LogEventType.Error, className, appName, dbJs.FullName, result.ExceptionMessage);
+                    logger.AddEntry(format.ToString(), LogEventType.Error, className, appName, dbJs.FullName, result.Message, result.ExceptionMessage);
+                };
+                this.SchemaInitializing += (appName, si) =>
+                {
+                    logger.AddEntry("{0}::Schema Initializ(ING) AppName=({1}), SchemaContext=({2})", className, appName, si.SchemaContext); // SchemaName isn't set until Initialize completes
+                };
+                this.SchemaInitialized += (appName, si) =>
+                {
+                    logger.AddEntry("{0}::Schema Initializ(ED) AppName=({1}), SchemaName=({2})", className, appName, si.SchemaName);
                 };
                 this.RegisteringCommonDaoBin += (daoBin) =>
                 {
@@ -284,6 +293,24 @@ namespace Brevitee.Server
                 {
                     logger.AddEntry("{0}::Register(ED) dao bin {1}", className, daoBin.FullName);
                 };
+            }
+        }
+
+        public event Action<string, SchemaInitializer> SchemaInitializing;
+        public event Action<string, SchemaInitializer> SchemaInitialized;
+
+        protected void OnSchemaInitializing(string appName, SchemaInitializer initializer)
+        {
+            if (SchemaInitializing != null)
+            {
+                SchemaInitializing(appName, initializer);
+            }
+        }
+        protected void OnSchemaInitialized(string appName, SchemaInitializer initializer)
+        {
+            if (SchemaInitialized != null)
+            {
+                SchemaInitialized(appName, initializer);
             }
         }
 
@@ -322,12 +349,9 @@ namespace Brevitee.Server
         private void RegisterNewAppDaoDll(string appName, FileInfo dbJs, DirectoryInfo daoBin, Result result)
         {
             FileInfo daoDll = new FileInfo(Path.Combine(daoBin.FullName, "{0}.dll"._Format(result.Namespace)));
-            DaoProxyRegistration reg = RegisterCommonDaoDll(daoDll);
+            //DaoProxyRegistration reg = RegisterCommonDaoDll(daoDll);
+            DaoProxyRegistration reg = DaoProxyRegistration.Register(daoDll);
             string name = appName.ToLowerInvariant();
-            if (!AppDaoProxyRegistrations.ContainsKey(name))
-            {
-                AppDaoProxyRegistrations.Add(name, new List<DaoProxyRegistration>());
-            }
 
             AppDaoProxyRegistrations[name].Add(reg);
         }
@@ -343,15 +367,15 @@ namespace Brevitee.Server
             OnInitializing();
             lock (_initializeLock)
             {
-                string daoRoot = "~/dao";
+                string daoRoot = "~/bin";
 
                 // if server.conf.generatedao
                 if (BreviteeConf.GenerateDao)
                 {
-                    InitializeCommonDao(daoRoot);
+                    GenerateCommonDao(daoRoot);
                 }
                  
-                DirectoryInfo daoBinDir = BreviteeConf.Fs.GetDirectory(Path.Combine(daoRoot, "bin"));
+                DirectoryInfo daoBinDir = BreviteeConf.Fs.GetDirectory(daoRoot);
                 RegisterCommonDaoBin(daoBinDir);
 
                 BreviteeConf.ReloadAppConfigs();
@@ -359,15 +383,33 @@ namespace Brevitee.Server
                 // for each appconfig
                 BreviteeConf.AppConfigs.Each(appConf =>
                 {
-                    DirectoryInfo appDaoBinDir = appConf.AppRoot.GetDirectory(Path.Combine(daoRoot, "bin"));                    
+                    DirectoryInfo appDaoBinDir = appConf.AppRoot.GetDirectory(daoRoot);
+
+                    string name = appConf.Name.ToLowerInvariant();
+                    if (!AppDaoProxyRegistrations.ContainsKey(name))
+                    {
+                        AppDaoProxyRegistrations.Add(name, new List<DaoProxyRegistration>());
+                    }                    
+
                     //  if appconf.generatedao
                     if (appConf.GenerateDao)
                     {
-                        InitializeAppDao(daoRoot, appConf, appDaoBinDir);
+                        GenerateAppDao(daoRoot, appConf, appDaoBinDir);
                     }
 
                     // register each dao type using DaoRegistration
                     RegisterAppDaoBin(appConf.Name, appDaoBinDir);
+
+                    appConf.SchemaInitializers.Each(si =>
+                    {
+                        OnSchemaInitializing(name, si);
+                        Exception ex;
+                        if (!si.Initialize(Logger, out ex))
+                        {
+                            Logger.AddEntry("Failed to initilialize schema ({0}): {1}", ex, si.SchemaContext, ex.Message);
+                        }
+                        OnSchemaInitialized(name, si);
+                    });
                 });
                 
                 IsInitialized = true;
@@ -377,23 +419,21 @@ namespace Brevitee.Server
 
        
 
-        protected internal virtual void InitializeCommonDao(string daoRoot)
+        protected internal virtual void GenerateCommonDao(string daoRoot)
         {
             GenerateCommonDaoSucceeded += RegisterNewCommonDaoDll;
             //  generate common dao for each *.db.js in ~s:/dao/
-            GenerateCommonDao(daoRoot);
+            DirectoryInfo daoBinDir = BreviteeConf.Fs.GetDirectory(Path.Combine(daoRoot, "bin"));
+
+            GenerateCommonDao(daoRoot, daoBinDir, "*.db.js");
+            GenerateCommonDao(daoRoot, daoBinDir, "*.db.json");
 
             GenerateCommonDaoSucceeded -= RegisterNewCommonDaoDll; // only stays attached for the generation process if GenerateDao is true
         }
 
-        protected internal virtual void InitializeAppDao(string daoRoot, AppConf appConf, DirectoryInfo appDaoBinDir)
+        protected internal virtual void GenerateAppDao(string daoRoot, AppConf appConf, DirectoryInfo appDaoBinDir)
         {
             GenerateAppDaoSucceeded += RegisterNewAppDaoDll;
-
-            if (!appDaoBinDir.Exists)
-            {
-                appDaoBinDir.Create();
-            }
 
             GenerateAppDaos(daoRoot, appConf, appDaoBinDir, "*.db.js");
             GenerateAppDaos(daoRoot, appConf, appDaoBinDir, "*.db.json");
@@ -404,10 +444,6 @@ namespace Brevitee.Server
         protected internal void GenerateAppDaos(string daoRoot, AppConf appConf, DirectoryInfo appDaoBinDir, string fileSearchPattern)
         {
             DirectoryInfo daoTemp = appConf.AppRoot.GetDirectory(Path.Combine(daoRoot, "appdaotmp_".RandomLetters(4)));
-            if (!daoTemp.Exists)
-            {
-                daoTemp.Create();
-            }
 
             // get the saved hashes to determine if changes were made
             string hashPath = GetHashFilePath(appDaoBinDir);
@@ -445,17 +481,6 @@ namespace Brevitee.Server
             return hashPath;
         }
         
-        private void GenerateCommonDao(string daoRoot)
-        {
-            DirectoryInfo daoBinDir = BreviteeConf.Fs.GetDirectory(Path.Combine(daoRoot, "bin"));
-            if (!daoBinDir.Exists)
-            {
-                daoBinDir.Create();
-            }
-            GenerateCommonDao(daoRoot, daoBinDir, "*.db.js");
-            GenerateCommonDao(daoRoot, daoBinDir, "*.db.json");
-        }
-
         private void GenerateCommonDao(string daoRoot, DirectoryInfo daoBinDir, string fileSearchPattern)
         {
             DirectoryInfo daoTemp = BreviteeConf.Fs.GetDirectory(Path.Combine(daoRoot, "commondaotmp_".RandomLetters(4)));
@@ -563,10 +588,15 @@ namespace Brevitee.Server
             try
             {
                 OnRegisteringAppDaoBin(daoBinDir);
+                string name = appName.ToLowerInvariant();
                 DaoProxyRegistration[] daoRegistrations = DaoProxyRegistration.Register(daoBinDir, BreviteeConf.DaoSearchPattern);
                 daoRegistrations.Each(daoReg =>
                 {
-                    AppDaoProxyRegistrations[appName].AddRange(daoRegistrations);
+                    List<DaoProxyRegistration> list = AppDaoProxyRegistrations[name];
+                    if (!list.Contains(daoReg))
+                    {
+                        AppDaoProxyRegistrations[name].Add(daoReg);
+                    }
                 });
                 OnRegisteredAppDaoBin(daoBinDir);
             }
@@ -606,7 +636,7 @@ namespace Brevitee.Server
         private void GenerateAppDao(string appName, DirectoryInfo daoBinDir, DirectoryInfo daoTemp, FileInfo jsOrJsonDb)
         {
             OnGeneratingAppDao(appName, jsOrJsonDb, daoBinDir);
-
+            
             Result schemaResult = GenerateDaoForFile(daoBinDir, daoTemp, jsOrJsonDb);
 
             if (!schemaResult.Success)
@@ -621,17 +651,28 @@ namespace Brevitee.Server
 
         private static Result GenerateDaoForFile(DirectoryInfo daoBinDir, DirectoryInfo daoTemp, FileInfo dbJs)
         {
-            SchemaManager schemaManager = new SchemaManager();
+            // Save the current directory and set it to where "we" are
+            FileInfo assemblyLocation = new FileInfo(Assembly.GetExecutingAssembly().Location);
+            DirectoryInfo curDirShouldBe = assemblyLocation.Directory;
+            string curDirIs = Environment.CurrentDirectory;
+            Environment.CurrentDirectory = curDirShouldBe.FullName;
+
+            SchemaManager schemaManager = new UuidSchemaManager();//new SchemaManager();
+
+            DirectoryInfo partialsDir = new DirectoryInfo(Path.Combine(dbJs.Directory.FullName, "DaoPartials"));
             Result schemaResult = new Result("Generator Not Run, invalid file extension", false);
             if (dbJs.Extension.ToLowerInvariant().Equals(".js"))
             {
-                schemaResult = schemaManager.Generate(dbJs, daoBinDir, daoTemp);
+                schemaResult = schemaManager.Generate(dbJs, daoBinDir, daoTemp, partialsDir);
             }
             else if (dbJs.Extension.ToLowerInvariant().Equals(".json"))
             {
                 string json = File.ReadAllText(dbJs.FullName);
                 schemaResult = schemaManager.Generate(json, daoBinDir, daoTemp);
             }
+
+            // Reset the current directory
+            Environment.CurrentDirectory = curDirIs;
             return schemaResult;
         }
 

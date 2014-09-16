@@ -7,7 +7,7 @@ using System.Threading;
 using Brevitee;
 using Brevitee.Logging;
 
-namespace Brevitee.Html
+namespace Brevitee.Server
 {
     public class HttpServer : IDisposable
     {
@@ -19,9 +19,9 @@ namespace Brevitee.Html
         private int _port;
         private ILogger _logger;
 
-        public HttpServer(int maxThreads, ILogger logger, int port = 80)
+        public HttpServer(int maxThreads, ILogger logger)
         {
-            _port = port;
+            //_port = port;
             _workers = new Thread[maxThreads];
             _queue = new Queue<HttpListenerContext>();
             _stop = new ManualResetEvent(false);
@@ -29,47 +29,37 @@ namespace Brevitee.Html
             _listener = new HttpListener();
             _handlerThread = new Thread(HandleRequests);
             _logger = logger;
+            _hostPrefixes = new List<HostPrefix>();
         }
-
-        public int Port
-        {
-            get { return _port; }
-            set { _port = value; }
-        }
-
-        string _hostName;
-        public string HostName
+        
+        List<HostPrefix> _hostPrefixes;
+        public HostPrefix[] HostPrefixes
         {
             get
             {
-                if (string.IsNullOrEmpty(_hostName))
-                {
-                    _hostName = "+";
-                }
-
-                return _hostName;
+                return _hostPrefixes.ToArray();
             }
             set
             {
-                _hostName = value;
+                _hostPrefixes = new List<HostPrefix>(value);
             }
         }
+        
 
         public void Start()
         {
-            Start(HostName, _port);
+            Start(HostPrefixes);
         }
-
-        public void Start(int port)
+        
+        public void Start(HostPrefix[] hostName)
         {
-            Start(HostName, port);
-        }
-
-        public void Start(string hostName, int port)
-        {
-            string path = string.Format(@"http://{0}:{1}/", hostName, port);
-            _logger.AddEntry("HttpServer: {0}", path);
-            _listener.Prefixes.Add(path);
+            hostName.Each(hp =>
+            {
+                string path = hp.ToString();
+                _logger.AddEntry("HttpServer: {0}", path);
+                _listener.Prefixes.Add(path);
+            });
+            
             _listener.Start();
             _handlerThread.Start();
 

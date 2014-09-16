@@ -33,7 +33,7 @@ namespace SampleData
 		}
 
 	// property:Id, columnName:Id	
-	[Brevitee.Data.KeyColumn(Name="Id", ExtractedType="BigInt", MaxLength="8")]
+	[Brevitee.Data.KeyColumn(Name="Id", DbDataType="BigInt", MaxLength="8")]
 	public long? Id
 	{
 		get
@@ -47,7 +47,7 @@ namespace SampleData
 	}
 
 	// property:LastModified, columnName:LastModified	
-	[Brevitee.Data.Column(Name="LastModified", ExtractedType="DateTime", MaxLength="8", AllowNull=false)]
+	[Brevitee.Data.Column(Name="LastModified", DbDataType="DateTime", MaxLength="8", AllowNull=false)]
 	public DateTime LastModified
 	{
 		get
@@ -61,7 +61,7 @@ namespace SampleData
 	}
 
 	// property:Quantity, columnName:Quantity	
-	[Brevitee.Data.Column(Name="Quantity", ExtractedType="Int", MaxLength="4", AllowNull=true)]
+	[Brevitee.Data.Column(Name="Quantity", DbDataType="Int", MaxLength="4", AllowNull=true)]
 	public int? Quantity
 	{
 		get
@@ -79,7 +79,7 @@ namespace SampleData
 	[Brevitee.Data.ForeignKey(
         Table="Have",
 		Name="UserId", 
-		ExtractedType="BigInt", 
+		DbDataType="BigInt", 
 		MaxLength="8",
 		AllowNull=false, 
 		ReferencedKey="Id",
@@ -114,7 +114,7 @@ namespace SampleData
 	[Brevitee.Data.ForeignKey(
         Table="Have",
 		Name="HaveStatusId", 
-		ExtractedType="BigInt", 
+		DbDataType="BigInt", 
 		MaxLength="8",
 		AllowNull=false, 
 		ReferencedKey="Id",
@@ -149,7 +149,7 @@ namespace SampleData
 	[Brevitee.Data.ForeignKey(
         Table="Have",
 		Name="ItemId", 
-		ExtractedType="BigInt", 
+		DbDataType="BigInt", 
 		MaxLength="8",
 		AllowNull=false, 
 		ReferencedKey="Id",
@@ -293,7 +293,7 @@ namespace SampleData
             HaveColumns c = new HaveColumns();
             IQueryFilter filter = where(c);         
             
-			Database db = database == null ? _.Db.For<Have>(): database;
+			Database db = database == null ? Db.For<Have>(): database;
 			QuerySet query = GetQuerySet(db); 
             query.Top<Have>(count);
             query.Where(filter);
@@ -312,7 +312,7 @@ namespace SampleData
 			HaveColumns c = new HaveColumns();
 			IQueryFilter filter = where(c) ;
 
-			Database db = database == null ? _.Db.For<Have>(): database;
+			Database db = database == null ? Db.For<Have>(): database;
 			QuerySet query = GetQuerySet(db);	 
 			query.Count<Have>();
 			query.Where(filter);	  

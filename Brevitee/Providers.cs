@@ -15,6 +15,7 @@ namespace Brevitee
     /// magic strings and optionally allows for the object to be 
     /// set once only without being overwritten.
     /// </summary>
+    [Obsolete("This mechanism should no longer be used in favor of Incubator and the various static instances such as Incubator.Default and ServiceProxySystem.Incubator")]
     public static class Providers
     {
         private class ImplementationProviders

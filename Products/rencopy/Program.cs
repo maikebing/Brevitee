@@ -115,9 +115,24 @@ namespace rencopy
 
             // get the files from the current dir
             FileInfo[] files = _curDir.GetFiles();
+			List<string> fileNamesToIgnore = new List<string>();
+			foreach (string ignore in _config.Ignore)
+			{
+				FileInfo[] filesToIgnore = _curDir.GetFiles(ignore);
+				foreach (FileInfo file in filesToIgnore)
+				{
+					fileNamesToIgnore.Add(file.Name);
+				}
+			}
+
             for (int i = 0; i < files.Length; i++)
             {
                 FileInfo file = files[i];
+				if (fileNamesToIgnore.Contains(file.Name))
+				{
+					continue;
+				}
+
                 string content = string.Empty;
                 bool writeContent = false;
                 bool copyBare = fileExtensionsToCopyBare.Contains(file.Extension) || _config.CopyAllFiles;
@@ -214,9 +229,23 @@ namespace rencopy
         private static void Traverse()
         {
             DirectoryInfo[] subDirs = _curDir.GetDirectories();
+			List<string> directoryNamesToIgnore = new List<string>();
+			foreach (string ignore in _config.Ignore)
+			{
+				DirectoryInfo[] dirs = _curDir.GetDirectories(ignore);
+				foreach(DirectoryInfo dir in dirs)
+				{
+					directoryNamesToIgnore.Add(dir.Name);
+				}
+			}
+
             for (int i = 0; i < subDirs.Length; i++)
             {
                 _curDir = subDirs[i];
+				if(directoryNamesToIgnore.Contains(_curDir.Name))
+				{
+					continue;
+				}
                 CopyFiles();
             }
         }
@@ -316,29 +345,34 @@ namespace rencopy
         {
             if (!File.Exists(_configFile))
             {
-                OutFormat("{0} file not found, beginning configuration.", ConsoleColor.Yellow, _configFile);
+                OutLineFormat("{0} file not found, beginning configuration.", ConsoleColor.Yellow, _configFile);
                 ConfigureCopyAndRename();
             }
             else
             {
                 RenCopyConfig config = File.ReadAllText(_configFile).FromJson<RenCopyConfig>();
-                OutFormat("SrcFolder: {0}", ConsoleColor.Cyan, config.SourceFolder);
-                OutFormat("DstFolder: {0}", ConsoleColor.Cyan, config.TargetFolder);
-                OutFormat("\t*** extensions\r\n");
+                OutLineFormat("SrcFolder: {0}", ConsoleColor.Cyan, config.SourceFolder);
+                OutLineFormat("DstFolder: {0}", ConsoleColor.Cyan, config.TargetFolder);
+                OutLineFormat("\t*** extensions\r\n");
                 foreach (string ext in config.TextReplacementFileExtensions)
                 {
-                    OutFormat("\t{0}\r\n", ConsoleColor.Magenta, ext);
+                    OutLineFormat("\t{0}", ConsoleColor.Magenta, ext);
                 }
-                OutFormat("\t*** copy extensions\r\n");
+                OutLineFormat("\t*** copy extensions\r\n");
                 foreach (string ext in config.CopyExtensions)
                 {
-                    OutFormat("\t{0}\r\n", ConsoleColor.Blue, ext);
+                    OutLineFormat("\t{0}\r\n", ConsoleColor.Blue, ext);
                 }
-                OutFormat("\t*** replacements\r\n");
+                OutLineFormat("\t*** replacements\r\n");
                 foreach (TextReplacement r in config.TextReplacements)
                 {
-                    OutFormat("\told: {0}, new: {1}\r\n", ConsoleColor.Yellow, r.OldText, r.NewText);
+                    OutLineFormat("\told: {0}, new: {1}", ConsoleColor.Yellow, r.OldText, r.NewText);
                 }
+				OutLineFormat("\t*** ignore patterns (for files and folders)");
+				foreach (string ignore in config.Ignore)
+				{
+					OutLineFormat("\t{0}", ignore);
+				}
             }
         }
     }

@@ -33,7 +33,7 @@ namespace SampleData
 		}
 
 	// property:Id, columnName:Id	
-	[Brevitee.Data.KeyColumn(Name="Id", ExtractedType="BigInt", MaxLength="8")]
+	[Brevitee.Data.KeyColumn(Name="Id", DbDataType="BigInt", MaxLength="8")]
 	public long? Id
 	{
 		get
@@ -47,7 +47,7 @@ namespace SampleData
 	}
 
 	// property:Action, columnName:Action	
-	[Brevitee.Data.Column(Name="Action", ExtractedType="NVarChar", MaxLength="255", AllowNull=false)]
+	[Brevitee.Data.Column(Name="Action", DbDataType="NVarChar", MaxLength="255", AllowNull=false)]
 	public string Action
 	{
 		get
@@ -61,7 +61,7 @@ namespace SampleData
 	}
 
 	// property:DateTime, columnName:DateTime	
-	[Brevitee.Data.Column(Name="DateTime", ExtractedType="DateTime", MaxLength="8", AllowNull=false)]
+	[Brevitee.Data.Column(Name="DateTime", DbDataType="DateTime", MaxLength="8", AllowNull=false)]
 	public DateTime DateTime
 	{
 		get
@@ -79,7 +79,7 @@ namespace SampleData
 	[Brevitee.Data.ForeignKey(
         Table="Activity",
 		Name="UserId", 
-		ExtractedType="BigInt", 
+		DbDataType="BigInt", 
 		MaxLength="8",
 		AllowNull=false, 
 		ReferencedKey="Id",
@@ -114,7 +114,7 @@ namespace SampleData
 	[Brevitee.Data.ForeignKey(
         Table="Activity",
 		Name="ItemId", 
-		ExtractedType="BigInt", 
+		DbDataType="BigInt", 
 		MaxLength="8",
 		AllowNull=false, 
 		ReferencedKey="Id",
@@ -258,7 +258,7 @@ namespace SampleData
             ActivityColumns c = new ActivityColumns();
             IQueryFilter filter = where(c);         
             
-			Database db = database == null ? _.Db.For<Activity>(): database;
+			Database db = database == null ? Db.For<Activity>(): database;
 			QuerySet query = GetQuerySet(db); 
             query.Top<Activity>(count);
             query.Where(filter);
@@ -277,7 +277,7 @@ namespace SampleData
 			ActivityColumns c = new ActivityColumns();
 			IQueryFilter filter = where(c) ;
 
-			Database db = database == null ? _.Db.For<Activity>(): database;
+			Database db = database == null ? Db.For<Activity>(): database;
 			QuerySet query = GetQuerySet(db);	 
 			query.Count<Activity>();
 			query.Where(filter);	  

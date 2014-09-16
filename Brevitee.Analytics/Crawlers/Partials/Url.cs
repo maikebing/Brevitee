@@ -29,11 +29,14 @@ namespace Brevitee.Analytics.Data
 
                 QueryString queryString = GetQueryString(uri);
 
+				Fragment fragment = GetFragment(uri);
+
                 Url check = Url.OneWhere(c => c.ProtocolId == proto.Id
                     && c.DomainId == domain.Id
                     && c.PortId == port.Id
                     && c.PathId == path.Id
-                    && c.QueryStringId == queryString.Id);
+                    && c.QueryStringId == queryString.Id
+					&& c.FragmentId == fragment.Id);
 
                 if (check == null)
                 {
@@ -43,6 +46,7 @@ namespace Brevitee.Analytics.Data
                     check.PortId = port.Id;
                     check.PathId = path.Id;
                     check.QueryStringId = queryString.Id;
+					check.FragmentId = fragment.Id;
                 }
 
                 if (save)
@@ -99,6 +103,19 @@ namespace Brevitee.Analytics.Data
 
             return path;
         }
+
+		private static Fragment GetFragment(Uri uri)
+		{
+			Fragment f = Fragment.OneWhere(c => c.Value == uri.Fragment);
+			if (f == null)
+			{
+				f = new Fragment();
+				f.Value = uri.Fragment;
+				f.Save();
+			}
+
+			return f;
+		}
 
         private static QueryString GetQueryString(Uri uri)
         {
@@ -209,7 +226,17 @@ namespace Brevitee.Analytics.Data
                     queryString = string.Format("?{0}", queryString);
                 }
             }
-            return string.Format("{0}://{1}{2}{3}{4}", proto, domain, port, path, queryString);
+
+			string fragment = "";
+			if (this.FragmentOfFragmentId != null)
+			{
+				fragment = this.FragmentOfFragmentId.Value;
+				if (!fragment.StartsWith("#"))
+				{
+					fragment = string.Format("#{0}", fragment);
+				}
+			}
+            return string.Format("{0}://{1}{2}{3}{4}{5}", proto, domain, port, path, queryString, fragment);
         }
     }
 }

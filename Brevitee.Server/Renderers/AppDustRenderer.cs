@@ -29,8 +29,8 @@ namespace Brevitee.Server.Renderers
         string _compiledDustTemplates;
         object _compiledDustTemplatesLock = new object();
         /// <summary>
-        /// Represents the compiled javascript result of doing dust.compile
-        /// against all the files found in ~a:/dust.
+        /// All application compiled dust templates including Server level
+        /// layouts, templates and app custom and type templates
         /// </summary>
         public override string CompiledDustTemplates
         {
@@ -39,9 +39,12 @@ namespace Brevitee.Server.Renderers
                 return _compiledDustTemplatesLock.DoubleCheckLock(ref _compiledDustTemplates, () =>
                 {
                     StringBuilder templates = new StringBuilder();
-                    DirectoryInfo appDust = new DirectoryInfo(Path.Combine(AppContentResponder.Root, "dust"));
+                    templates.AppendLine(CompiledLayoutTemplates);
+                    templates.AppendLine(CompiledCommonTemplates);
 
-                    string appCompiledTemplates = DustScript.CompileDirectory(appDust);
+                    DirectoryInfo appDust = new DirectoryInfo(Path.Combine(AppContentResponder.AppRoot.Root, "dust"));
+                    string domAppName = AppConf.DomApplicationIdFromAppName(this.AppContentResponder.AppConf.Name);
+                    string appCompiledTemplates = DustScript.CompileDirectory(appDust, "*.dust", SearchOption.AllDirectories, domAppName + ".");
 
                     templates.Append(appCompiledTemplates);
                     return templates.ToString();
@@ -49,44 +52,34 @@ namespace Brevitee.Server.Renderers
             }
         }
 
-        string _compiledDustTypeTemplates;
-        object _compiledDustTypeTemplatesLock = new object();
-        /// <summary>
-        /// The combination of CompiledDustTemplates and all type templates
-        /// </summary>
-        public string CompiledDustTypeTemplates
+        protected internal bool TemplateExists(Type anyType, string templateFileNameWithoutExtension, out string fullPath)
         {
-            get
-            {
-                return _compiledDustTemplatesLock.DoubleCheckLock(ref _compiledDustTypeTemplates, () =>
-                {
-                    StringBuilder result = new StringBuilder();
-                    result.AppendLine(CompiledDustTemplates);
-
-                    DirectoryInfo dustDir = new DirectoryInfo(Path.Combine(AppContentResponder.Root, "dust"));
-                    DirectoryInfo[] typeSubDirs = dustDir.GetDirectories();
-                    typeSubDirs.Each(subDir =>
-                    {
-                        result.AppendLine(DustScript.CompileDirectory(subDir, "*.dust"));
-                    });
-
-                    return result.ToString();
-                });
-            }
+            string relativeFilePath = "~/dust/{0}/{1}.dust"._Format(anyType.Name, templateFileNameWithoutExtension);
+            fullPath = AppContentResponder.AppRoot.GetAbsolutePath(relativeFilePath);
+            return File.Exists(fullPath);
         }
-        
+
         protected internal void EnsureDefaultTemplate(Type anyType)
         {
-            string relativeFilePath = "~/dust/{0}/default.dust"._Format(anyType.Name);
-            string fullPath = AppContentResponder.AppRoot.GetAbsolutePath(relativeFilePath);
+            EnsureTemplate(anyType, "default");
+        }
 
-            if (!File.Exists(fullPath))
+        protected internal void EnsureTemplate(Type anyType, string templateName)
+        {
+            string fullPath;
+            if(!TemplateExists(anyType, templateName, out fullPath))
             {
                 lock(_compiledDustTemplatesLock)
                 {
-                    object instance = anyType.ValuePropertiesToDynamicInstance();
+                    object instance = anyType.Construct().ValuePropertiesToDynamicInstance();
                     SetTemplateProperties(instance);
                     string htm = InputFor(instance.GetType(), instance).XmlToHumanReadable();
+
+                    FileInfo file = new FileInfo(fullPath);
+                    if (!file.Directory.Exists)
+                    {
+                        file.Directory.Create();
+                    }
 
                     File.WriteAllText(fullPath, htm);
                     _compiledDustTemplates = null; // forces reload

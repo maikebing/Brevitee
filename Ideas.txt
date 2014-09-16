@@ -2,8 +2,6 @@
 
 - Continuous Integration System (Build Server)
 
-- Update project template to use Mvc4
-
 - Custom Dev Labs (custom software suggestions and requests)
 
 	- Exegete: An automatic translation script that can translate any page
@@ -34,4 +32,3 @@
 	- Custom Controls: We are custom development, we should have custom 
 		controls of our own.  Styled and awesome.
 		
-	- Brevitee API: Server side SOA and client side library for all services exposed.

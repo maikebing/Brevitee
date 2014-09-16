@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Brevitee.Data.Repositories</name>
+    </assembly>
+    <members>
+        <member name="M:Brevitee.Data.Repositories.PocoDaoGenerator.GetOneToManyTypesFor(System.Type)">
+            <summary>
+            Get the types for each IEnumerable property of the specified type
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Brevitee.Data.Repositories.TypeXref">
+            <summary>
+            Used to describe a many to many 
+            relationship between two types.
+            This would imply that each type
+            has an IEnumerable property
+            of the other type
+            </summary>
+        </member>
+    </members>
+</doc>

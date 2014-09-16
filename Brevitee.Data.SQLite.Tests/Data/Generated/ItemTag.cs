@@ -31,7 +31,7 @@ namespace SampleData
 		}
 
 	// property:Id, columnName:Id	
-	[Brevitee.Data.KeyColumn(Name="Id", ExtractedType="BigInt", MaxLength="8")]
+	[Brevitee.Data.KeyColumn(Name="Id", DbDataType="BigInt", MaxLength="8")]
 	public long? Id
 	{
 		get
@@ -49,7 +49,7 @@ namespace SampleData
 	[Brevitee.Data.ForeignKey(
         Table="ItemTag",
 		Name="ItemId", 
-		ExtractedType="BigInt", 
+		DbDataType="BigInt", 
 		MaxLength="8",
 		AllowNull=false, 
 		ReferencedKey="Id",
@@ -84,7 +84,7 @@ namespace SampleData
 	[Brevitee.Data.ForeignKey(
         Table="ItemTag",
 		Name="TagId", 
-		ExtractedType="BigInt", 
+		DbDataType="BigInt", 
 		MaxLength="8",
 		AllowNull=false, 
 		ReferencedKey="Id",
@@ -192,7 +192,7 @@ namespace SampleData
             ItemTagColumns c = new ItemTagColumns();
             IQueryFilter filter = where(c);         
             
-			Database db = database == null ? _.Db.For<ItemTag>(): database;
+			Database db = database == null ? Db.For<ItemTag>(): database;
 			QuerySet query = GetQuerySet(db); 
             query.Top<ItemTag>(count);
             query.Where(filter);
@@ -211,7 +211,7 @@ namespace SampleData
 			ItemTagColumns c = new ItemTagColumns();
 			IQueryFilter filter = where(c) ;
 
-			Database db = database == null ? _.Db.For<ItemTag>(): database;
+			Database db = database == null ? Db.For<ItemTag>(): database;
 			QuerySet query = GetQuerySet(db);	 
 			query.Count<ItemTag>();
 			query.Where(filter);	  

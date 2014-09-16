@@ -5,16 +5,19 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using System.IO;
+using System.Reflection;
 using Brevitee;
+using Brevitee.Logging;
 using Brevitee.Web;
 using Brevitee.Configuration;
 using Brevitee.Incubation;
 
 namespace Brevitee.ServiceProxy
 {
-    public class ServiceProxyClient : WebClient
+    public abstract class ServiceProxyClient : CookieEnabledWebClient
     {
         public ServiceProxyClient()
+            : base() //Ensure that the cookicontainer is initialized
         {
         }
 
@@ -22,8 +25,18 @@ namespace Brevitee.ServiceProxy
             : this()
         {
             this.BaseAddress = baseAddress;
-            this.Headers["User-Agent"] = UserAgents.IE10;
+            this.Headers["User-Agent"] = UserAgents.FF10;
             this.UseDefaultCredentials = true;
+        }
+
+        ILogger _logger;
+        object _loggerSync = new object();
+        public ILogger Logger
+        {
+            get
+            {
+                return _loggerSync.DoubleCheckLock(ref _logger, () => Log.Default);
+            }
         }
 
         public string UserAgent
@@ -44,7 +57,7 @@ namespace Brevitee.ServiceProxy
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        internal protected string TranslateParameter(object value)
+        internal static protected string TranslateParameter(object value)
         {
             if (value == null)
             {
@@ -61,11 +74,11 @@ namespace Brevitee.ServiceProxy
             }
             else
             {
-                return value.ToJson();
+                return WebUtility.UrlEncode(value.ToJson());
             }
         }
 
-        internal protected string ParametersToQueryString(Dictionary<string, object> parameters)
+        internal static protected string ParametersToQueryString(Dictionary<string, object> parameters)
         {
             StringBuilder result = new StringBuilder();
             bool first = true;
@@ -79,11 +92,11 @@ namespace Brevitee.ServiceProxy
                 result.AppendFormat("{0}={1}", key, TranslateParameter(parameters[key]));
                 first = false;
             }
-
-            return result.ToString();
+            
+            return result.ToString();            
         }
 
-        internal protected string ParametersToQueryString(object[] parameters)
+        internal static protected string ParametersToQueryString(object[] parameters)
         {
             StringBuilder result = new StringBuilder();
             for (int i = 0; i < parameters.Length; i++)
@@ -96,9 +109,26 @@ namespace Brevitee.ServiceProxy
                 result.AppendFormat("{0}={1}", i, TranslateParameter(parameters[i]));
             }
 
-            return result.ToString();
+            return result.ToString();            
         }
 
+        protected internal static Dictionary<string, object> NameParameters(MethodInfo method, object[] parameters)
+        {
+            List<ParameterInfo> parameterInfos = new List<ParameterInfo>(method.GetParameters());
+            parameterInfos.Sort((l, r) => l.MetadataToken.CompareTo(r.MetadataToken));
+
+            if (parameters.Length != parameterInfos.Count)
+            {
+                throw new InvalidOperationException("Parameter count mismatch");
+            }
+
+            Dictionary<string, object> result = new Dictionary<string, object>();
+            parameterInfos.Each((pi, i) =>
+            {
+                result[pi.Name] = parameters[i];
+            });
+            return result;
+        }
         /// <summary>
         /// The BaseAddress to send requests to 
         /// </summary>
@@ -176,6 +206,35 @@ namespace Brevitee.ServiceProxy
             string url = string.Format("{0}{1}", BaseAddress, pathAndQuery);
             return url;
         }
+
+        public event EventHandler<ServiceProxyEventArgs> InvokingMethod;
+        protected void OnInvokingMethod(ServiceProxyEventArgs args)
+        {
+            if (InvokingMethod != null)
+            {
+                InvokingMethod(this, args);
+            }
+        }
+
+        public event EventHandler<ServiceProxyEventArgs> InvokedMethod;
+        protected void OnInvokedMethod(ServiceProxyEventArgs args)
+        {
+            if (InvokedMethod != null)
+            {
+                InvokedMethod(this, args);
+            }
+        }
+
+        public event EventHandler<ServiceProxyEventArgs> InvokeCanceled;
+        protected void OnInvokeCanceled(ServiceProxyEventArgs args)
+        {
+            if (InvokeCanceled != null)
+            {
+                InvokeCanceled(this, args);
+            }
+        }
+
+        public abstract string Invoke(string methodName, object[] parameters);
 
     }
 }

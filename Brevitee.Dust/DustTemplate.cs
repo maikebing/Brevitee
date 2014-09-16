@@ -112,7 +112,7 @@ namespace Brevitee.Dust
     output = result;
 })");
 
-                Context ctx = Context.Enter();
+                EcmaScript.NET.Context ctx = EcmaScript.NET.Context.Enter();
                 ScriptableObject scope = ctx.InitStandardObjects();                
                 SetParameters(scope);
                 ScriptableObject.PutProperty(scope, "jsonData", json);
@@ -168,7 +168,7 @@ namespace Brevitee.Dust
                 StringBuilder script = CreateBaseScript();
                 script.Append("compiledTemplate = dust.compile(templateSource, templateName);");
 
-                Context ctx = Context.Enter();
+                EcmaScript.NET.Context ctx = EcmaScript.NET.Context.Enter();
                 
                 ScriptableObject scope = ctx.InitStandardObjects();
                 SetParameters(scope);

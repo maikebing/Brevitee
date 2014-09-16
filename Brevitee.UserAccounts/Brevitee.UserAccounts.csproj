@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{74D5A262-B0B9-40E6-A3FD-B120DC8E9F54}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Brevitee.UserAccounts</RootNamespace>
+    <AssemblyName>Brevitee.UserAccounts</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Brevitee.UserAccounts.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Brevitee.UserAccounts.XML</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto, Version=1.7.4137.9688, Culture=neutral, PublicKeyToken=a4292a325f69b123, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\BouncyCastle.1.7.0\lib\Net40-Client\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.AspNet">
+      <HintPath>..\packages\DotNetOpenAuth.AspNet.4.1.4.12333\lib\net45-full\DotNetOpenAuth.AspNet.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.Core">
+      <HintPath>..\packages\DotNetOpenAuth.Core.4.1.4.12333\lib\net45-full\DotNetOpenAuth.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OAuth">
+      <HintPath>..\packages\DotNetOpenAuth.OAuth.Core.4.1.4.12333\lib\net45-full\DotNetOpenAuth.OAuth.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OAuth.Consumer">
+      <HintPath>..\packages\DotNetOpenAuth.OAuth.Consumer.4.1.4.12333\lib\net45-full\DotNetOpenAuth.OAuth.Consumer.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OpenId">
+      <HintPath>..\packages\DotNetOpenAuth.OpenId.Core.4.1.4.12333\lib\net45-full\DotNetOpenAuth.OpenId.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OpenId.RelyingParty">
+      <HintPath>..\packages\DotNetOpenAuth.OpenId.RelyingParty.4.1.4.12333\lib\net45-full\DotNetOpenAuth.OpenId.RelyingParty.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.WebPages.OAuth, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.OAuth.3.2.2\lib\net45\Microsoft.Web.WebPages.OAuth.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Extensions">
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.28\lib\net45\System.Net.Http.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Primitives">
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.28\lib\net45\System.Net.Http.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.0.0\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WebMatrix.Data, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.Data.3.2.2\lib\net45\WebMatrix.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="WebMatrix.WebData, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.WebData.3.2.2\lib\net45\WebMatrix.WebData.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AccountConfirmationEmailData.cs" />
+    <Compile Include="AccountCreationFailedException.cs" />
+    <Compile Include="CheckEmailResponse.cs" />
+    <Compile Include="CheckUserNameResponse.cs" />
+    <Compile Include="ConfirmResponse.cs" />
+    <Compile Include="DaoIdentity.cs" />
+    <Compile Include="DaoPrincipal.cs" />
+    <Compile Include="ForgotPasswordResponse.cs" />
+    <Compile Include="Generated\UserAccountsContext.cs" />
+    <Compile Include="InvalidTokenException.cs" />
+    <Compile Include="IsAuthenticatedResponse.cs" />
+    <Compile Include="PasswordResetEmailData.cs" />
+    <Compile Include="PasswordResetPageResponse.cs" />
+    <Compile Include="PasswordResetResponse.cs" />
+    <Compile Include="SignOutResponse.cs" />
+    <Compile Include="UserManagerConfig.cs" />
+    <Compile Include="DaoUserResolver.cs" />
+    <Compile Include="LoginResponse.cs" />
+    <Compile Include="PageResult.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Partials\PasswordQuestion.cs" />
+    <Compile Include="Partials\Role.cs" />
+    <Compile Include="Partials\SessionState.cs" />
+    <Compile Include="Partials\Setting.cs" />
+    <Compile Include="Partials\UserRole.cs" />
+    <Compile Include="RequestEmailResponse.cs" />
+    <Compile Include="RequestResponse.cs" />
+    <Compile Include="SendEmailResponse.cs" />
+    <Compile Include="SignUpResponse.cs" />
+    <Compile Include="UserManager.cs" />
+    <Compile Include="DaoMembershipProvider.cs" />
+    <Compile Include="DaoMembershipUser.cs" />
+    <Compile Include="DaoRoleProvider.cs" />
+    <Compile Include="EmailAlreadyRegisteredException.cs" />
+    <Compile Include="Generated\Account.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\AccountCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\AccountColumns.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\LockOut.cs" />
+    <Compile Include="Generated\LockOutCollection.cs" />
+    <Compile Include="Generated\LockOutColumns.cs" />
+    <Compile Include="Generated\Login.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\LoginCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\LoginColumns.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\Password.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\PasswordCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\PasswordColumns.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\PasswordFailure.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\PasswordFailureCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\PasswordFailureColumns.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\PasswordQuestion.cs" />
+    <Compile Include="Generated\PasswordQuestionCollection.cs" />
+    <Compile Include="Generated\PasswordQuestionColumns.cs" />
+    <Compile Include="Generated\PasswordReset.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\PasswordResetCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\PasswordResetColumns.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\Qi\Account.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\Qi\LockOut.cs" />
+    <Compile Include="Generated\Qi\Login.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\Qi\Password.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\Qi\PasswordFailure.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\Qi\PasswordQuestion.cs" />
+    <Compile Include="Generated\Qi\PasswordReset.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\Qi\Role.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\Qi\Session.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\Qi\SessionState.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\Qi\Setting.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\Qi\User.cs" />
+    <Compile Include="Generated\Qi\UserBehavior.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\Qi\UserRole.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\Role.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\RoleCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\RoleColumns.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\Session.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\SessionCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\SessionColumns.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\SessionState.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\SessionStateCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\SessionStateColumns.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\Setting.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\SettingCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\SettingColumns.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\User.cs" />
+    <Compile Include="Generated\UserBehavior.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\UserBehaviorCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\UserBehaviorColumns.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\UserCollection.cs" />
+    <Compile Include="Generated\UserColumns.cs" />
+    <Compile Include="Generated\UserRole.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\UserRoleCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Generated\UserRoleColumns.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="OAuthManager.cs" />
+    <Compile Include="Partials\Account.cs" />
+    <Compile Include="Partials\Login.cs" />
+    <Compile Include="Partials\LockOut.cs" />
+    <Compile Include="Partials\PasswordFailure.cs" />
+    <Compile Include="Partials\Session.cs" />
+    <Compile Include="Partials\Password.cs" />
+    <Compile Include="Partials\PasswordReset.cs" />
+    <Compile Include="Partials\User.cs" />
+    <Compile Include="Partials\UserBehavior.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserNameInUseException.cs" />
+    <Compile Include="UserNameNotFoundException.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="UserAccounts.db.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Brevitee.Data\Brevitee.Data.csproj">
+      <Project>{3b52b739-58fd-4b49-b815-6b317e701520}</Project>
+      <Name>Brevitee.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Brevitee.Encryption\Brevitee.Encryption.csproj">
+      <Project>{f27dc9a6-e432-4d20-bcef-d10b0c2a657d}</Project>
+      <Name>Brevitee.Encryption</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Brevitee.Incubation\Brevitee.Incubation.csproj">
+      <Project>{aa186331-a0d0-4f77-bea2-e7b7650d3ff5}</Project>
+      <Name>Brevitee.Incubation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Brevitee.Javascript\Brevitee.Javascript.csproj">
+      <Project>{34c5016d-5265-4394-a9ba-cb2f70d8e93b}</Project>
+      <Name>Brevitee.Javascript</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Brevitee.Messaging\Brevitee.Messaging.csproj">
+      <Project>{e330d601-62ea-439e-acd7-7236744562ff}</Project>
+      <Name>Brevitee.Messaging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Brevitee.ServiceProxy\Brevitee.ServiceProxy.csproj">
+      <Project>{8987d8c8-033b-4993-99f0-8dd5a4d6dd0d}</Project>
+      <Name>Brevitee.ServiceProxy</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Brevitee\Brevitee.csproj">
+      <Project>{8794c09d-d72c-420c-812f-bfda251b64c9}</Project>
+      <Name>Brevitee</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Import Project="..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />
+  <Target Name="EnsureBclBuildImported" BeforeTargets="BeforeBuild" Condition="'$(BclBuildImported)' == ''">
+    <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=317567." HelpKeyword="BCLBUILD2001" />
+    <Error Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="The build restored NuGet packages. Build the project again to include these packages in the build. For more information, see http://go.microsoft.com/fwlink/?LinkID=317568." HelpKeyword="BCLBUILD2002" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

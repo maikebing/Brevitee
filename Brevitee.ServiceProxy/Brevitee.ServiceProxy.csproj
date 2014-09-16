@@ -43,15 +43,20 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>bin\Release\Brevitee.ServiceProxy.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto">
+      <HintPath>..\packages\BouncyCastle.1.7.0\lib\Net40-Client\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
     <Reference Include="EcmaScript.NET, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\EcmaScript.Net.1.0.1.0\lib\net20\EcmaScript.NET.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\Assemblies\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -75,17 +80,65 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdHocCSharpCompiler.cs" />
+    <Compile Include="DefaultConfigurationApplicationNameProvider.cs" />
+    <Compile Include="DefaultRoleResolver.cs" />
+    <Compile Include="DefaultUserResolver.cs" />
+    <Compile Include="DefaultWebUserResolver.cs" />
+    <Compile Include="DocAttribute.cs" />
+    <Compile Include="IApplicationNameProvider.cs" />
+    <Compile Include="IRoleResolver.cs" />
+    <Compile Include="RoleResolvers.cs" />
+    <Compile Include="Secure\ApiKeyRequiredAttribute.cs" />
+    <Compile Include="Secure\ApiKeyInfo.cs" />
+    <Compile Include="Secure\ApiKeyNotFoundException.cs" />
+    <Compile Include="Secure\ApiKeyProvider.cs" />
+    <Compile Include="ApiParameters.cs" />
+    <Compile Include="Secure\ApiKeyManager.cs" />
+    <Compile Include="Secure\ApiKeyResolver.cs" />
+    <Compile Include="Secure\IApiKeyProvider.cs" />
+    <Compile Include="Secure\DefaultConfigurationApiKeyProvider.cs" />
+    <Compile Include="Secure\Generated\ApiKey.cs" />
+    <Compile Include="Secure\Generated\ApiKeyCollection.cs" />
+    <Compile Include="Secure\Generated\ApiKeyColumns.cs" />
+    <Compile Include="Secure\Generated\Application.cs" />
+    <Compile Include="Secure\Generated\ApplicationCollection.cs" />
+    <Compile Include="Secure\Generated\ApplicationColumns.cs" />
+    <Compile Include="Secure\Generated\Qi\ApiKey.cs" />
+    <Compile Include="Secure\Generated\Qi\Application.cs" />
+    <Compile Include="Secure\Generated\Qi\SecureSession.cs" />
+    <Compile Include="Secure\Generated\SecureServiceProxyContext.cs" />
+    <Compile Include="Secure\Generated\SecureSession.cs" />
+    <Compile Include="Secure\Generated\SecureSessionCollection.cs" />
+    <Compile Include="Secure\Generated\SecureSessionColumns.cs" />
+    <Compile Include="Secure\LocalApiKeyProvider.cs" />
+    <Compile Include="Secure\Partials\ApiKey.cs" />
+    <Compile Include="Secure\Partials\Application.cs" />
+    <Compile Include="Secure\Partials\SecureSession.cs" />
+    <Compile Include="Secure\SecureChannelMessage.cs" />
+    <Compile Include="Secure\SecureChannelConfig.cs" />
+    <Compile Include="Secure\SecureExecutionRequest.cs" />
+    <Compile Include="Secure\SecureServiceProxyClient.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Secure\ApplicationCreateResult.cs" />
+    <Compile Include="Secure\ApplicationCreateStatus.cs" />
+    <Compile Include="Secure\SecureChannel.cs" />
+    <Compile Include="Secure\ClientSessionInfo.cs" />
     <Compile Include="BaseController.cs" />
     <Compile Include="CodeInfo.cs" />
+    <Compile Include="DocFrom.cs" />
+    <Compile Include="DocPrecedence.cs" />
+    <Compile Include="HttpContextWrapper.cs" />
     <Compile Include="CSharpProxyResult.cs" />
-    <Compile Include="Doc.cs" />
     <Compile Include="DocInfo.cs" />
     <Compile Include="DocAttributeRenderDelegate.cs" />
     <Compile Include="DocMemberType.cs" />
     <Compile Include="DocResult.cs" />
-    <Compile Include="DocXmlRenderDelegate.cs" />
     <Compile Include="Echo.cs" />
+    <Compile Include="IHttpContext.cs" />
     <Compile Include="IRequest.cs" />
+    <Compile Include="IRequiresHttpContext.cs" />
     <Compile Include="IResponse.cs" />
     <Compile Include="MemberType.cs" />
     <Compile Include="ParamInfo.cs" />
@@ -93,10 +146,21 @@
     <Compile Include="RequestWrapper.cs" />
     <Compile Include="ResponseWrapper.cs" />
     <Compile Include="RolesController.cs" />
+    <Compile Include="Secure\RemoteApiKeyProvider.cs" />
+    <Compile Include="Secure\RemoteApiKeyProviderBehavior.cs" />
+    <Compile Include="Secure\ServiceProxyInvocationFailedException.cs" />
+    <Compile Include="Secure\SetSessionKeyRequest.cs" />
+    <Compile Include="Secure\ApiValidation.cs" />
+    <Compile Include="Secure\StaticApiKeyProvider.cs" />
+    <Compile Include="Secure\TokenValidationStatus.cs" />
+    <Compile Include="Secure\ValidationToken.cs" />
+    <Compile Include="Secure\ValidationTokenNotFoundException.cs" />
     <Compile Include="SeeAlsoInfo.cs" />
     <Compile Include="ServiceProxyClient.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="ServiceProxyEventArgs.cs" />
+    <Compile Include="ServiceProxyParameters.cs" />
     <Compile Include="ServiceProxyVerbs.cs" />
     <Compile Include="ServiceProxyWebViewPage.cs" />
     <Compile Include="Js\PlaceHolder.cs" />
@@ -112,17 +176,28 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestObject.cs" />
     <Compile Include="TypeParamInfo.cs" />
+    <Compile Include="UnableToResolveUserException.cs" />
     <Compile Include="UrlHelperExtensions.cs" />
     <Compile Include="ServiceProxyClient[T].cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="IUserResolver.cs" />
+    <Compile Include="UserResolvers.cs" />
     <Compile Include="ValidationResult.cs" />
     <Compile Include="XmlResult.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Brevitee.Data.SQLite\Brevitee.Data.SQLite.csproj">
+      <Project>{42339dbf-9389-42f8-9d28-4c523caa7b01}</Project>
+      <Name>Brevitee.Data.SQLite</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Brevitee.Data\Brevitee.Data.csproj">
       <Project>{3b52b739-58fd-4b49-b815-6b317e701520}</Project>
       <Name>Brevitee.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Brevitee.Encryption\Brevitee.Encryption.csproj">
+      <Project>{f27dc9a6-e432-4d20-bcef-d10b0c2a657d}</Project>
+      <Name>Brevitee.Encryption</Name>
     </ProjectReference>
     <ProjectReference Include="..\Brevitee.Incubation\Brevitee.Incubation.csproj">
       <Project>{AA186331-A0D0-4F77-BEA2-E7B7650D3FF5}</Project>
@@ -134,10 +209,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Keymaster\keymaster.db.js" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <Content Include="Secure\SecureServiceProxy.db.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

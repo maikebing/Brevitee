@@ -11,21 +11,6 @@ namespace Bam.core
 {
     public static class Extensions
     {
-        public static string ToJson(this object obj, bool pretty = false)
-        {
-            if (pretty)
-            {
-                JsonSerializerSettings settings = new JsonSerializerSettings();
-                settings.NullValueHandling = NullValueHandling.Ignore;
-                settings.Formatting = Formatting.Indented;
-
-                return JsonConvert.SerializeObject(obj, settings);
-            }
-            else
-            {
-                return Brevitee.ExtensionsClass.ToJson(obj);
-            }
-        }
 
         public static void Save(this ColorScheme scheme, Fs fs, bool overwrite = false)
         {

@@ -62,7 +62,7 @@ namespace Brevitee.Data.Tests
         [ConsoleAction("This is a main menu option")]
         public static void ExampleMainMenuOption(string parameter)
         {
-            Out(parameter, ConsoleColor.Green);
+            OutLine(parameter, ConsoleColor.Green);
         }
 
         [UnitTest]
@@ -71,7 +71,6 @@ namespace Brevitee.Data.Tests
             Expect.AreEqual("Monkey", "_88%%$83345Monkey".DropLeadingNonLetters());
         }
 
-        
         
         #region do not modify
         static void Main(string[] args)

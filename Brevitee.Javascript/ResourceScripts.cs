@@ -19,6 +19,9 @@ namespace Brevitee.Javascript
             LoadScripts(typeof(ResourceScripts));
         }
 
+        /// <summary>
+        /// Loads embedded resouce scripts that are in the namespace path Brevitee.Javascript
+        /// </summary>
         public static void LoadScripts()
         {
             LoadScripts(typeof(ResourceScripts));

@@ -140,6 +140,23 @@ namespace Brevitee.Configuration
         }
 
         /// <summary>
+        /// Get the value of the specified key.  If the value is not found
+        /// and throwIfNullOrEmpty is true the specified messageFormat will 
+        /// be used as the message of an InvalidOperationException with the 
+        /// key as format args
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="throwIfNullOrEmpty"></param>
+        /// <param name="messageFormat"></param>
+        /// <returns></returns>
+        public static string GetAppSetting(string key, bool throwIfNullOrEmpty, string messageFormat = "Value for key ({0}) was not found in confugration appSettings")
+        {
+            string returnValue = GetAppSetting(key, string.Empty);
+            Args.ThrowIf<InvalidOperationException>(string.IsNullOrEmpty(returnValue) && throwIfNullOrEmpty, messageFormat, key);
+            return returnValue;
+        }
+
+        /// <summary>
         /// Return the specified connection string from the default configuration file.
         /// If the value is not found a blank entry with the specified name will 
         /// be added to the configuration file and an empty string will be returned.

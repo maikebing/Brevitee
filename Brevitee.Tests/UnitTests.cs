@@ -11,6 +11,7 @@ using Brevitee.CommandLine;
 using System.IO;
 using System.Net.FtpClient;
 using Brevitee.Logging;
+using System.Reflection;
 
 namespace Brevitee.Tests
 {
@@ -55,6 +56,19 @@ namespace Brevitee.Tests
             {
                 throw new NotImplementedException(); // no implementation necessary for this test
             }
+        }
+
+        [UnitTest]
+        public void ShouldBeAbleToLoadFromFile()
+        {
+            string name = "Brevitee.Stickerize.Services.Data.StickerizeContext, Brevitee.Stickerize.Services, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null";
+            string path = "C:\\BreviteeContentRoot\\apps\\stickerize.me\\services\\Brevitee.Stickerize.Services.dll";
+            Assembly assembly = Assembly.LoadFrom(path);
+            Expect.IsNotNull(assembly);
+            assembly.GetTypes().Each(type =>
+            {
+                OutLine(type.AssemblyQualifiedName);
+            });
         }
 
         [UnitTest]
@@ -116,7 +130,6 @@ namespace Brevitee.Tests
 
             Expect.IsNotNull(ftp.Config.Credentials);
         }
-
 
         [UnitTest]
         public void SetAndRemoveAttribute()

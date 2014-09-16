@@ -44,7 +44,7 @@ namespace Brevitee.Data.Tests
             }
 
             Expect.IsNotNullOrEmpty(result);
-            Out(result, ConsoleColor.Cyan);
+            OutLine(result, ConsoleColor.Cyan);
             FileInfo compareToFile = new FileInfo(string.Format(".\\{0}.txt", MethodBase.GetCurrentMethod().Name));
             Compare(result, compareToFile);
         }
@@ -55,7 +55,7 @@ namespace Brevitee.Data.Tests
             RazorParser<DaoRazorTemplate<Column>> razorParser = new RazorParser<DaoRazorTemplate<Column>>();
             Column column = new Column("ColumnName", DataTypes.DateTime);
             string result = razorParser.ExecuteResource("Property.tmpl", new { Model = column });
-            Out(result, ConsoleColor.Cyan);
+            OutLine(result, ConsoleColor.Cyan);
 
             FileInfo compareToFile = new FileInfo(string.Format(".\\{0}.txt", MethodBase.GetCurrentMethod().Name));
             Compare(result, compareToFile);
@@ -66,13 +66,14 @@ namespace Brevitee.Data.Tests
         {
             ForeignKeyColumn fk = new ForeignKeyColumn(new Column("ColumnName", DataTypes.Long), "RTable");
             fk.TableName = "testTable";
-            Out(fk.RenderListProperty(), ConsoleColor.Cyan);
+            OutLine(fk.RenderListProperty(), ConsoleColor.Cyan);
         }
 
         private static Table GetTable()
         {
-            Table value = new Table();
+            Table value = new Table();            
             value.Name = "Gorrilla";
+            value.ConnectionName = "TestConnection";
             Column col = new Column("ColumnOne", DataTypes.Decimal);
             value.AddColumn(col);
             return value;
@@ -89,14 +90,15 @@ namespace Brevitee.Data.Tests
                 { 
                     AllowNull = false, 
                     Name = "ForeignKeyColumn", 
-                    ReferencedKey = "id", 
+                    ReferencedKey = id, 
                     ReferencedTable = "bananas", 
                     Type = DataTypes.Long 
                 });
-
-            string result = razorParser.ExecuteResource("Class.tmpl", new {Model = value, Namespace="Monkey.balls"});
+            SchemaManager mgr = new SchemaManager();
+            SchemaDefinition schema = mgr.GetCurrentSchema();
+            string result = razorParser.ExecuteResource("Class.tmpl", new { Model = value, Schema = schema, Namespace = "Monkey.balls" });
             Expect.IsTrue(result.Contains(id));
-            Out(result, ConsoleColor.Cyan);
+            OutLine(result, ConsoleColor.Cyan);
         }
 
         [UnitTest]
@@ -108,7 +110,7 @@ namespace Brevitee.Data.Tests
         [UnitTest]
         public static void AssemlyNameTest()
         {
-            Out(typeof(Table).Assembly.CodeBase.Replace("file:///", "").Replace("/", "\\"), ConsoleColor.Cyan);
+            OutLine(typeof(Table).Assembly.CodeBase.Replace("file:///", "").Replace("/", "\\"), ConsoleColor.Cyan);
         }
 
         private static void Compare(string result, FileInfo compareToFile)
@@ -116,7 +118,7 @@ namespace Brevitee.Data.Tests
             string compare = "";
             if (!compareToFile.Exists)
             {
-                Out("The comparison file was not found, using result as comparison", ConsoleColor.Yellow);
+                OutLine("The comparison file was not found, using result as comparison", ConsoleColor.Yellow);
                 using (StreamWriter sw = new StreamWriter(compareToFile.FullName))
                 {
                     sw.Write(result);
@@ -130,7 +132,7 @@ namespace Brevitee.Data.Tests
 
             Expect.IsNotNullOrEmpty(compare);
             Expect.AreEqual(compare, result);
-            Out(compare, ConsoleColor.Cyan);
+            OutLine(compare, ConsoleColor.Cyan);
         }
     }
 }

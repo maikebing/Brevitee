@@ -4,58 +4,59 @@ using System.Runtime.InteropServices;
 
 namespace Brevitee.Net
 {
-	/// <summary>
-	/// Common network functions.
-	/// </summary>
-	public class NetworkUtilities
-	{		
-		#region Interop Definitions
+    /// <summary>
+    /// Common network functions.
+    /// </summary>
+    public class NetworkUtilities
+    {
+        #region Interop Definitions
 
-		[DllImport("WININET", CharSet = CharSet.Auto)]
-		private static extern bool InternetGetConnectedState(
-			ref InternetConnectionStatesType lpdwFlags,
-			int dwReserved);
-		
-		#endregion
+        [DllImport("WININET", CharSet = CharSet.Auto)]
+        private static extern bool InternetGetConnectedState(
+            ref InternetConnectionStatesType lpdwFlags,
+            int dwReserved);
 
-		#region Connection State Functions
+        #endregion
 
-		public static InternetConnectionStatesType CurrentState
-		{
-			get
-			{
-				InternetConnectionStatesType state = 0;
+        #region Connection State Functions
 
-				InternetGetConnectedState(ref state, 0);
+        public static InternetConnectionStatesType CurrentState
+        {
+            get
+            {
+                InternetConnectionStatesType state = 0;
 
-				return state;
-			}
-		}
+                InternetGetConnectedState(ref state, 0);
 
-		public static bool IsOnline()
-		{
-			InternetConnectionStatesType connectionStatus = CurrentState;
-			
-			return (!Validation.IsFlagged((int)InternetConnectionStatesType.Offline, (int)connectionStatus));
-		}
+                return state;
+            }
+        }
 
-		#endregion
+        public static bool IsOnline()
+        {
+            InternetConnectionStatesType connectionStatus = CurrentState;
 
-		#region Other Network Functions
+            return (!Validation.IsFlagged((int)InternetConnectionStatesType.Offline, (int)connectionStatus));
+        }
 
-		public static IPHostEntry ResolveHost(string hostname)
-		{
-			try
-			{
-				return System.Net.Dns.GetHostByName(hostname);
-			}
-			catch
-			{
-			}
+        #endregion
 
-			return null;
-		}
+        #region Other Network Functions
 
-		#endregion
-	}
+        public static IPHostEntry ResolveHost(string hostname)
+        {
+            try
+            {
+#pragma warning disable 618
+                return System.Net.Dns.GetHostByName(hostname);
+            }
+            catch
+            {
+            }
+
+            return null;
+        }
+
+        #endregion
+    }
 }

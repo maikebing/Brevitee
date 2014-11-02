@@ -293,7 +293,7 @@ namespace Brevitee.Net
 				//Initialize a Socket of the Type ICMP
 				Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Raw, ProtocolType.Icmp);
 				socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.SendTimeout, this.pingTimeout);
-				
+				#pragma warning disable 618
 				// Set the receiving endpoint to the client machine
 				IPHostEntry clientHostEntry = System.Net.Dns.GetHostByName(System.Net.Dns.GetHostName());
 				EndPoint clientEndPoint = (new IPEndPoint(clientHostEntry.AddressList[0], 0));
